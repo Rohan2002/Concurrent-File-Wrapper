@@ -15,14 +15,13 @@
 #include <string.h>
 #include <stdbool.h>
 
-void print_buffer(buffer_dtype *buffer, int length)
+void print_buffer(char local_buffer_arr[BUF_SIZE], int length)
 {
     for (int i = 0; i < length; i++)
     {
         printf("%c", local_buffer_arr[i]);
     }
     printf("\n");
-    // printf("\nSize of buffer: %d\n", buffer->bytes_in_buffer);
 }
 
 void wrap_text(char *file_name, int max_width, char local_buffer_arr[BUF_SIZE])

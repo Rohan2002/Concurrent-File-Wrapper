@@ -1,7 +1,7 @@
 CFLAGS     = -std=c99 -Wall
 
 build: 
-	gcc $(CFLAGS) word_break.c -o word_break.o && ./word_break.o
+	gcc $(CFLAGS) word_break.c -o word_break.o
 
 fbytes:
 	wc -c $(file)

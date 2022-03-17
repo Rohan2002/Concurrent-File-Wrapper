@@ -30,7 +30,7 @@ void wrap_text(char *file_name, int max_width, char local_buffer_arr[BUF_SIZE])
     fd_read = open(file_name, O_RDWR | O_CREAT, DEF_MODE);
 
     int fd_write;
-    fd_write = open("wrap_out", O_RDWR | O_CREAT | O_TRUNC, DEF_MODE);
+    fd_write = open("wrap_out2", O_RDWR | O_CREAT | O_TRUNC, DEF_MODE);
 
     if (fd_read == -1 || fd_write == -1)
     {
@@ -43,7 +43,8 @@ void wrap_text(char *file_name, int max_width, char local_buffer_arr[BUF_SIZE])
     char prev_c = '\0';
     int finishing_max_width = max_width;
 
-    // TODO: dynamically allocate local_buffer_arr maybe? because we don't know word length.
+    // TODO: Selin, dynamically allocate local_buffer_arr because we don't know word length.
+    // (Maybe use malloc (for init allocation) and realloc for increasing the buffer size dynamically if the init size is not sufficient.
 
     // read "a" word into buffer and flush buffer after a word has been read.
     while ((read_bytes_till_now = read(fd_read, &c, 1)) != 0)
@@ -52,8 +53,48 @@ void wrap_text(char *file_name, int max_width, char local_buffer_arr[BUF_SIZE])
         // prev_c != '\n' && c == '\n' is for "is\n". Then "is" is a word.
         // prev_c != ' ' && c != ' ' is for "  ". Consecutive spaces cannot be a word
         // prev_c != '\n' && c != '\n' is for "\n\n". Consecutive nextline cannot be a word
-        if (prev_c == '\n' && c == '\n'){
-            // write(fd_write, "\n", 1);
+        if (prev_c == '\n' && c == '\n')
+        {
+            // DONE: Fix issue regarding adding extra line break. For example:
+            /**
+             * @brief Earlier problem with having breaks (Now this issue has been fixed.)
+             *
+             * UNWRAPPED ORIGINAL test4.txt
+             *  Rohan likes wine. Selin likes beer.
+
+                But Selin can't buy neither!
+
+             * WRAPED WITH 30 (covering only part of the width (i.e. beer.))
+             *  Rohan likes wine. Selin likes
+                beer.
+                But Selin can't buy
+                neither!
+
+             * WRAPED WITH 20 (covering full width (i.e. Selin likes beer.))
+             *  Rohan likes wine.
+                Selin likes beer.
+
+                But Selin can't buy
+                neither!
+
+            * WITH FIX
+            * WRAPED WITH 30 (covering only part of the width (i.e. beer.))
+            *   Rohan likes wine. Selin likes
+                beer.
+
+                But Selin can't buy
+                neither!
+             */
+            if (finishing_max_width <= 2)
+            {
+                // Assuming we write the sentence covering the whole width (i.e. the remaining width can be 2 or less.)
+                write(fd_write, "\n", 1);
+            }
+            else
+            {
+                // Assuming we write the sentence covering only part of the width
+                write(fd_write, "\n\n", 2);
+            }
         }
         else if ((prev_c != ' ' && c == ' ') || (prev_c != '\n' && c == '\n'))
         {
@@ -72,7 +113,7 @@ void wrap_text(char *file_name, int max_width, char local_buffer_arr[BUF_SIZE])
                 int adjusted_word_length_with_space = alpha_numeric_count + 1;
                 if (adjusted_word_length_with_space <= finishing_max_width)
                 {
-                    local_buffer_arr[alpha_numeric_count] = ' '; // TODO: only add space infront of word if word is not at the end of the sentence.
+                    local_buffer_arr[alpha_numeric_count] = ' ';
                     write(fd_write, local_buffer_arr, adjusted_word_length_with_space);
                     finishing_max_width -= adjusted_word_length_with_space;
                 }
@@ -92,7 +133,7 @@ void wrap_text(char *file_name, int max_width, char local_buffer_arr[BUF_SIZE])
             if (current_char_is_alphanumeric)
             {
                 local_buffer_arr[alpha_numeric_count] = c;
-                printf("Read bytes in buf[%d]: %c\n",alpha_numeric_count, local_buffer_arr[alpha_numeric_count]);
+                printf("Read bytes in buf[%d]: %c\n", alpha_numeric_count, local_buffer_arr[alpha_numeric_count]);
                 alpha_numeric_count += 1;
             }
         }
@@ -128,5 +169,5 @@ int main(int argv, char **argc)
     char local_buffer_arr[BUF_SIZE];
     memset(local_buffer_arr, 0, BUF_SIZE);
 
-    wrap_text("tests/test3.txt", 30, local_buffer_arr);
+    wrap_text("tests/test4.txt", 30, local_buffer_arr);
 }

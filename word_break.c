@@ -14,6 +14,9 @@
 #include "word_break.h"
 #include <string.h>
 #include <stdbool.h>
+#include <dirent.h>
+#include <string.h>
+
 
 void print_buffer(char *word_buffer, int length)
 {
@@ -27,14 +30,14 @@ void print_buffer(char *word_buffer, int length)
     }
     printf("\n");
 }
-int wrap_text(char *file_name, int max_width, char word_buffer[BUFSIZE])
+int wrap_text(char *file_name, int max_width, char* optional_output_file)
 {
     int fd_read;
     int rtn = 0;
     fd_read = open(file_name, O_RDWR | O_CREAT, DEF_MODE);
 
     int fd_write;
-    fd_write = open("wrap_out", O_RDWR | O_CREAT | O_TRUNC, DEF_MODE);
+    fd_write = open(optional_output_file ? optional_output_file : 1, O_RDWR | O_CREAT | O_TRUNC, DEF_MODE);
 
     if (fd_read == -1 || fd_write == -1)
     {
@@ -42,7 +45,7 @@ int wrap_text(char *file_name, int max_width, char word_buffer[BUFSIZE])
     }
 
     int bytes;
-    char sentence[BUFSIZE];
+    char sentence_buffer[BUFSIZE];
     int pos;
 
     int alpha_numeric_count = 0; // Just created a fancy way of saying the word length.
@@ -50,15 +53,14 @@ int wrap_text(char *file_name, int max_width, char word_buffer[BUFSIZE])
     char prev_c = '\0';
     int finishing_max_width = max_width;
 
-    // int first_word=1;
-    word_buffer = NULL;
+    char *word_buffer = NULL;
     int next_line_characters = 0;
-    while ((bytes = read(fd_read, sentence, BUFSIZE)) > 0)
+    while ((bytes = read(fd_read, sentence_buffer, BUFSIZE)) > 0)
     {
         // read buffer and break file into lines
         for (pos = 0; pos < bytes; pos++)
         {
-            c = sentence[pos];
+            c = sentence_buffer[pos];
             if (c == '\n')
             {
                 next_line_characters += 1;
@@ -163,13 +165,62 @@ int wrap_text(char *file_name, int max_width, char word_buffer[BUFSIZE])
     close(fd_write);
     return rtn;
 }
+int wrap_text_for_directory(char* dir_name, int max_width){
+    DIR *dfd;
+    struct dirent* directory_pointer;
+    if ((dfd = opendir(dir_name)) == NULL)
+    {
+        fprintf(stderr, "Can't open %s\n", dir_name);
+        return EXIT_FAILURE;
+    }
+    while((directory_pointer= readdir(dfd)) != NULL){
+        struct stat file_in_dir;
+        
+        char* directory_name = (char*) malloc(sizeof(dir_name) * sizeof(char));
+        strcpy(directory_name, dir_name);
+
+        char* file_name = strcat(directory_name, directory_pointer->d_name);
+        int status_of_file_metadata = stat(file_name, &file_in_dir);
+        if(status_of_file_metadata == -1){
+            fprintf(stderr, "Can't get stat of file %s\n",file_name);
+            return EXIT_FAILURE;
+        }
+        if(S_ISREG(file_in_dir.st_mode)){
+            char* extension_str = (char*) malloc(strlen("wrap.") * sizeof(char));
+            strcpy(extension_str, "wrap.");
+            
+            char* file_name_with_extension = strcat(extension_str, directory_pointer->d_name);
+            
+            printf("Directory name %s\n", directory_name);
+            printf("file_name_with_extension name %s\n", file_name_with_extension);
+            
+            // char* new_file_name = strcat(directory_name, file_name_with_extension); // BUG.
+
+            // wrap_text(file_name, max_width, )
+            printf("%s new filename\n", file_name_with_extension);
+        }
+        else{
+            printf("Skipping %s because it is a sub-directory\n", file_name);
+        }
+    }
+    closedir(dfd);
+
+}
 int main(int argv, char **argc)
 {
-    // init buffer with buffer array
-    char *word_buffer = NULL;
 
     // memset(word_buffer, 0, BUFSIZE);
 
-    int rtn = wrap_text("tests/test5.txt", 30, word_buffer);
-    return rtn;
+    // int rtn = wrap_text("tests/test5.txt", 30);
+    // return rtn;
+    wrap_text_for_directory("foo/", 50);
 }
+
+/*
+Questions to ask prof
+
+1. Alphanumeric
+2. foo/
+3. What type of test cases should we test/
+
+*/

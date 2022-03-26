@@ -16,6 +16,7 @@
 #include <stdbool.h>
 #include <dirent.h>
 #include <string.h>
+#include <ctype.h>
 
 void print_buffer(char *word_buffer, int length)
 {
@@ -29,11 +30,11 @@ void print_buffer(char *word_buffer, int length)
     }
     printf("\n");
 }
-int wrap_text(char *file_name, int max_width, char *optional_output_file)
+int wrap_text(char *optional_input_file, int max_width, char *optional_output_file)
 {
     int fd_read;
     int rtn = 0;
-    fd_read = open(file_name, O_RDWR | O_CREAT, DEF_MODE);
+    fd_read = open(optional_input_file ? optional_input_file : "/dev/stdin", O_RDWR | O_CREAT, DEF_MODE);
 
     int fd_write;
     fd_write = open(optional_output_file ? optional_output_file : "/dev/stdout", O_RDWR | O_CREAT | O_TRUNC, DEF_MODE);
@@ -68,7 +69,7 @@ int wrap_text(char *file_name, int max_width, char *optional_output_file)
             {
                 next_line_characters += 1;
             }
-            if (c != ' ' && c != '\n')
+            if (!isspace(c))
             {
                 // cursor landed on a alphanumeric character...
                 // no more new lines.
@@ -82,7 +83,7 @@ int wrap_text(char *file_name, int max_width, char *optional_output_file)
                 next_line_characters = 0;
                 // printf("non-next line: %c\n", c);
             }
-            if (prev_c != ' ' && (c == ' ' || c == '\n'))
+            if (prev_c != ' ' && (isspace(c)))
             {
                 // printf("Final new line count %d\n", next_line_characters);
                 if (alpha_numeric_count != 0)
@@ -109,12 +110,13 @@ int wrap_text(char *file_name, int max_width, char *optional_output_file)
                         write(fd_write, word_buffer, alpha_numeric_count);
                         finishing_max_width = max_width - alpha_numeric_count;
                     }
+                    free(word_buffer);
                     alpha_numeric_count = 0;
                 }
             }
             if (bytes > 0)
             {
-                bool current_char_is_alphanumeric = c != ' ' && c != '\n';
+                bool current_char_is_alphanumeric = !isspace(c);
                 if (current_char_is_alphanumeric)
                 {
                     if (alpha_numeric_count == 0)
@@ -161,9 +163,6 @@ int wrap_text(char *file_name, int max_width, char *optional_output_file)
         }
         alpha_numeric_count = 0;
     }
-    if (word_buffer != NULL)
-        free(word_buffer);
-
     close(fd_read);
     close(fd_write);
     return rtn;
@@ -218,19 +217,9 @@ int wrap_text_for_directory(char *dir_name, int max_width)
 int main(int argv, char **argc)
 {
 
-    // memset(word_buffer, 0, BUFSIZE);
+    // wrap_text("tests/test1.txt", 30, NULL); // read from input file and write to stdout.
+    
+    //wrap_text(NULL, 30, NULL); // read from stdin and write to stdout.
 
-    // int rtn = wrap_text("tests/test5.txt", 30);
-    // return rtn;
-    // wrap_text("tests/test1.txt", 50, NULL);
-    wrap_text_for_directory("r/", 30);
+    // wrap_text_for_directory("foo", 30);
 }
-
-/*
-Questions to ask prof
-
-1. Alphanumeric
-2. foo/
-3. What type of test cases should we test/
-
-*/

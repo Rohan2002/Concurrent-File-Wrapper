@@ -17,7 +17,6 @@
 #include <dirent.h>
 #include <string.h>
 
-
 void print_buffer(char *word_buffer, int length)
 {
     if (word_buffer == NULL)
@@ -30,18 +29,22 @@ void print_buffer(char *word_buffer, int length)
     }
     printf("\n");
 }
-int wrap_text(char *file_name, int max_width, char* optional_output_file)
+int wrap_text(char *file_name, int max_width, char *optional_output_file)
 {
     int fd_read;
     int rtn = 0;
     fd_read = open(file_name, O_RDWR | O_CREAT, DEF_MODE);
 
     int fd_write;
-    fd_write = open(optional_output_file ? optional_output_file : 1, O_RDWR | O_CREAT | O_TRUNC, DEF_MODE);
+    fd_write = open(optional_output_file ? optional_output_file : "/dev/stdout", O_RDWR | O_CREAT | O_TRUNC, DEF_MODE);
 
-    if (fd_read == -1 || fd_write == -1)
+    if (fd_read == -1)
     {
-        perror("File Open Error");
+        perror("Error when opening file for reading");
+    }
+    if (fd_write == -1)
+    {
+        perror("Error when opening file for writing");
     }
 
     int bytes;
@@ -165,46 +168,42 @@ int wrap_text(char *file_name, int max_width, char* optional_output_file)
     close(fd_write);
     return rtn;
 }
-int wrap_text_for_directory(char* dir_name, int max_width){
+int wrap_text_for_directory(char *dir_name, int max_width)
+{
     DIR *dfd;
-    struct dirent* directory_pointer;
+    struct dirent *directory_pointer;
     if ((dfd = opendir(dir_name)) == NULL)
     {
         fprintf(stderr, "Can't open %s\n", dir_name);
         return EXIT_FAILURE;
     }
-    while((directory_pointer= readdir(dfd)) != NULL){
-        struct stat file_in_dir;
-        
-        char* directory_name = (char*) malloc(sizeof(dir_name) * sizeof(char));
-        strcpy(directory_name, dir_name);
 
-        char* file_name = strcat(directory_name, directory_pointer->d_name);
-        int status_of_file_metadata = stat(file_name, &file_in_dir);
-        if(status_of_file_metadata == -1){
-            fprintf(stderr, "Can't get stat of file %s\n",file_name);
+    int directory_of_interest_change_status = chdir(dir_name); // TODO: Check for error status.
+
+    while ((directory_pointer = readdir(dfd)) != NULL)
+    {
+        struct stat file_in_dir;
+
+        int status_of_file_metadata = stat(directory_pointer->d_name, &file_in_dir); // directory_pointer->d_name is the filename.
+        if (status_of_file_metadata == -1)
+        {
+            fprintf(stderr, "Can't get stat of file %s\n", directory_pointer->d_name);
             return EXIT_FAILURE;
         }
-        if(S_ISREG(file_in_dir.st_mode)){
-            char* extension_str = (char*) malloc(strlen("wrap.") * sizeof(char));
+        // if its a file then do the stuff.
+        if (S_ISREG(file_in_dir.st_mode))
+        {
+            char *extension_str = (char *)malloc(strlen("wrap.") * sizeof(char));
             strcpy(extension_str, "wrap.");
-            
-            char* file_name_with_extension = strcat(extension_str, directory_pointer->d_name);
-            
-            printf("Directory name %s\n", directory_name);
-            printf("file_name_with_extension name %s\n", file_name_with_extension);
-            
-            // char* new_file_name = strcat(directory_name, file_name_with_extension); // BUG.
 
-            // wrap_text(file_name, max_width, )
-            printf("%s new filename\n", file_name_with_extension);
-        }
-        else{
-            printf("Skipping %s because it is a sub-directory\n", file_name);
+            char *file_name_with_extension = strcat(extension_str, directory_pointer->d_name);
+
+            wrap_text(directory_pointer->d_name, max_width, file_name_with_extension);
+
+            free(extension_str);
         }
     }
     closedir(dfd);
-
 }
 int main(int argv, char **argc)
 {
@@ -213,7 +212,8 @@ int main(int argv, char **argc)
 
     // int rtn = wrap_text("tests/test5.txt", 30);
     // return rtn;
-    wrap_text_for_directory("foo/", 50);
+    wrap_text("tests/test1.txt", 50, NULL);
+    // wrap_text_for_directory("foo/", 50);
 }
 
 /*

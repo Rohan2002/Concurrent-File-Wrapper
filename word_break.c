@@ -172,13 +172,19 @@ int wrap_text_for_directory(char *dir_name, int max_width)
 {
     DIR *dfd;
     struct dirent *directory_pointer;
+    char extension[6] = "wrap.";
     if ((dfd = opendir(dir_name)) == NULL)
     {
         fprintf(stderr, "Can't open %s\n", dir_name);
         return EXIT_FAILURE;
     }
 
-    int directory_of_interest_change_status = chdir(dir_name); // TODO: Check for error status.
+    int directory_of_interest_change_status = chdir(dir_name);
+    
+    if(directory_of_interest_change_status == -1){
+        fprintf(stderr, "Can't change directory to %s\n", dir_name);
+        return EXIT_FAILURE;
+    }
 
     while ((directory_pointer = readdir(dfd)) != NULL)
     {
@@ -193,17 +199,21 @@ int wrap_text_for_directory(char *dir_name, int max_width)
         // if its a file then do the stuff.
         if (S_ISREG(file_in_dir.st_mode))
         {
-            char *extension_str = (char *)malloc(strlen("wrap.") * sizeof(char));
-            strcpy(extension_str, "wrap.");
 
-            char *file_name_with_extension = strcat(extension_str, directory_pointer->d_name);
+            char *extension_str = (char *)malloc((sizeof(extension) + sizeof(directory_pointer->d_name))* sizeof(char));
+            strcpy(extension_str, extension); // copy wrap. into string
 
-            wrap_text(directory_pointer->d_name, max_width, file_name_with_extension);
+            char *file_name_with_extension = strcat(extension_str, directory_pointer->d_name); // copy rest of the filename in the string.
 
+            // check if filename contains wrap.
+            if(!strstr(directory_pointer->d_name, extension)){
+                wrap_text(directory_pointer->d_name, max_width, file_name_with_extension);
+            }
             free(extension_str);
         }
     }
     closedir(dfd);
+    return EXIT_SUCCESS;
 }
 int main(int argv, char **argc)
 {
@@ -212,8 +222,8 @@ int main(int argv, char **argc)
 
     // int rtn = wrap_text("tests/test5.txt", 30);
     // return rtn;
-    wrap_text("tests/test1.txt", 50, NULL);
-    // wrap_text_for_directory("foo/", 50);
+    // wrap_text("tests/test1.txt", 50, NULL);
+    wrap_text_for_directory("r/", 30);
 }
 
 /*

@@ -34,10 +34,10 @@ int wrap_text(char *optional_input_file, int max_width, char *optional_output_fi
 {
     int fd_read;
     int rtn = 0;
-    fd_read = open(optional_input_file ? optional_input_file : "/dev/stdin", O_RDWR | O_CREAT, DEF_MODE);
+    fd_read = optional_input_file ? open(optional_input_file, O_RDWR | O_CREAT, DEF_MODE) : 0;
 
     int fd_write;
-    fd_write = open(optional_output_file ? optional_output_file : "/dev/stdout", O_RDWR | O_CREAT | O_TRUNC, DEF_MODE);
+    fd_write = optional_output_file ? open(optional_output_file, O_RDWR | O_CREAT | O_TRUNC, DEF_MODE) : 1;
 
     if (fd_read == -1)
     {
@@ -172,6 +172,32 @@ int wrap_text(char *optional_input_file, int max_width, char *optional_output_fi
     close(fd_write);
     return rtn;
 }
+int check_file_or_directory(struct stat *file_in_dir_pointer)
+{
+    /*
+        If name is a regular file then return 1
+        If name is a directory name then return 2
+        else return 0
+    */
+
+    struct stat file_in_dir = *file_in_dir_pointer;
+    // int status_of_file_metadata = stat(name, &file_in_dir);
+    // if (status_of_file_metadata == -1)
+    // {
+    //     fprintf(stderr, "Can't get stat of file %s\n", name);
+    //     return EXIT_FAILURE;
+    // }
+    // regular file
+    if (S_ISREG(file_in_dir.st_mode))
+    {
+        return 1;
+    }
+    if (S_ISDIR(file_in_dir.st_mode))
+    {
+        return 2;
+    }
+    return 0;
+}
 int wrap_text_for_directory(char *dir_name, int max_width)
 {
     DIR *dfd;
@@ -202,7 +228,7 @@ int wrap_text_for_directory(char *dir_name, int max_width)
             return EXIT_FAILURE;
         }
         // if its a file then do the stuff.
-        if (S_ISREG(file_in_dir.st_mode))
+        if (check_file_or_directory(&file_in_dir) == 1)
         {
 
             char *extension_str = (char *)malloc((sizeof(extension) + sizeof(directory_pointer->d_name)) * sizeof(char));
@@ -228,10 +254,34 @@ int wrap_text_for_directory(char *dir_name, int max_width)
 }
 int main(int argv, char **argc)
 {
+    if (argv < 2)
+    {
+        fprintf(stderr, "At least provide the max_width argument\n");
+        return EXIT_FAILURE;
+    }
+    int max_width = atoi(argc[1]);
+    // If the file name is not present, ww will read from standard input and print to standard output.
+    if (argv == 2)
+    {
+        wrap_text(NULL, max_width, NULL);
+    }
+    else
+    {
+        // If the file name is a regular file, ww will read from the file and print to standard output.
+        char *file_name = argc[2];
 
-    // wrap_text("tests/nothing.txt", 30, NULL); // read from input file and write to stdout.
+        struct stat dir_status;
+        stat(file_name, &dir_status);
 
-    // wrap_text(NULL, 30, NULL); // read from stdin and write to stdout.
-
-    wrap_text_for_directory("foo", 30);
+        // If the file name is a directory, ww will open each regular file in the directory and write to a new
+        if (check_file_or_directory(&dir_status) == 2)
+        {
+            wrap_text_for_directory(file_name, max_width);
+        }
+        if (check_file_or_directory(&dir_status) == 1)
+        {
+            // If the file name is a regular file, ww will read from the file and print to standard output.
+            wrap_text(file_name, max_width, NULL);
+        }
+    }
 }

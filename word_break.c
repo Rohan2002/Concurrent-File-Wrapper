@@ -132,7 +132,8 @@ int wrap_text(char *optional_input_file, int max_width, char *optional_output_fi
                     alpha_numeric_count += 1;
                 }
             }
-            if(bytes == -1){
+            if (bytes == -1)
+            {
                 perror("Error reading bytes from a file");
                 return EXIT_FAILURE;
             }
@@ -183,8 +184,9 @@ int wrap_text_for_directory(char *dir_name, int max_width)
     }
 
     int directory_of_interest_change_status = chdir(dir_name);
-    
-    if(directory_of_interest_change_status == -1){
+
+    if (directory_of_interest_change_status == -1)
+    {
         fprintf(stderr, "Can't change directory to %s\n", dir_name);
         return EXIT_FAILURE;
     }
@@ -203,14 +205,20 @@ int wrap_text_for_directory(char *dir_name, int max_width)
         if (S_ISREG(file_in_dir.st_mode))
         {
 
-            char *extension_str = (char *)malloc((sizeof(extension) + sizeof(directory_pointer->d_name))* sizeof(char));
+            char *extension_str = (char *)malloc((sizeof(extension) + sizeof(directory_pointer->d_name)) * sizeof(char));
             strcpy(extension_str, extension); // copy wrap. into string
 
             char *file_name_with_extension = strcat(extension_str, directory_pointer->d_name); // copy rest of the filename in the string.
 
             // check if filename contains wrap.
-            if(!strstr(directory_pointer->d_name, extension)){
+            int status_of_cmp = memcmp(directory_pointer->d_name, extension, strlen(extension));
+            printf("d_name %s, extension %s, Strlen of extension %lu, status of cmp %d\n", directory_pointer->d_name, extension, strlen(extension), status_of_cmp);
+            if (memcmp(directory_pointer->d_name, ".", strlen(".")) != 0 && memcmp(directory_pointer->d_name, extension, strlen(extension)) != 0)
+            {
                 wrap_text(directory_pointer->d_name, max_width, file_name_with_extension);
+            }
+            else{
+                // printf("Skipping text-wrap for file %s\n", directory_pointer->d_name);
             }
             free(extension_str);
         }
@@ -221,9 +229,9 @@ int wrap_text_for_directory(char *dir_name, int max_width)
 int main(int argv, char **argc)
 {
 
-    wrap_text("tests/nothing.txt", 30, NULL); // read from input file and write to stdout.
-    
-    //wrap_text(NULL, 30, NULL); // read from stdin and write to stdout.
+    // wrap_text("tests/nothing.txt", 30, NULL); // read from input file and write to stdout.
 
-    // wrap_text_for_directory("foo", 30);
+    // wrap_text(NULL, 30, NULL); // read from stdin and write to stdout.
+
+    wrap_text_for_directory("foo", 30);
 }

@@ -132,6 +132,10 @@ int wrap_text(char *optional_input_file, int max_width, char *optional_output_fi
                     alpha_numeric_count += 1;
                 }
             }
+            if(bytes == -1){
+                perror("Error reading bytes from a file");
+                return EXIT_FAILURE;
+            }
             prev_c = c;
         }
     }
@@ -217,7 +221,7 @@ int wrap_text_for_directory(char *dir_name, int max_width)
 int main(int argv, char **argc)
 {
 
-    // wrap_text("tests/test1.txt", 30, NULL); // read from input file and write to stdout.
+    wrap_text("tests/nothing.txt", 30, NULL); // read from input file and write to stdout.
     
     //wrap_text(NULL, 30, NULL); // read from stdin and write to stdout.
 

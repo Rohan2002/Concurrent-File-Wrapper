@@ -111,6 +111,7 @@ int wrap_text(char *optional_input_file, int max_width, char *optional_output_fi
                         finishing_max_width = max_width - alpha_numeric_count;
                     }
                     free(word_buffer);
+                    word_buffer = NULL;
                     alpha_numeric_count = 0;
                 }
             }
@@ -138,6 +139,7 @@ int wrap_text(char *optional_input_file, int max_width, char *optional_output_fi
                 return EXIT_FAILURE;
             }
             prev_c = c;
+
         }
     }
 
@@ -167,6 +169,9 @@ int wrap_text(char *optional_input_file, int max_width, char *optional_output_fi
             finishing_max_width = max_width - alpha_numeric_count;
         }
         alpha_numeric_count = 0;
+    }
+    if(word_buffer!=NULL){
+        free(word_buffer);
     }
     close(fd_read);
     close(fd_write);

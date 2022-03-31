@@ -230,9 +230,6 @@ int wrap_text_for_directory(char *dir_name, int max_width)
         {
 
             char *extension_str = (char *)malloc((sizeof(extension) + sizeof(directory_pointer->d_name)) * sizeof(char));
-            if(extension_str != -1){
-                perror("Mll")
-            }
             strcpy(extension_str, extension); // copy wrap. into string
 
             char *file_name_with_extension = strcat(extension_str, directory_pointer->d_name); // copy rest of the filename in the string.

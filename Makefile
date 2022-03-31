@@ -1,7 +1,5 @@
 TARGET 	   = word_break
-CC         = clang
-SANITIZERS = -fsanitize=address $(if $(findstring clang,$(CC)),-fsanitize=undefined)
-OPT        =
+SANITIZERS = -fsanitize=address -fsanitize=undefined
 CFLAGS     = -g -std=c99 -Wall -Wvla -Werror $(SANITIZERS) $(OPT)
 
 build: 

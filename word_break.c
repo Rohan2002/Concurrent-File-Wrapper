@@ -34,10 +34,10 @@ int wrap_text(char *optional_input_file, int max_width, char *optional_output_fi
 {
     int fd_read;
     int rtn = 0;
-    fd_read = optional_input_file ? open(optional_input_file, O_RDWR | O_CREAT, DEF_MODE) : 0;
+    fd_read = optional_input_file ? open(optional_input_file, O_RDONLY | O_CREAT, DEF_MODE) : 0;
 
     int fd_write;
-    fd_write = optional_output_file ? open(optional_output_file, O_RDWR | O_CREAT | O_TRUNC, DEF_MODE) : 1;
+    fd_write = optional_output_file ? open(optional_output_file, O_WRONLY | O_CREAT | O_TRUNC, DEF_MODE) : 1;
 
     if (fd_read == -1)
     {
@@ -141,7 +141,6 @@ int wrap_text(char *optional_input_file, int max_width, char *optional_output_fi
             prev_c = c;
         }
     }
-
     // buffer still exists.
     if (alpha_numeric_count != 0)
     {
@@ -201,6 +200,7 @@ int wrap_text_for_directory(char *dir_name, int max_width)
     DIR *dfd;
     struct dirent *directory_pointer;
     char extension[6] = "wrap.";
+    int rtn = 0;
     if ((dfd = opendir(dir_name)) == NULL)
     {
         fprintf(stderr, "Can't open %s\n", dir_name);
@@ -230,6 +230,9 @@ int wrap_text_for_directory(char *dir_name, int max_width)
         {
 
             char *extension_str = (char *)malloc((sizeof(extension) + sizeof(directory_pointer->d_name)) * sizeof(char));
+            if(extension_str != -1){
+                perror("Mll")
+            }
             strcpy(extension_str, extension); // copy wrap. into string
 
             char *file_name_with_extension = strcat(extension_str, directory_pointer->d_name); // copy rest of the filename in the string.
@@ -239,7 +242,7 @@ int wrap_text_for_directory(char *dir_name, int max_width)
             // printf("d_name %s, extension %s, Strlen of extension %lu, status of cmp %d\n", directory_pointer->d_name, extension, strlen(extension), status_of_cmp);
             if (memcmp(directory_pointer->d_name, ".", strlen(".")) != 0 && memcmp(directory_pointer->d_name, extension, strlen(extension)) != 0)
             {
-                wrap_text(directory_pointer->d_name, max_width, file_name_with_extension);
+                rtn = wrap_text(directory_pointer->d_name, max_width, file_name_with_extension);
             }
             else
             {
@@ -249,7 +252,7 @@ int wrap_text_for_directory(char *dir_name, int max_width)
         }
     }
     closedir(dfd);
-    return EXIT_SUCCESS;
+    return rtn;
 }
 int main(int argv, char **argc)
 {
@@ -259,6 +262,7 @@ int main(int argv, char **argc)
         return EXIT_FAILURE;
     }
     int max_width = atoi(argc[1]);
+    int rtn = -1;
     // If the file name is not present, ww will read from standard input and print to standard output.
     if (argv == 2)
     {
@@ -275,12 +279,12 @@ int main(int argv, char **argc)
         // If the file name is a directory, ww will open each regular file in the directory and write to a new
         if (check_file_or_directory(&dir_status) == 2)
         {
-            wrap_text_for_directory(file_name, max_width);
+            rtn = wrap_text_for_directory(file_name, max_width);
         }
         else if (check_file_or_directory(&dir_status) == 1)
         {
             // If the file name is a regular file, ww will read from the file and print to standard output.
-            wrap_text(file_name, max_width, NULL);
+            rtn = wrap_text(file_name, max_width, NULL);
         }
         else
         {
@@ -288,5 +292,5 @@ int main(int argv, char **argc)
             return EXIT_FAILURE;
         }
     }
-    return EXIT_SUCCESS;
+    return rtn;
 }

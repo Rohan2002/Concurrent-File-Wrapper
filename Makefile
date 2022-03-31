@@ -11,4 +11,4 @@ fbytes:
 	wc -c $(file)
 
 clean:
-	rm -r *.o *.a *.dylib *.dSYM
+	rm -r $(TARGET) *.o *.a *.dylib *.dSYM

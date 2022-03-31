@@ -139,7 +139,6 @@ int wrap_text(char *optional_input_file, int max_width, char *optional_output_fi
                 return EXIT_FAILURE;
             }
             prev_c = c;
-
         }
     }
 
@@ -170,7 +169,8 @@ int wrap_text(char *optional_input_file, int max_width, char *optional_output_fi
         }
         alpha_numeric_count = 0;
     }
-    if(word_buffer!=NULL){
+    if (word_buffer != NULL)
+    {
         free(word_buffer);
     }
     close(fd_read);
@@ -235,13 +235,14 @@ int wrap_text_for_directory(char *dir_name, int max_width)
             char *file_name_with_extension = strcat(extension_str, directory_pointer->d_name); // copy rest of the filename in the string.
 
             // check if filename contains wrap.
-            int status_of_cmp = memcmp(directory_pointer->d_name, extension, strlen(extension));
-            printf("d_name %s, extension %s, Strlen of extension %lu, status of cmp %d\n", directory_pointer->d_name, extension, strlen(extension), status_of_cmp);
+            // int status_of_cmp = memcmp(directory_pointer->d_name, extension, strlen(extension));
+            // printf("d_name %s, extension %s, Strlen of extension %lu, status of cmp %d\n", directory_pointer->d_name, extension, strlen(extension), status_of_cmp);
             if (memcmp(directory_pointer->d_name, ".", strlen(".")) != 0 && memcmp(directory_pointer->d_name, extension, strlen(extension)) != 0)
             {
                 wrap_text(directory_pointer->d_name, max_width, file_name_with_extension);
             }
-            else{
+            else
+            {
                 // printf("Skipping text-wrap for file %s\n", directory_pointer->d_name);
             }
             free(extension_str);
@@ -276,11 +277,16 @@ int main(int argv, char **argc)
         {
             wrap_text_for_directory(file_name, max_width);
         }
-        if (check_file_or_directory(&dir_status) == 1)
+        else if (check_file_or_directory(&dir_status) == 1)
         {
             // If the file name is a regular file, ww will read from the file and print to standard output.
             wrap_text(file_name, max_width, NULL);
         }
-
+        else
+        {
+            fprintf(stderr, "Invalid file path. Please input only a regular file or directory. Input file: %s\n", file_name);
+            return EXIT_FAILURE;
+        }
     }
+    return EXIT_SUCCESS;
 }

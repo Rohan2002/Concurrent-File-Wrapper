@@ -186,13 +186,6 @@ int check_file_or_directory(struct stat *file_in_dir_pointer)
     */
 
     struct stat file_in_dir = *file_in_dir_pointer;
-    // int status_of_file_metadata = stat(name, &file_in_dir);
-    // if (status_of_file_metadata == -1)
-    // {
-    //     fprintf(stderr, "Can't get stat of file %s\n", name);
-    //     return EXIT_FAILURE;
-    // }
-    // regular file
     if (S_ISREG(file_in_dir.st_mode))
     {
         return 1;
@@ -288,5 +281,6 @@ int main(int argv, char **argc)
             // If the file name is a regular file, ww will read from the file and print to standard output.
             wrap_text(file_name, max_width, NULL);
         }
+
     }
 }

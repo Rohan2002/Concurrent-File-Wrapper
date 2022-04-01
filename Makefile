@@ -1,12 +1,13 @@
+CC 		   = gcc
 TARGET 	   = word_break
-SANITIZERS = -fsanitize=address -fsanitize=undefined
-CFLAGS     = -g -std=c99 -Wall -Wvla -Werror $(SANITIZERS) $(OPT)
+SANITIZERS = -fsanitize=address,undefined
+CFLAGS     = -g -std=c99 -Wall -Wvla -Werror $(SANITIZERS)
 
-build: 
-	gcc $(CFLAGS) word_break.c -o $(TARGET)
+bin/word_break_bin: obj/work_break.o
+	$(CC) obj/work_break.o -o $@
 
-fbytes:
-	wc -c $(file)
+obj/work_break.o: src/word_break.c src/word_break.h
+	$(CC) $(CFLAGS) src/word_break.c -c -o $@
 
 clean:
-	rm -r $(TARGET) *.o *.a *.dylib *.dSYM
+	rm -rf bin/* obj/*

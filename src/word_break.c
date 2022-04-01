@@ -34,10 +34,10 @@ int wrap_text(char *optional_input_file, int max_width, char *optional_output_fi
 {
     int fd_read;
     int rtn = 0;
-    fd_read = optional_input_file ? open(optional_input_file, O_RDONLY | O_CREAT, DEF_MODE) : 0;
+    fd_read = optional_input_file ? open(optional_input_file, O_RDONLY | O_CREAT, DEF_MODE) : STDIN;
 
     int fd_write;
-    fd_write = optional_output_file ? open(optional_output_file, O_WRONLY | O_CREAT | O_TRUNC, DEF_MODE) : 1;
+    fd_write = optional_output_file ? open(optional_output_file, O_WRONLY | O_CREAT | O_TRUNC, DEF_MODE) : STDOUT;
 
     if (fd_read == -1)
     {
@@ -73,19 +73,15 @@ int wrap_text(char *optional_input_file, int max_width, char *optional_output_fi
             {
                 // cursor landed on a alphanumeric character...
                 // no more new lines.
-                // printf("New line characters %d\n", next_line_characters);
                 if (next_line_characters >= 2)
                 {
                     write(fd_write, "\n\n", 2);
                     finishing_max_width = max_width;
                 }
-                // printf("Final new line count %d\n", next_line_characters);
                 next_line_characters = 0;
-                // printf("non-next line: %c\n", c);
             }
             if (prev_c != ' ' && (isspace(c)))
             {
-                // printf("Final new line count %d\n", next_line_characters);
                 if (alpha_numeric_count != 0)
                 {
                     int adjusted_word_length_with_space = alpha_numeric_count + 1;
@@ -234,16 +230,10 @@ int wrap_text_for_directory(char *dir_name, int max_width)
 
             char *file_name_with_extension = strcat(extension_str, directory_pointer->d_name); // copy rest of the filename in the string.
 
-            // check if filename contains wrap.
-            // int status_of_cmp = memcmp(directory_pointer->d_name, extension, strlen(extension));
-            // printf("d_name %s, extension %s, Strlen of extension %lu, status of cmp %d\n", directory_pointer->d_name, extension, strlen(extension), status_of_cmp);
+            // Only wrap files that don't start with wrap. or .
             if (memcmp(directory_pointer->d_name, ".", strlen(".")) != 0 && memcmp(directory_pointer->d_name, extension, strlen(extension)) != 0)
             {
                 rtn = wrap_text(directory_pointer->d_name, max_width, file_name_with_extension);
-            }
-            else
-            {
-                // printf("Skipping text-wrap for file %s\n", directory_pointer->d_name);
             }
             free(extension_str);
         }

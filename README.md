@@ -7,7 +7,8 @@ correct? What sorts of files and scenarios did you check?
 ## General Properties of the Algorithm
 1. For Word Wrap to ```Wrap Correctly``` the following properties must be satisfied.
     - The bytes read from an input file must be ordered correctly in the wrapped output file.
-    - The number of characters in each sentence of the wrapped output file must be less than the ```max_width```
+    - The number of characters in each line excluding the newline of the wrapped output file must be less than or equal to the ```max_width```.
+    - Each word in a line must be seperated by space. Words cannot be broken down to a sequence of characters from one line to another. If the word can't fit in the line then its moved to the next line.
     - 
 
 ## How did we test our program?

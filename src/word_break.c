@@ -104,7 +104,7 @@ int wrap_text(char *optional_input_file, int max_width, char *optional_output_fi
                             rtn = EXIT_FAILURE;
                         finishing_max_width -= alpha_numeric_count;
                     }
-                    else if (adjusted_word_length_with_space < finishing_max_width)
+                    else if (adjusted_word_length_with_space <= finishing_max_width)
                     {
                         safe_write(fd_write, " ", 1);
                         safe_write(fd_write, word_buffer, alpha_numeric_count);
@@ -160,7 +160,7 @@ int wrap_text(char *optional_input_file, int max_width, char *optional_output_fi
                 rtn = EXIT_FAILURE;
             finishing_max_width -= alpha_numeric_count;
         }
-        else if (adjusted_word_length_with_space < finishing_max_width)
+        else if (adjusted_word_length_with_space <= finishing_max_width)
         {
             safe_write(fd_write, " ", 1);
             safe_write(fd_write, word_buffer, alpha_numeric_count);

@@ -1,7 +1,7 @@
-This is very good text Rohan that has been put into a file for the purposes
+This is very good text that has been put into a file for the purposes
 of being
 an
 example.
 
-That               is
+That                            is
         good.

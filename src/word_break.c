@@ -30,13 +30,16 @@ void print_buffer(char *word_buffer, int length)
     }
     printf("\n");
 }
-ssize_t safe_write(int fd, const void *__buf, size_t __nbyte){
+ssize_t safe_write(int fd, const void *__buf, size_t __nbyte)
+{
     ssize_t write_status = write(fd, __buf, __nbyte);
-    if(write_status == -1){
-        perror("Write error:");
+    if (write_status == -1)
+    {
+        fprintf(stderr, "Write error.");
         return EXIT_FAILURE;
     }
-    else{
+    else
+    {
         return write_status;
     }
 }
@@ -131,10 +134,20 @@ int wrap_text(char *optional_input_file, int max_width, char *optional_output_fi
                     if (alpha_numeric_count == 0)
                     {
                         word_buffer = (char *)malloc(alpha_numeric_count + 1);
+                        if (word_buffer == NULL)
+                        {
+                            fprintf(stderr, "Malloc failure\n");
+                            return EXIT_FAILURE;
+                        }
                     }
                     else
                     {
                         word_buffer = (char *)realloc(word_buffer, alpha_numeric_count + 1);
+                        if (word_buffer == NULL)
+                        {
+                            fprintf(stderr, "Realloc failure\n");
+                            return EXIT_FAILURE;
+                        }
                     }
 
                     word_buffer[alpha_numeric_count] = c;
@@ -177,7 +190,8 @@ int wrap_text(char *optional_input_file, int max_width, char *optional_output_fi
         alpha_numeric_count = 0;
     }
     // Since each line is terminated by a newline, the final character in a non-empty file will always be a newline.
-    if(read_at_least_one_alphanumeric){
+    if (read_at_least_one_alphanumeric)
+    {
         safe_write(fd_write, "\n", 1);
     }
     if (word_buffer != NULL)
@@ -242,6 +256,11 @@ int wrap_text_for_directory(char *dir_name, int max_width)
         {
 
             char *extension_str = (char *)malloc((sizeof(extension) + sizeof(directory_pointer->d_name)) * sizeof(char));
+            if (extension_str == NULL)
+            {
+                fprintf(stderr, "Malloc failure\n");
+                return EXIT_FAILURE;
+            }
             strcpy(extension_str, extension); // copy wrap. into string
 
             char *file_name_with_extension = strcat(extension_str, directory_pointer->d_name); // copy rest of the filename in the string.

@@ -30,8 +30,19 @@ void print_buffer(char *word_buffer, int length)
     }
     printf("\n");
 }
+ssize_t safe_write(int fd, const void *__buf, size_t __nbyte){
+    ssize_t write_status = write(fd, __buf, __nbyte);
+    if(write_status == -1){
+        perror("Write error:");
+        return EXIT_FAILURE;
+    }
+    else{
+        return write_status;
+    }
+}
 int wrap_text(char *optional_input_file, int max_width, char *optional_output_file)
 {
+    bool read_at_least_one_alphanumeric = false;
     int fd_read;
     int rtn = 0;
     fd_read = optional_input_file ? open(optional_input_file, O_RDONLY | O_CREAT, DEF_MODE) : STDIN;
@@ -71,11 +82,12 @@ int wrap_text(char *optional_input_file, int max_width, char *optional_output_fi
             }
             if (!isspace(c))
             {
+                read_at_least_one_alphanumeric = true;
                 // cursor landed on a alphanumeric character...
                 // no more new lines.
                 if (next_line_characters >= 2)
                 {
-                    write(fd_write, "\n\n", 2);
+                    safe_write(fd_write, "\n\n", 2);
                     finishing_max_width = max_width;
                 }
                 next_line_characters = 0;
@@ -87,23 +99,23 @@ int wrap_text(char *optional_input_file, int max_width, char *optional_output_fi
                     int adjusted_word_length_with_space = alpha_numeric_count + 1;
                     if (finishing_max_width == max_width)
                     {
-                        write(fd_write, word_buffer, alpha_numeric_count);
+                        safe_write(fd_write, word_buffer, alpha_numeric_count);
                         if (alpha_numeric_count > max_width)
                             rtn = EXIT_FAILURE;
                         finishing_max_width -= alpha_numeric_count;
                     }
                     else if (adjusted_word_length_with_space < finishing_max_width)
                     {
-                        write(fd_write, " ", 1);
-                        write(fd_write, word_buffer, alpha_numeric_count);
+                        safe_write(fd_write, " ", 1);
+                        safe_write(fd_write, word_buffer, alpha_numeric_count);
                         finishing_max_width -= adjusted_word_length_with_space;
                     }
                     else
                     {
-                        write(fd_write, "\n", 1);
+                        safe_write(fd_write, "\n", 1);
                         if (alpha_numeric_count > max_width)
                             rtn = EXIT_FAILURE;
-                        write(fd_write, word_buffer, alpha_numeric_count);
+                        safe_write(fd_write, word_buffer, alpha_numeric_count);
                         finishing_max_width = max_width - alpha_numeric_count;
                     }
                     free(word_buffer);
@@ -143,26 +155,30 @@ int wrap_text(char *optional_input_file, int max_width, char *optional_output_fi
         int adjusted_word_length_with_space = alpha_numeric_count + 1;
         if (finishing_max_width == max_width)
         {
-            write(fd_write, word_buffer, alpha_numeric_count);
+            safe_write(fd_write, word_buffer, alpha_numeric_count);
             if (alpha_numeric_count > max_width)
                 rtn = EXIT_FAILURE;
             finishing_max_width -= alpha_numeric_count;
         }
         else if (adjusted_word_length_with_space < finishing_max_width)
         {
-            write(fd_write, " ", 1);
-            write(fd_write, word_buffer, alpha_numeric_count);
+            safe_write(fd_write, " ", 1);
+            safe_write(fd_write, word_buffer, alpha_numeric_count);
             finishing_max_width -= adjusted_word_length_with_space;
         }
         else
         {
-            write(fd_write, "\n", 1);
+            safe_write(fd_write, "\n", 1);
             if (alpha_numeric_count > max_width)
                 rtn = EXIT_FAILURE;
-            write(fd_write, word_buffer, alpha_numeric_count);
+            safe_write(fd_write, word_buffer, alpha_numeric_count);
             finishing_max_width = max_width - alpha_numeric_count;
         }
         alpha_numeric_count = 0;
+    }
+    // Since each line is terminated by a newline, the final character in a non-empty file will always be a newline.
+    if(read_at_least_one_alphanumeric){
+        safe_write(fd_write, "\n", 1);
     }
     if (word_buffer != NULL)
     {

@@ -7,9 +7,19 @@ correct? What sorts of files and scenarios did you check?
 ## General Properties of the Algorithm
 1. For Word Wrap to ```Wrap Correctly``` the following properties must be satisfied.
     - The bytes read from an input file must be ordered correctly in the wrapped output file.
-    - The number of characters in each sentence of the wrapped output file must be
+    - The number of characters in each sentence of the wrapped output file must be less than the ```max_width```
+    - 
 
 ## How did we test our program?
+1. First make sure to build the program by typing ```make``` from the root directory.
+2. To generate a wrapped file, run the ```word_break``` executable located in ```bin``` using the command ```./bin/word_break <max-width> <test-file>```.
+    - Note: ```<test-file>``` can either be a file, directory or nothing. 
+        - If it's a file then it will read the file, and write to ```STDOUT```.
+        - If it's a directory then it will traverse through the directory, read the files, and finally write to a file with the prefix ```wrap.``` file in the directory. 
+        - If it's nothing then it will read input from ```STDIN``` and write the wrap text to ```STDOUT```.
+3. Now to check if the wrapped text is actually correct, we run the executable located in ```bin``` using the command ```./bin/wcheck <max-width> <wrapped-output-file>```. 
+    - Note since the output is written to ```STDOUT```, you can either redirect the output to a text file using the command ```./bin/word_break <max-width> <test-file> > wrapped_<test_file>``` and run the wcheck program using ```./bin/wcheck <max_width> wrapped_<test_file>``` or
+    you can pipe (easier, in my opinion) ```word_break``` output into ```wcheck``` using the command ```./bin/word_break <max-width> <test-file> | ./bin/wcheck <max-width>``` .
 
 
 ## Testing the algorithm

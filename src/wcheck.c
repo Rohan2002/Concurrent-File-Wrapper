@@ -7,6 +7,7 @@
 */
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <ctype.h>
@@ -47,11 +48,12 @@ int main(int argc, char **argv)
 		fprintf(stderr, "Invalid width: %d\n", width);
 		return EXIT_FAILURE;
 	}
-	
+	bool read_at_least_one_alpha_numeric = false;
 	while ((bytes = read(input, buf, BUFSIZE)) > 0) {
 		for (i = 0; i < bytes; i++, pos++, col++) {
  			if (DUMP) printf("[%10d/%3d:%3d] %02x\n", pos, line, col, buf[i]);
 			if (isspace(buf[i])) {
+				read_at_least_one_alpha_numeric = true;
 				if (buf[i] == ' ') {
 					if (next != ANY) {
 						fprintf(stderr, "Unexpected space at %d [%d:%d]\n", pos, line, col);
@@ -85,7 +87,7 @@ int main(int argc, char **argv)
 	if (col > width) {
 		fprintf(stderr, "Line %d too long: %d\n", line, col);
 	}
-	if (next != NOSP) {
+	if (next != NOSP && read_at_least_one_alpha_numeric) {
 		fprintf(stderr, "Input did not end with newline\n");
 		rc = 1;
 	}

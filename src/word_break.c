@@ -17,6 +17,99 @@
 #include <dirent.h>
 #include <string.h>
 #include <ctype.h>
+#include <pthread.h>
+
+#define QUEUESIZE 100
+struct worker_data {
+    struct queue* file_queue;
+    int keep_on_working;
+    int return_status;
+};
+struct queue_data {
+    char* input_file;
+    char* output_file;
+    int w;
+};
+struct queue {
+    struct queue_data *data[QUEUESIZE];
+    int start, stop;
+    int full;
+    pthread_mutex_t lock;
+    pthread_cond_t enqueue_ready, dequeue_ready;
+};
+
+int queue_init(struct queue *q)
+{
+    q->start = 0;
+    q->stop = 0;
+    q->full = 0;
+    pthread_mutex_init(&q->lock, NULL);
+    pthread_cond_init(&q->enqueue_ready, NULL);
+    pthread_cond_init(&q->dequeue_ready, NULL);
+
+    return 0;
+}
+
+int enqueue(struct queue_data *n, struct queue *q)
+{
+    pthread_mutex_lock(&q->lock);
+
+        while (q->full) {
+            pthread_cond_wait(&q->enqueue_ready, &q->lock);
+        }
+
+
+        q->data[q->stop] = n;
+        q->stop++;
+        if (q->stop == QUEUESIZE) q->stop = 0;
+    
+        if (q->start == q->stop) q->full = 1;
+    
+        pthread_cond_signal(&q->dequeue_ready);
+    
+    pthread_mutex_unlock(&q->lock);
+    
+    return 0;
+}
+
+int dequeue(struct queue_data **n, struct queue *q)
+{
+    pthread_mutex_lock(&q->lock);
+    
+        while (!q->full && q->start == q->stop) {
+            pthread_cond_wait(&q->dequeue_ready, &q->lock);
+        }
+    
+        (*n) = q->data[q->start];
+        q->start++;
+        if (q->start == QUEUESIZE) q->start == 0;
+        q->full = 0;
+    
+        pthread_cond_signal(&q->enqueue_ready);
+    
+    pthread_mutex_unlock(&q->lock);
+    
+    return 0;
+}
+
+int wrap_text(char *optional_input_file, int max_width, char *optional_output_file);
+void *worker(void *arg)
+{
+    struct worker_data *A = arg;
+    
+
+    while (1) {
+        struct queue_data *qd=NULL;
+        dequeue(&qd, A->file_queue);
+        if (qd!=NULL)  {
+            printf("a: %ld %s\n",pthread_self(),qd->input_file);
+            wrap_text(qd->input_file,qd->w,qd->output_file);
+        } 
+    }
+    
+    
+    return NULL;
+}
 
 void print_buffer(char *word_buffer, int length)
 {
@@ -221,7 +314,7 @@ int check_file_or_directory(struct stat *file_in_dir_pointer)
     }
     return 0;
 }
-int wrap_text_for_directory(char *dir_name, int max_width)
+int wrap_text_for_directory(char *dir_name, int max_width, struct queue *file_queue)
 {
     DIR *dfd;
     struct dirent *directory_pointer;
@@ -268,7 +361,15 @@ int wrap_text_for_directory(char *dir_name, int max_width)
             // Only wrap files that don't start with wrap. or .
             if (memcmp(directory_pointer->d_name, ".", strlen(".")) != 0 && memcmp(directory_pointer->d_name, extension, strlen(extension)) != 0)
             {
-                rtn = wrap_text(directory_pointer->d_name, max_width, file_name_with_extension);
+                //rtn = wrap_text(directory_pointer->d_name, max_width, file_name_with_extension);
+                struct queue_data *qd = (struct queue_data*)malloc(sizeof(struct queue_data));
+                qd->input_file = (char *)malloc(strlen(directory_pointer->d_name)*sizeof(char));
+                qd->output_file = (char *)malloc(strlen(file_name_with_extension)*sizeof(char));
+                strcpy(qd->input_file,directory_pointer->d_name);
+                strcpy(qd->output_file,file_name_with_extension);
+                qd->w = max_width;
+                printf("qd.input_file : %s\n",qd->input_file);
+                enqueue(qd, file_queue);
             }
             free(extension_str);
         }
@@ -276,6 +377,9 @@ int wrap_text_for_directory(char *dir_name, int max_width)
     closedir(dfd);
     return rtn;
 }
+
+
+
 int main(int argv, char **argc)
 {
     if (argv < 2)
@@ -285,6 +389,9 @@ int main(int argv, char **argc)
     }
     int max_width = atoi(argc[1]);
     int rtn = -1;
+
+
+
     // If the file name is not present, ww will read from standard input and print to standard output.
     if (argv == 2)
     {
@@ -293,26 +400,65 @@ int main(int argv, char **argc)
     else
     {
         // If the file name is a regular file, ww will read from the file and print to standard output.
-        char *file_name = argc[2];
+            char *file_name = argc[2];
 
-        struct stat dir_status;
-        stat(file_name, &dir_status);
+            struct stat dir_status;
+            stat(file_name, &dir_status);
 
-        // If the file name is a directory, ww will open each regular file in the directory and write to a new
-        if (check_file_or_directory(&dir_status) == 2)
-        {
-            rtn = wrap_text_for_directory(file_name, max_width);
-        }
-        else if (check_file_or_directory(&dir_status) == 1)
-        {
-            // If the file name is a regular file, ww will read from the file and print to standard output.
-            rtn = wrap_text(file_name, max_width, NULL);
-        }
-        else
-        {
-            fprintf(stderr, "Invalid file path. Please input only a regular file or directory. Input file: %s\n", file_name);
-            return EXIT_FAILURE;
-        }
-    }
-    return rtn;
+            // If the file name is a directory, ww will open each regular file in the directory and write to a new
+            if (check_file_or_directory(&dir_status) == 2)
+            {
+                
+                //rtn = wrap_text_for_directory(file_name, max_width);
+                struct queue file_queue;
+                queue_init(&file_queue);
+
+                int number_of_threads=5;
+
+                pthread_t tids[number_of_threads];
+                struct worker_data args[number_of_threads];
+                int i;
+                for (i = 0; i < number_of_threads; i++) {
+                    args[i].file_queue = &file_queue;
+                    args[i].keep_on_working = 1;
+                
+                    pthread_create(&tids[i], NULL, worker, &args[i]);
+                }
+
+                rtn = wrap_text_for_directory(file_name, max_width,&file_queue);
+                    
+                for (i = 0; i < number_of_threads; i++) {
+                    args[i].keep_on_working = 0;
+               
+                }
+
+
+                
+                // wait for all threads to finish
+                //int total = 0;
+                for (i = 0; i < number_of_threads; i++) {
+                    pthread_join(tids[i], NULL);
+                    
+                }
+
+
+
+
+
+            }
+            else if (check_file_or_directory(&dir_status) == 1)
+            {
+                // If the file name is a regular file, ww will read from the file and print to standard output.
+                rtn = wrap_text(file_name, max_width, NULL);
+            }
+            else
+            {
+                fprintf(stderr, "Invalid file path. Please input only a regular file or directory. Input file: %s\n", file_name);
+                return EXIT_FAILURE;
+            }
+
+
+}
+        return 0;
+    
 }

@@ -1,0 +1,9 @@
+{
+    "files.associations": {
+        "queue.h": "c",
+        "dirent.h": "c",
+        "stat.h": "c",
+        "word_break.h": "c",
+        "random": "c"
+    }
+}

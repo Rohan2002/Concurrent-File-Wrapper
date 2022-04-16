@@ -22,6 +22,105 @@
 
 #define QUEUESIZE 100
 
+void *consumer_directory_worker(void *arg)
+{
+    if (DEBUG)
+    {
+        printf("Entering consumer thread\n");
+    }
+
+    consumer_worker_type *d_args = arg;
+    Queue *dir_q = d_args->dir_queue;
+    Queue *file_q = d_args->file_queue;
+
+    while (!is_empty(dir_q))
+    {
+        queue_data_type *q_data_pointer = dequeue(dir_q);
+
+        if (q_data_pointer != NULL)
+        {
+            if (DEBUG)
+            {
+                printf("Dequeing, tid: %ld input_file: %s, num_elem: %lu\n", pthread_self(), q_data_pointer->input_file, file_q->number_of_elements_buffered);
+            }
+            //wrap_text(q_data_pointer->input_file, q_data_pointer->w, q_data_pointer->output_file);
+    DIR *dfd;
+    struct dirent *directory_pointer;
+    char extension[6] = "wrap.";
+    //int rtn = 0;
+    char dir_name[100];
+    strcpy(dir_name,q_data_pointer->input_file);
+    if ((dfd = opendir(dir_name)) == NULL)
+    {
+        fprintf(stderr, "Can't open %s\n", dir_name);
+           return NULL;
+    }
+
+    int directory_of_interest_change_status = chdir(dir_name);
+
+    if (directory_of_interest_change_status == -1)
+    {
+        fprintf(stderr, "Can't change directory to %s\n", dir_name);
+            return NULL;
+    }
+
+    while ((directory_pointer = readdir(dfd)) != NULL)
+    {
+        struct stat file_in_dir;
+
+        int status_of_file_metadata = stat(directory_pointer->d_name, &file_in_dir); // directory_pointer->d_name is the filename.
+        if (status_of_file_metadata == -1)
+        {
+            fprintf(stderr, "Can't get stat of file %s\n", directory_pointer->d_name);
+              return NULL;
+        }
+        // if its a file then do the stuff.
+        if (check_file_or_directory(&file_in_dir) == 1)
+        {
+
+            char *extension_str = (char *)malloc((sizeof(extension) + sizeof(directory_pointer->d_name)) * sizeof(char));
+            if (extension_str == NULL)
+            {
+                fprintf(stderr, "Malloc failure\n");
+                return NULL;
+            }
+            strcpy(extension_str, extension); // copy wrap. into string
+
+            char *file_name_with_extension = strcat(extension_str, directory_pointer->d_name); // copy rest of the filename in the string.
+
+            // Only wrap files that don't start with wrap. or .
+            if (memcmp(directory_pointer->d_name, ".", strlen(".")) != 0 && memcmp(directory_pointer->d_name, extension, strlen(extension)) != 0)
+            {
+                    queue_data_type *qd = malloc(sizeof(queue_data_type));
+                    qd->input_file = (char *)malloc(1 + strlen(directory_pointer->d_name) * sizeof(char));
+                    qd->output_file = (char *)malloc(1 + strlen(file_name_with_extension) * sizeof(char));
+                    strcpy(qd->input_file, directory_pointer->d_name);
+                    strcpy(qd->output_file, file_name_with_extension);
+                    qd->w = q_data_pointer->w;
+                    enqueue(file_q, qd);
+                    print_queue_metadata(file_q, file_q->end - 1);
+            }
+            free(extension_str);
+        } else { // it is a directory
+                    queue_data_type *qd = malloc(sizeof(queue_data_type));
+                    qd->input_file = (char *)malloc(1 + strlen(directory_pointer->d_name) * sizeof(char));
+                    qd->output_file = NULL;
+                    strcpy(qd->input_file, directory_pointer->d_name);
+                    qd->w = q_data_pointer->w;
+                    enqueue(dir_q, qd);
+        }
+    }
+    closedir(dfd);
+        }
+    }
+    if (DEBUG)
+    {
+        printf("Exiting consumer thread\n");
+    }
+
+    return NULL;
+}
+
 void *consumer_wrapper_worker(void *arg)
 {
     if (DEBUG)
@@ -40,7 +139,7 @@ void *consumer_wrapper_worker(void *arg)
         {
             if (DEBUG)
             {
-                printf("Dequeing, tid: %p input_file: %s, num_elem: %lu\n", pthread_self(), q_data_pointer->input_file, file_q->number_of_elements_buffered);
+                printf("Dequeing, tid: %ld input_file: %s, num_elem: %lu\n", pthread_self(), q_data_pointer->input_file, file_q->number_of_elements_buffered);
             }
             wrap_text(q_data_pointer->input_file, q_data_pointer->w, q_data_pointer->output_file);
         }
@@ -212,7 +311,7 @@ int wrap_text(char *optional_input_file, int max_width, char *optional_output_fi
     close(fd_write);
     return rtn;
 }
-int wrap_text_for_directory(char *dir_name, int max_width, Queue *file_queue)
+int wrap_text_for_directory(char *dir_name, int max_width, Queue *file_queue, int run_mode)
 {
     producer_worker_type *pwt = arg;
     char *dir_name = pwt->file_name;
@@ -268,15 +367,20 @@ int wrap_text_for_directory(char *dir_name, int max_width, Queue *file_queue)
             // Only wrap files that don't start with wrap. or .
             if (memcmp(directory_pointer->d_name, ".", strlen(".")) != 0 && memcmp(directory_pointer->d_name, extension, strlen(extension)) != 0)
             {
-                // rtn = wrap_text(directory_pointer->d_name, max_width, file_name_with_extension);
-                queue_data_type *qd = malloc(sizeof(queue_data_type));
-                qd->input_file = (char *)malloc(1 + strlen(directory_pointer->d_name) * sizeof(char));
-                qd->output_file = (char *)malloc(1 + strlen(file_name_with_extension) * sizeof(char));
-                strcpy(qd->input_file, directory_pointer->d_name);
-                strcpy(qd->output_file, file_name_with_extension);
-                qd->w = max_width;
-                enqueue(file_queue, qd);
-                print_queue_metadata(file_queue, file_queue->end - 1);
+                if (run_mode==0) {
+                    rtn = wrap_text(directory_pointer->d_name, max_width, file_name_with_extension);
+                } else if (run_mode==2) {
+                    queue_data_type *qd = malloc(sizeof(queue_data_type));
+                    qd->input_file = (char *)malloc(1 + strlen(directory_pointer->d_name) * sizeof(char));
+                    qd->output_file = (char *)malloc(1 + strlen(file_name_with_extension) * sizeof(char));
+                    strcpy(qd->input_file, directory_pointer->d_name);
+                    strcpy(qd->output_file, file_name_with_extension);
+                    qd->w = max_width;
+                    enqueue(file_queue, qd);
+                    print_queue_metadata(file_queue, file_queue->end - 1);
+                } 
+                
+                
             }
             free(extension_str);
         }
@@ -288,13 +392,18 @@ int wrap_text_for_directory(char *dir_name, int max_width, Queue *file_queue)
 
 int main(int argv, char **argc)
 {
+    int rtn=0;
+    int N=-1;
+    int M=-1;
+    int run_mode = get_run_mode(argc[1],&N, &M); 
+    //printf("runmode : %d, M: %d, N:%d\n",rm,M,N);
     if (argv < 2)
     {
         fprintf(stderr, "At least provide the max_width argument\n");
         return EXIT_FAILURE;
     }
-    int max_width = atoi(argc[1]);
-    int rtn = -1;
+    int max_width = atoi(argc[argv-2]);
+    //int rtn = -1;
 
     // If the file name is not present, ww will read from standard input and print to standard output.
     if (argv == 2)
@@ -304,7 +413,7 @@ int main(int argv, char **argc)
     else
     {
         // If the file name is a regular file, ww will read from the file and print to standard output.
-        char *file_name = argc[2];
+        char *file_name = argc[argv-1];
 
         struct stat dir_status;
         stat(file_name, &dir_status);
@@ -313,44 +422,115 @@ int main(int argv, char **argc)
         if (check_file_or_directory(&dir_status) == 2)
         {
 
+            if (run_mode==0) {
+                    rtn = wrap_text_for_directory(file_name, max_width, NULL, run_mode); 
+            } else if(run_mode==2) {
+                Queue *file_queue = init(QUEUESIZE);
+
+                int number_of_wrapper_threads = N; // TODO: put this in user interface.
+
+                pthread_t *wrapper_threads = malloc(number_of_wrapper_threads * sizeof(pthread_t));
+                consumer_worker_type *consumer_args = malloc(number_of_wrapper_threads * sizeof(consumer_worker_type));
+
+                rtn = wrap_text_for_directory(file_name, max_width, file_queue,run_mode); // TODO: currently running in main thread. Need to make a producer model for this.
+
+                int i;
+                for (i = 0; i < number_of_wrapper_threads; i++)
+                {
+                    consumer_args[i].file_queue = file_queue;
+
+                    pthread_create(&wrapper_threads[i], NULL, consumer_wrapper_worker, &consumer_args[i]);
+                }
+
+
+
+                // wait for all threads to finish
+                // int total = 0;
+                for (i = 0; i < number_of_wrapper_threads; i++)
+                {
+                    if (DEBUG)
+                    {
+                        printf("Joining consumer wrapper thread %d\n", i);
+                    }
+                    pthread_join(wrapper_threads[i], NULL);
+                    if (DEBUG)
+                    {
+                        printf("Joined consumer wrapper thread %d\n", i);
+                    }
+                }
+
+            } else if (run_mode==3) {
+                Queue *file_queue = init(QUEUESIZE);
+                Queue *dir_queue = init(QUEUESIZE);
+                    queue_data_type *qd = malloc(sizeof(queue_data_type));
+                    qd->input_file = (char *)malloc(1 + strlen(file_name) * sizeof(char));
+                    qd->output_file = NULL;
+                    strcpy(qd->input_file, file_name);
+                    qd->w = max_width;
+                    enqueue(dir_queue, qd);
+
+
+                int number_of_wrapper_threads = N; 
+                int number_of_directory_threads = M; 
+
+
+                pthread_t *wrapper_threads = malloc(number_of_wrapper_threads * sizeof(pthread_t));
+                consumer_worker_type *arg_file = malloc(number_of_wrapper_threads * sizeof(consumer_worker_type));
+                pthread_t *directory_threads = malloc(number_of_directory_threads * sizeof(pthread_t));
+                consumer_worker_type *arg_dir = malloc(number_of_directory_threads * sizeof(consumer_worker_type));
+
+                int i;
+                for (i = 0; i < number_of_wrapper_threads; i++)
+                {
+                    arg_dir[i].dir_queue = dir_queue;
+                    arg_dir[i].file_queue = file_queue;
+                    pthread_create(&directory_threads[i], NULL, consumer_directory_worker, &arg_dir[i]);
+                }
+
+                for (i = 0; i < number_of_wrapper_threads; i++)
+                {
+                    arg_file[i].file_queue = file_queue;
+                    pthread_create(&wrapper_threads[i], NULL, consumer_wrapper_worker, &arg_file[i]);
+                }
+
+
+
+
+
+
+
+                // wait for all threads to finish
+                // int total = 0;
+                for (i = 0; i < number_of_wrapper_threads; i++)
+                {
+                    if (DEBUG)
+                    {
+                        printf("Joining consumer wrapper thread %d\n", i);
+                    }
+                    pthread_join(wrapper_threads[i], NULL);
+                    if (DEBUG)
+                    {
+                        printf("Joined consumer wrapper thread %d\n", i);
+                    }
+                
+                
+                }
+
+                for (i = 0; i < number_of_directory_threads; i++)
+                {
+                    if (DEBUG)
+                    {
+                        printf("Joining consumer wrapper thread %d\n", i);
+                    }
+                    pthread_join(directory_threads[i], NULL);
+                    if (DEBUG)
+                    {
+                        printf("Joined consumer wrapper thread %d\n", i);
+                    }
+                   
+            }
+
             // rtn = wrap_text_for_directory(file_name, max_width);
-            Queue *file_queue = init(QUEUESIZE);
-
-            int number_of_wrapper_threads = 5; // TODO: put this in user interface.
-
-            pthread_t *wrapper_threads = malloc(number_of_wrapper_threads * sizeof(pthread_t));
-            consumer_worker_type *consumer_args = malloc(number_of_wrapper_threads * sizeof(consumer_worker_type));
-
-            rtn = wrap_text_for_directory(file_name, max_width, file_queue); // TODO: currently running in main thread. Need to make a producer model for this.
-
-            int i;
-            for (i = 0; i < number_of_wrapper_threads; i++)
-            {
-                consumer_args[i].file_queue = file_queue;
-                consumer_args[i].keep_on_working = 1;
-
-                pthread_create(&wrapper_threads[i], NULL, consumer_wrapper_worker, &consumer_args[i]);
-            }
-
-            for (i = 0; i < number_of_wrapper_threads; i++)
-            {
-                consumer_args[i].keep_on_working = 0;
-            }
-
-            // wait for all threads to finish
-            // int total = 0;
-            for (i = 0; i < number_of_wrapper_threads; i++)
-            {
-                if (DEBUG)
-                {
-                    printf("Joining consumer wrapper thread %d\n", i);
-                }
-                pthread_join(wrapper_threads[i], NULL);
-                if (DEBUG)
-                {
-                    printf("Joined consumer wrapper thread %d\n", i);
-                }
-            }
         }
         else if (check_file_or_directory(&dir_status) == 1)
         {
@@ -363,5 +543,7 @@ int main(int argv, char **argc)
             return EXIT_FAILURE;
         }
     }
-    return 0;
+
+}
+    return rtn;
 }

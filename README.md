@@ -29,7 +29,7 @@ correct? What sorts of files and scenarios did you check?
 1. Empty file (```0 bytes```)
     - <b>Result</b>: The program return an empty file.
 2. Paragraph with a single ```break```
-    - <b>Result</b>: The program will wrap 
+    - <b>Result</b>: Wraps correctly, and the single break remains as a single break.
 3. Paragraph with multiple ```breaks```
     - multiple single breaks between sentence
         - <b>Result</b>: Wraps correctly, and single break remains a single break.

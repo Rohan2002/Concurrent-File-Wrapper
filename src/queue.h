@@ -29,7 +29,7 @@ struct Queue_Model
     pthread_cond_t ready_to_consume;
     pthread_cond_t ready_to_produce;
     size_t number_of_elements_buffered;
-    bool all_producers_finished;
+    bool close;
 };
 typedef struct Queue_Model Queue;
 Queue *init(size_t);

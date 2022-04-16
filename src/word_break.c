@@ -214,14 +214,20 @@ int wrap_text(char *optional_input_file, int max_width, char *optional_output_fi
 }
 int wrap_text_for_directory(char *dir_name, int max_width, Queue *file_queue)
 {
+    producer_worker_type *pwt = arg;
+    char *dir_name = pwt->file_name;
+    int max_width = pwt->max_width;
+    queue_type *file_queue = pwt->file_queue;
+
     DIR *dfd;
     struct dirent *directory_pointer;
     char extension[6] = "wrap.";
-    int rtn = 0;
+    int* rtn = malloc(sizeof(int));
     if ((dfd = opendir(dir_name)) == NULL)
     {
         fprintf(stderr, "Can't open %s\n", dir_name);
-        return EXIT_FAILURE;
+        *rtn = EXIT_FAILURE;
+        return rtn;
     }
 
     int directory_of_interest_change_status = chdir(dir_name);
@@ -229,7 +235,8 @@ int wrap_text_for_directory(char *dir_name, int max_width, Queue *file_queue)
     if (directory_of_interest_change_status == -1)
     {
         fprintf(stderr, "Can't change directory to %s\n", dir_name);
-        return EXIT_FAILURE;
+        *rtn = EXIT_FAILURE;
+        return rtn;
     }
 
     while ((directory_pointer = readdir(dfd)) != NULL)
@@ -240,7 +247,8 @@ int wrap_text_for_directory(char *dir_name, int max_width, Queue *file_queue)
         if (status_of_file_metadata == -1)
         {
             fprintf(stderr, "Can't get stat of file %s\n", directory_pointer->d_name);
-            return EXIT_FAILURE;
+            *rtn = EXIT_FAILURE;
+            return rtn;
         }
         // if its a file then do the stuff.
         if (check_file_or_directory(&file_in_dir) == 1)
@@ -250,7 +258,8 @@ int wrap_text_for_directory(char *dir_name, int max_width, Queue *file_queue)
             if (extension_str == NULL)
             {
                 fprintf(stderr, "Malloc failure\n");
-                return EXIT_FAILURE;
+                *rtn = EXIT_FAILURE;
+                return rtn;
             }
             strcpy(extension_str, extension); // copy wrap. into string
 
@@ -273,6 +282,7 @@ int wrap_text_for_directory(char *dir_name, int max_width, Queue *file_queue)
         }
     }
     closedir(dfd);
+    
     return rtn;
 }
 

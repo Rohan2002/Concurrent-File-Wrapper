@@ -24,7 +24,7 @@ Queue *init(size_t q_size)
     queue_pointer->end = 0;
     queue_pointer->queue_size = q_size;
     queue_pointer->number_of_elements_buffered = 0;
-    queue_pointer->all_producers_finished = false;
+    queue_pointer->close = false;
 
     int mutex_init_status = pthread_mutex_init(&(queue_pointer->lock), NULL);
     if (mutex_init_status != 0)

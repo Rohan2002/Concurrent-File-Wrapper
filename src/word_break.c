@@ -313,11 +313,6 @@ int wrap_text(char *optional_input_file, int max_width, char *optional_output_fi
 }
 int wrap_text_for_directory(char *dir_name, int max_width, Queue *file_queue, int run_mode)
 {
-    producer_worker_type *pwt = arg;
-    char *dir_name = pwt->file_name;
-    int max_width = pwt->max_width;
-    queue_type *file_queue = pwt->file_queue;
-
     DIR *dfd;
     struct dirent *directory_pointer;
     char extension[6] = "wrap.";

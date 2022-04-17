@@ -119,3 +119,4 @@ int main()
     test_append_file_path_to_existing_path();
     return EXIT_SUCCESS;
 }
+// cd .. && make obj/utils.o && cd unit_tests/ && make && ./bin/utils_test

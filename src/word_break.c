@@ -25,40 +25,40 @@
 
 void *produce_files_to_wrap(void *arg)
 {
+    /*
+        Recursive directory traversal function.
+
+        It's not actually recursive, but a directory pool is used to imitate recursion.
+    */
     debug_print("%s", "Entering consumer thread\n");
 
     producer_type *d_args = arg;
-    Queue *dir_q = d_args->dir_queue;
+    
+    Pool *dir_pool = d_args->dir_pool;
     Queue *file_q = d_args->file_queue;
+    char* initial_directory_name = d_args->initial_directory;
 
-    while (!queue_is_empty(dir_q))
+    // append the first directory to the pool so that loop has something to work with.
+    pool_data_type* pool_init_data = malloc(sizeof(pool_data_type));
+    pool_init_data->directory_path = initial_directory_name;
+    pool_enqueue(dir_pool, pool_init_data);
+    
+    char extension[6] = "wrap.";
+    while (!pool_is_empty(dir_pool))
     {
-        queue_data_type *q_data_pointer = queue_dequeue(dir_q);
+        pool_data_type* pool_init_data = pool_dequeue(dir_pool);
 
-        if (q_data_pointer != NULL)
+        if (pool_init_data != NULL)
         {
-            if (DEBUG)
-            {
-                printf("Dequeing, tid: %p input_file: %s, num_elem: %lu\n", pthread_self(), q_data_pointer->input_file, file_q->number_of_elements_buffered);
-            }
-            // wrap_text(q_data_pointer->input_file, q_data_pointer->w, q_data_pointer->output_file);
+            char* dir_path = pool_init_data->directory_path;
+            debug_print("Dequeing, tid: %p directory path: %s\n", pthread_self(), dir_path);
+
             DIR *dfd;
             struct dirent *directory_pointer;
-            char extension[6] = "wrap.";
-            // int rtn = 0;
-            char dir_name[100];
-            strcpy(dir_name, q_data_pointer->input_file);
-            if ((dfd = opendir(dir_name)) == NULL)
-            {
-                fprintf(stderr, "Can't open %s\n", dir_name);
-                return NULL;
-            }
 
-            int directory_of_interest_change_status = chdir(dir_name);
-
-            if (directory_of_interest_change_status == -1)
+            if ((dfd = opendir(dir_path)) == NULL)
             {
-                fprintf(stderr, "Can't change directory to %s\n", dir_name);
+                error_print("Can't open directory %s\n", dir_path);
                 return NULL;
             }
 
@@ -69,17 +69,17 @@ void *produce_files_to_wrap(void *arg)
                 int status_of_file_metadata = stat(directory_pointer->d_name, &file_in_dir); // directory_pointer->d_name is the filename.
                 if (status_of_file_metadata == -1)
                 {
-                    fprintf(stderr, "Can't get stat of file %s\n", directory_pointer->d_name);
+                    error_print("Can't get stat of file %s\n", directory_pointer->d_name);
                     return NULL;
                 }
-                // if its a file then do the stuff.
+                // if its a regular file then add it to file queue
                 if (check_file_or_directory(&file_in_dir) == 1)
                 {
 
                     char *extension_str = (char *)malloc((sizeof(extension) + sizeof(directory_pointer->d_name)) * sizeof(char));
                     if (extension_str == NULL)
                     {
-                        fprintf(stderr, "Malloc failure\n");
+                        error_print("%s","Malloc failure\n");
                         return NULL;
                     }
                     strcpy(extension_str, extension); // copy wrap. into string
@@ -245,7 +245,7 @@ int wrap_text(char *optional_input_file, int max_width, char *optional_output_fi
                         word_buffer = (char *)malloc(alpha_numeric_count + 1);
                         if (word_buffer == NULL)
                         {
-                            fprintf(stderr, "Malloc failure\n");
+                            error_print("Malloc failure\n");
                             return EXIT_FAILURE;
                         }
                     }
@@ -254,7 +254,7 @@ int wrap_text(char *optional_input_file, int max_width, char *optional_output_fi
                         word_buffer = (char *)realloc(word_buffer, alpha_numeric_count + 1);
                         if (word_buffer == NULL)
                         {
-                            fprintf(stderr, "Realloc failure\n");
+                            error_print("Realloc failure\n");
                             return EXIT_FAILURE;
                         }
                     }
@@ -319,7 +319,7 @@ int wrap_text_for_directory(char *dir_name, int max_width, Queue *file_queue, in
     int rtn = 0;
     if ((dfd = opendir(dir_name)) == NULL)
     {
-        fprintf(stderr, "Can't open %s\n", dir_name);
+        error_print("Can't open %s\n", dir_name);
         return EXIT_FAILURE;
     }
 
@@ -327,7 +327,7 @@ int wrap_text_for_directory(char *dir_name, int max_width, Queue *file_queue, in
 
     if (directory_of_interest_change_status == -1)
     {
-        fprintf(stderr, "Can't change directory to %s\n", dir_name);
+        error_print("Can't change directory to %s\n", dir_name);
         return EXIT_FAILURE;
     }
 
@@ -338,7 +338,7 @@ int wrap_text_for_directory(char *dir_name, int max_width, Queue *file_queue, in
         int status_of_file_metadata = stat(directory_pointer->d_name, &file_in_dir); // directory_pointer->d_name is the filename.
         if (status_of_file_metadata == -1)
         {
-            fprintf(stderr, "Can't get stat of file %s\n", directory_pointer->d_name);
+            error_print("Can't get stat of file %s\n", directory_pointer->d_name);
             return EXIT_FAILURE;
         }
         // if its a file then do the stuff.
@@ -348,7 +348,7 @@ int wrap_text_for_directory(char *dir_name, int max_width, Queue *file_queue, in
             char *extension_str = (char *)malloc((sizeof(extension) + sizeof(directory_pointer->d_name)) * sizeof(char));
             if (extension_str == NULL)
             {
-                fprintf(stderr, "Malloc failure\n");
+                error_print("Malloc failure\n");
                 return EXIT_FAILURE;
             }
             strcpy(extension_str, extension); // copy wrap. into string
@@ -391,7 +391,7 @@ int main(int argv, char **argc)
     // printf("runmode : %d, M: %d, N:%d\n",rm,M,N);
     if (argv < 2)
     {
-        fprintf(stderr, "At least provide the max_width argument\n");
+        error_print("%s","At least provide the max_width argument\n");
         return EXIT_FAILURE;
     }
     int max_width = atoi(argc[argv - 2]);
@@ -522,7 +522,7 @@ int main(int argv, char **argc)
             }
             else
             {
-                fprintf(stderr, "Invalid file path. Please input only a regular file or directory. Input file: %s\n", file_name);
+                error_print("Invalid file path. Please input only a regular file or directory. Input file: %s\n", file_name);
                 return EXIT_FAILURE;
             }
         }

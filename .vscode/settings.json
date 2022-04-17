@@ -5,6 +5,10 @@
         "stat.h": "c",
         "word_break.h": "c",
         "random": "c",
-        "pool.h": "c"
+        "pool.h": "c",
+        "types.h": "c",
+        "utils.h": "c",
+        "string.h": "c",
+        "logger.h": "c"
     }
 }

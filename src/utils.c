@@ -10,25 +10,27 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
-#include <sys/stat.h>
+#include "utils.h"
+#include "logger.h"
+
 void print_buffer(char *word_buffer, int length)
 {
     if (word_buffer == NULL)
     {
-        printf("Buffer is not init!\n");
+        debug_print("%s\n", "Buffer is not init!");
     }
     for (int i = 0; i < length; i++)
     {
-        printf("%c", word_buffer[i]);
+        debug_print("%c", word_buffer[i]);
     }
-    printf("\n");
+    debug_print("%s", "\n");
 }
-ssize_t safe_write(int fd, const void *__buf, size_t __nbyte)
+int safe_write(int fd, const void *__buf, long __nbyte)
 {
-    ssize_t write_status = write(fd, __buf, __nbyte);
+    int write_status = write(fd, __buf, __nbyte);
     if (write_status == -1)
     {
-        fprintf(stderr, "Write error.");
+        error_print("%s\n", "Write error.");
         return EXIT_FAILURE;
     }
     else
@@ -89,4 +91,27 @@ int get_run_mode(char *arg,int *N, int *M){
 
     }
     return run_mode;
+}
+char* append_file_path_to_existing_path(char* existing_path, char* new_file){
+    /*
+        Appends the name of a directory or regular file to an existing given path.
+        Examples:
+
+        Existing path: foo/a/b
+        New File/Directory: c
+
+        Return foo/a/b/c
+    */
+   int plen = strlen(existing_path);
+   int nlen = strlen(new_file);
+
+   char* appended_path = malloc(plen + nlen + 2);
+   
+   memcpy(appended_path, existing_path, plen); // Exisitng path.
+   char* extender = "/";
+   if(strcmp(&(appended_path[plen]), extender) != 0){
+       appended_path[plen] = *extender;
+   }
+   memcpy(appended_path + plen + 1, new_file, nlen + 1);
+   return appended_path;
 }

@@ -13,6 +13,7 @@ struct file_producer
 {
     Queue* file_queue;
     Pool* dir_pool;
+    char* initial_directory;
 };
 typedef struct file_producer producer_type;
 // Note: consumer threads should not access directory pool.
@@ -29,8 +30,6 @@ int wrap_text_for_directory(char *dir_name, int max_width, Queue *file_queue, in
 // threading infastructure
 void* produce_files_to_wrap(void *arg);
 void* consume_files_to_wrap(void *arg);
-
-
 
 #define DEF_MODE S_IRUSR | S_IWUSR
 #define BUFSIZE 5

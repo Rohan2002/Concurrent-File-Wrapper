@@ -103,7 +103,20 @@ int get_run_mode(char *arg, int *N, int *M)
 char *concat_string(char *prev_str, char *new_str, int optional_prev_length, int optional_new_length)
 {
     /*
-        Efficient String Concat
+        Efficient String Concat.
+
+        Note if optional_prev_length = -1 or optional_new_length -1, the string length for the appropriate string will be computed.
+            else it is the client's responsibility to give a valid string length for the appropriate string.
+
+        Example usage:  
+        
+        char* concatenated = concat_string("lorem", "ipsum", -1, -1);
+                        concatenated = "loremipsum".
+        
+        char* concatenated_two = concat_string("lorem", "ipsum", 5, 5);
+                        concatenated = "loremipsum".
+
+        Warning: It's the client's responsibility to free the output from concat_string.
     */
     int str_len_prev = optional_prev_length == -1 ? strlen(prev_str) : optional_prev_length;
     int str_len_new = optional_new_length == -1 ? strlen(new_str) : optional_new_length;

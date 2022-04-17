@@ -82,10 +82,9 @@ void *produce_files_to_wrap(void *arg)
                         error_print("%s","Malloc failure\n");
                         return NULL;
                     }
-                    strcpy(extension_str, extension); // copy wrap. into string
-
-                    char *file_name_with_extension = strcat(extension_str, directory_pointer->d_name); // copy rest of the filename in the string.
-
+                    memcpy(extension_str, extension, sizeof(extension));
+                    memcpy(extension_str + extension, extension_str, sizeof(extension_str));
+                    
                     // Only wrap files that don't start with wrap. or .
                     if (memcmp(directory_pointer->d_name, ".", strlen(".")) != 0 && memcmp(directory_pointer->d_name, extension, strlen(extension)) != 0)
                     {
@@ -102,12 +101,12 @@ void *produce_files_to_wrap(void *arg)
                 }
                 else
                 { // it is a directory
-                    queue_data_type *qd = malloc(sizeof(queue_data_type));
-                    qd->input_file = (char *)malloc(1 + strlen(directory_pointer->d_name) * sizeof(char));
-                    qd->output_file = NULL;
-                    strcpy(qd->input_file, directory_pointer->d_name);
-                    qd->w = q_data_pointer->w;
-                    queue_enqueue(dir_q, qd);
+                    // queue_data_type *qd = malloc(sizeof(queue_data_type));
+                    // qd->input_file = (char *)malloc(1 + strlen(directory_pointer->d_name) * sizeof(char));
+                    // qd->output_file = NULL;
+                    // strcpy(qd->input_file, directory_pointer->d_name);
+                    // qd->w = q_data_pointer->w;
+                    // queue_enqueue(dir_q, qd);
                 }
             }
             closedir(dfd);

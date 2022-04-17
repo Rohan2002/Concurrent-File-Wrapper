@@ -1,38 +1,8 @@
 #include <stdio.h>
 #include "../src/logger.h"
+#include "../src/utils.h"
 #include <string.h>
 #include <stdlib.h>
-char* append_file_path_to_existing_path(char* existing_path, char* new_file){
-    /*
-        Appends the name of a directory or regular file to an existing given path.
-        Examples:
-
-        Existing path: foo/a/b
-        New File/Directory: c
-
-        Return foo/a/b/c
-    */
-   int plen = strlen(existing_path);
-   printf("plen length: %d\n", plen);
-   int nlen = strlen(new_file);
-    printf("nlen length: %d\n", nlen);
-   char* appended_path = malloc(plen + nlen + 2);
-   if(appended_path == NULL){
-       error_print("%s\n", "Cannot allocate appended_path");
-   }
-   memcpy(appended_path, existing_path, plen); // Exisitng path.
-   char* extender = "/";
-   // printf("Character ending: %c\n", appended_path[plen ]);
-   if(strcmp(&existing_path[plen - 1], extender) != 0){
-        // printf("Last character of existing_path: %c\n", existing_path[plen - 1]);
-        appended_path[plen] = *extender;
-        memcpy(appended_path + plen + 1, new_file, nlen + 1);
-   }
-   else{
-       memcpy(appended_path + plen, new_file, nlen + 1);
-   }
-   return appended_path;
-}
 void test_append_file_path_to_existing_path()
 {
 

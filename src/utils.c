@@ -104,14 +104,19 @@ char* append_file_path_to_existing_path(char* existing_path, char* new_file){
     */
    int plen = strlen(existing_path);
    int nlen = strlen(new_file);
-
    char* appended_path = malloc(plen + nlen + 2);
-   
+   if(appended_path == NULL){
+       error_print("%s\n", "Cannot allocate appended_path");
+   }
    memcpy(appended_path, existing_path, plen); // Exisitng path.
    char* extender = "/";
-   if(strcmp(&(appended_path[plen]), extender) != 0){
-       appended_path[plen] = *extender;
+
+   if(strcmp(&existing_path[plen - 1], extender) != 0){
+        appended_path[plen] = *extender;
+        memcpy(appended_path + plen + 1, new_file, nlen + 1);
    }
-   memcpy(appended_path + plen + 1, new_file, nlen + 1);
+   else{
+       memcpy(appended_path + plen, new_file, nlen + 1);
+   }
    return appended_path;
 }

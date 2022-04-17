@@ -115,7 +115,7 @@ void test_concat_strings()
 }
 int main()
 {
-    // test_concat_strings();
+    test_concat_strings();
     test_append_file_path_to_existing_path();
     return EXIT_SUCCESS;
 }

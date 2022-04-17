@@ -5,7 +5,7 @@
     @ authors
     Rohan Deshpande and Selin Altiparmak
 */
-#ifndef QUEUE_H_INCLUDED
+#ifndef QUEUE_H
 
 #include <pthread.h>
 #include <stdbool.h>
@@ -32,13 +32,13 @@ struct Queue_Model
     bool close;
 };
 typedef struct Queue_Model Queue;
-Queue *init(size_t);
-int enqueue(Queue *, queue_data_type*);
-queue_data_type* dequeue(Queue *);
-queue_data_type*  peek(Queue *);
-bool is_empty(Queue *);
-bool is_full(Queue *);
-int destroy(Queue *);
+Queue *queue_init(size_t);
+int queue_enqueue(Queue *, queue_data_type*);
+queue_data_type* queue_dequeue(Queue *);
+queue_data_type*  queue_peek(Queue *);
+bool queue_is_empty(Queue *);
+bool queue_is_full(Queue *);
+int queue_destroy(Queue *);
 void print_queue_metadata(Queue *queue_pointer, size_t index);
 
 #endif

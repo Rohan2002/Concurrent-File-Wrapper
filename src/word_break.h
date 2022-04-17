@@ -6,7 +6,7 @@
     Rohan Deshpande and Selin Altiparmak
 */
 #include "queue.h"
-#ifndef WORD_BREAK_H_INCLUDED
+#ifndef WORD_BREAK_H
 
 struct consumer_worker_data
 {

@@ -85,12 +85,8 @@ int get_run_mode(char *arg,int *N, int *M){
             arg+=digitsM+1;
             *N = atoi(arg);
             *M = atoi(tempM);
-
-
-
         }
 
     }
     return run_mode;
-
 }

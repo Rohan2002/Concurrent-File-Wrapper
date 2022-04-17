@@ -4,6 +4,7 @@
         "dirent.h": "c",
         "stat.h": "c",
         "word_break.h": "c",
-        "random": "c"
+        "random": "c",
+        "pool.h": "c"
     }
 }

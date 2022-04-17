@@ -5,7 +5,7 @@
     @ authors
     Rohan Deshpande and Selin Altiparmak
 */
-#ifndef UTILS_H_INCLUDED
+#ifndef UTILS_H
 
 // utils infastructure
 void print_buffer(char *word_buffer, int length);

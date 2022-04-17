@@ -1,16 +1,16 @@
 CC         = gcc
 SANITIZERS = -fsanitize=address,undefined
-CFLAGS     = -g -std=c99 -Wall -Wvla -pthread -Werror $(SANITIZERS)
+CFLAGS     = -g -std=c99 -Wall -Wvla -pthread -Werror  $(SANITIZERS)
 
 all: bin/wcheck bin/word_break
 
 bin/wcheck: obj/ bin/ obj/wcheck.o
 	$(CC) $(CFLAGS)  obj/wcheck.o -o $@
 
-bin/word_break: obj/ bin/ obj/utils.o obj/queue.o obj/work_break.o
-	$(CC) $(CFLAGS) obj/utils.o obj/queue.o obj/work_break.o -o $@
+bin/word_break: obj/ bin/ obj/pool.o obj/utils.o obj/queue.o obj/work_break.o
+	$(CC) $(CFLAGS) obj/pool.o obj/utils.o obj/queue.o obj/work_break.o -o $@
 
-obj/work_break.o: obj/ src/utils.c src/utils.h src/queue.c src/queue.h src/word_break.c src/word_break.h
+obj/work_break.o: obj/ src/pool.c src/pool.h src/utils.c src/utils.h src/queue.c src/queue.h src/word_break.c src/word_break.h
 	$(CC) $(CFLAGS) src/word_break.c -c -o $@
 
 obj/wcheck.o: obj/ src/wcheck.c
@@ -21,6 +21,9 @@ obj/queue.o: obj/ src/queue.c src/queue.h
 
 obj/utils.o: obj/ src/utils.c src/utils.h
 	$(CC) $(CFLAGS) src/utils.c -c -o $@
+
+obj/pool.o: obj/ src/pool.c src/pool.h
+	$(CC) $(CFLAGS) src/pool.c -c -o $@
 
 bin/:
 	mkdir -p $@

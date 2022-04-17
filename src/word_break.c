@@ -83,8 +83,8 @@ void *produce_files_to_wrap(void *arg)
                         return NULL;
                     }
                     memcpy(extension_str, extension, sizeof(extension));
-                    memcpy(extension_str + extension, extension_str, sizeof(extension_str));
-                    
+                    memcpy(extension, extension_str, sizeof(directory_pointer->d_name));
+
                     // Only wrap files that don't start with wrap. or .
                     if (memcmp(directory_pointer->d_name, ".", strlen(".")) != 0 && memcmp(directory_pointer->d_name, extension, strlen(extension)) != 0)
                     {

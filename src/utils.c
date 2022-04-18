@@ -59,47 +59,47 @@ int check_file_or_directory(struct stat *file_in_dir_pointer)
     return 0;
 }
 
-int get_run_mode(char *arg, int *N, int *M)
-{
-    int run_mode = 0;
-    if (strcmp(arg, "-r") == 0)
-    {
-        run_mode = 1;
-    }
-    else if (arg[0] == '-' && arg[1] == 'r')
-    {
-        int i;
-        run_mode = 2;
-        for (i = 0; i < strlen(arg); i++)
-        {
-            if (arg[i] == ',')
-            {
-                run_mode = 3;
-            }
-        }
-        if (run_mode == 2)
-        {
-            arg += 2;
-            *N = atoi(arg);
-        }
-        else if (run_mode == 3)
-        {
-            char tempM[20];
-            int digitsM = 0;
-            arg += 2;
-            while (arg[digitsM] != ',')
-            {
-                tempM[digitsM] = arg[digitsM];
-                digitsM++;
-            }
-            tempM[digitsM] = '\0';
-            arg += digitsM + 1;
-            *N = atoi(arg);
-            *M = atoi(tempM);
-        }
-    }
-    return run_mode;
-}
+// void fill_threads_count_by_user_arguememt(char *arg, int *N, int *M)
+// {
+//     int run_mode = 0;
+//     if (strcmp(arg, "-r") == 0)
+//     {
+//         run_mode = 1;
+//     }
+//     else if (arg[0] == '-' && arg[1] == 'r')
+//     {
+//         int i;
+//         run_mode = 2;
+//         for (i = 0; i < strlen(arg); i++)
+//         {
+//             if (arg[i] == ',')
+//             {
+//                 run_mode = 3;
+//             }
+//         }
+//         if (run_mode == 2)
+//         {
+//             arg += 2;
+//             *N = atoi(arg);
+//         }
+//         else if (run_mode == 3)
+//         {
+//             char tempM[20];
+//             int digitsM = 0;
+//             arg += 2;
+//             while (arg[digitsM] != ',')
+//             {
+//                 tempM[digitsM] = arg[digitsM];
+//                 digitsM++;
+//             }
+//             tempM[digitsM] = '\0';
+//             arg += digitsM + 1;
+//             *N = atoi(arg);
+//             *M = atoi(tempM);
+//         }
+//     }
+//     return run_mode;
+// }
 char *concat_string(char *prev_str, char *new_str, int optional_prev_length, int optional_new_length)
 {
     /*

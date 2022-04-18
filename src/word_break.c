@@ -38,17 +38,12 @@ void *produce_files_to_wrap(void *arg)
     // unpack thread args for producer
     Pool *dir_pool = producer_args->dir_pool;
     Queue *file_q = producer_args->file_queue;
-    char *initial_directory_name = producer_args->initial_directory;
     // int number_of_producers = producer_args->alive_producers;
-
-    pool_data_type *pool_init_data = malloc(sizeof(pool_data_type));
-    pool_init_data->directory_path = initial_directory_name;
-
-    pool_enqueue(dir_pool, pool_init_data);
 
     while (!pool_is_empty(dir_pool))
     {
         pool_data_type *pool_init_data = pool_dequeue(dir_pool);
+        debug_print("Address of pool %p and dequed data: %p\n",dir_pool, pool_init_data);
         if (pool_init_data != NULL)
         {
             int fill_status = fill_pool_and_queue_with_data(pool_init_data->directory_path, dir_pool, file_q);
@@ -345,18 +340,22 @@ int main(int argv, char **argc)
         error_print("%s\n", "Failed to init directory pool.");
         return EXIT_FAILURE;
     }
+    
     // wrapping params
     int max_width = 30;
 
     // thread params
-    int producer_threads = 5;
-    int consumer_threads = 5;
+    int producer_threads = 10;
+    int consumer_threads = 20;
 
     pthread_t *producer_tids = malloc(producer_threads * sizeof(pthread_t));
     pthread_t *consumer_tids = malloc(consumer_threads * sizeof(pthread_t));
 
+    pool_data_type *pool_init_data = malloc(sizeof(pool_data_type));
+    pool_init_data->directory_path = "d/";
+    pool_enqueue(dir_pool, pool_init_data);
     // thread arguements.
-    producer_type producer_args = {file_queue, dir_pool, "d/", producer_threads};
+    producer_type producer_args = {file_queue, dir_pool,producer_threads};
     // producer_args->file_queue = file_queue;
     // producer_args->dir_pool = dir_pool;
     // producer_args->initial_directory = "tests/"; // interface
@@ -365,7 +364,6 @@ int main(int argv, char **argc)
     consumer_type consumer_args = {file_queue, dir_pool, max_width};
     // consumer_args->file_queue = file_queue;
     // consumer_args->max_width = max_width;
-
     int i = 0;
     int j = 0;
     for (i = 0; i < producer_threads; i++)

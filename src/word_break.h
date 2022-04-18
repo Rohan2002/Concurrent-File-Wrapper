@@ -13,7 +13,6 @@ struct file_producer
 {
     Queue* file_queue;
     Pool* dir_pool;
-    char* initial_directory;
     int alive_producers;
 };
 typedef struct file_producer producer_type;

@@ -1,0 +1,433 @@
+src/queue.c:51:queue_init(): Created queue mutex at address 0x6110000001a0
+src/queue.c:52:queue_init(): Created queue with size 100 at address 0x611000000180
+src/pool.c:42:pool_init(): Created pool mutex at address 0x60d000000050
+src/pool.c:43:pool_init(): Created pool at address 0x60d000000040
+src/word_break.c:371:main(): Creating producer thread
+src/word_break.c:373:main(): Created producer thread
+src/word_break.c:371:main(): Creating producer thread
+src/word_break.c:34:produce_files_to_wrap(): Entering produce_files_to_wrap
+src/word_break.c:46:produce_files_to_wrap(): Address of pool 0x60d000000040 and dequed data: 0x6020000000d0
+src/word_break.c:253:fill_pool_and_queue_with_data(): Dequeing parent directory, tid: 0x7000045e6000 parent directory path: tests/ <- queue is empty.
+src/word_break.c:373:main(): Created producer thread
+src/word_break.c:371:main(): Creating producer thread
+src/word_break.c:34:produce_files_to_wrap(): Entering produce_files_to_wrap
+src/word_break.c:59:produce_files_to_wrap(): Exiting produce_files_to_wrap
+src/word_break.c:34:produce_files_to_wrap(): Entering produce_files_to_wrap
+src/word_break.c:373:main(): Created producer thread
+src/word_break.c:371:main(): Creating producer thread
+src/word_break.c:59:produce_files_to_wrap(): Exiting produce_files_to_wrap
+src/word_break.c:34:produce_files_to_wrap(): Entering produce_files_to_wrap
+src/word_break.c:373:main(): Created producer thread
+src/word_break.c:371:main(): Creating producer thread
+src/word_break.c:59:produce_files_to_wrap(): Exiting produce_files_to_wrap
+src/word_break.c:373:main(): Created producer thread
+src/word_break.c:34:produce_files_to_wrap(): Entering produce_files_to_wrap
+src/word_break.c:59:produce_files_to_wrap(): Exiting produce_files_to_wrap
+src/word_break.c:371:main(): Creating producer thread
+src/word_break.c:373:main(): Created producer thread
+src/word_break.c:371:main(): Creating producer thread
+src/word_break.c:34:produce_files_to_wrap(): Entering produce_files_to_wrap
+src/word_break.c:59:produce_files_to_wrap(): Exiting produce_files_to_wrap
+src/word_break.c:373:main(): Created producer thread
+src/word_break.c:371:main(): Creating producer thread
+src/word_break.c:34:produce_files_to_wrap(): Entering produce_files_to_wrap
+src/word_break.c:59:produce_files_to_wrap(): Exiting produce_files_to_wrap
+src/word_break.c:373:main(): Created producer thread
+src/word_break.c:34:produce_files_to_wrap(): Entering produce_files_to_wrap
+src/word_break.c:59:produce_files_to_wrap(): Exiting produce_files_to_wrap
+src/word_break.c:371:main(): Creating producer thread
+src/word_break.c:373:main(): Created producer thread
+src/word_break.c:371:main(): Creating producer thread
+src/word_break.c:34:produce_files_to_wrap(): Entering produce_files_to_wrap
+src/word_break.c:59:produce_files_to_wrap(): Exiting produce_files_to_wrap
+src/word_break.c:373:main(): Created producer thread
+src/word_break.c:377:main(): Creating consumer thread
+src/word_break.c:34:produce_files_to_wrap(): Entering produce_files_to_wrap
+src/word_break.c:59:produce_files_to_wrap(): Exiting produce_files_to_wrap
+src/word_break.c:283:fill_pool_and_queue_with_data(): Input-file found with path tests/test7.txt
+src/word_break.c:284:fill_pool_and_queue_with_data(): Output-file found with path tests/wrap.test7.txt
+src/queue.c:65:queue_enqueue(): Entering queue_enqueue
+src/queue.c:74:queue_enqueue(): From queue_enqueue: Enqued element at index 0
+src/word_break.c:379:main(): Created consumer thread
+src/word_break.c:377:main(): Creating consumer thread
+src/word_break.c:66:consume_files_to_wrap(): Entering consume_files_to_wrap
+src/queue.c:96:queue_dequeue(): Entering queue_dequeue
+src/word_break.c:81:consume_files_to_wrap(): Dequeing file, tid: 0x700004b04000 input file path: tests/test7.txt output file path: tests/wrap.test7.txt
+src/word_break.c:283:fill_pool_and_queue_with_data(): Input-file found with path tests/test6.txt
+src/word_break.c:284:fill_pool_and_queue_with_data(): Output-file found with path tests/wrap.test6.txt
+src/queue.c:65:queue_enqueue(): Entering queue_enqueue
+src/queue.c:74:queue_enqueue(): From queue_enqueue: Enqued element at index 1
+src/word_break.c:379:main(): Created consumer thread
+src/word_break.c:377:main(): Creating consumer thread
+src/word_break.c:66:consume_files_to_wrap(): Entering consume_files_to_wrap
+src/word_break.c:283:fill_pool_and_queue_with_data(): Input-file found with path tests/alex
+src/word_break.c:284:fill_pool_and_queue_with_data(): Output-file found with path tests/wrap.alex
+src/queue.c:96:queue_dequeue(): Entering queue_dequeue
+src/word_break.c:81:consume_files_to_wrap(): Dequeing file, tid: 0x700004b87000 input file path: tests/test6.txt output file path: tests/wrap.test6.txt
+src/queue.c:65:queue_enqueue(): Entering queue_enqueue
+src/queue.c:74:queue_enqueue(): From queue_enqueue: Enqued element at index 2
+src/word_break.c:379:main(): Created consumer thread
+src/word_break.c:377:main(): Creating consumer thread
+src/word_break.c:66:consume_files_to_wrap(): Entering consume_files_to_wrap
+src/queue.c:96:queue_dequeue(): Entering queue_dequeue
+src/word_break.c:81:consume_files_to_wrap(): Dequeing file, tid: 0x700004c0a000 input file path: tests/alex output file path: tests/wrap.alex
+src/word_break.c:283:fill_pool_and_queue_with_data(): Input-file found with path tests/output1.txt
+src/word_break.c:284:fill_pool_and_queue_with_data(): Output-file found with path tests/wrap.output1.txt
+src/queue.c:65:queue_enqueue(): Entering queue_enqueue
+src/queue.c:74:queue_enqueue(): From queue_enqueue: Enqued element at index 3
+src/word_break.c:283:fill_pool_and_queue_with_data(): Input-file found with path tests/test4.txt
+src/word_break.c:284:fill_pool_and_queue_with_data(): Output-file found with path tests/wrap.test4.txt
+src/queue.c:65:queue_enqueue(): Entering queue_enqueue
+src/queue.c:74:queue_enqueue(): From queue_enqueue: Enqued element at index 4
+src/word_break.c:379:main(): Created consumer thread
+src/word_break.c:377:main(): Creating consumer thread
+src/word_break.c:66:consume_files_to_wrap(): Entering consume_files_to_wrap
+src/word_break.c:283:fill_pool_and_queue_with_data(): Input-file found with path tests/test5.txt
+src/word_break.c:284:fill_pool_and_queue_with_data(): Output-file found with path tests/wrap.test5.txt
+src/queue.c:96:queue_dequeue(): Entering queue_dequeue
+src/word_break.c:81:consume_files_to_wrap(): Dequeing file, tid: 0x700004c8d000 input file path: tests/output1.txt output file path: tests/wrap.output1.txt
+src/queue.c:65:queue_enqueue(): Entering queue_enqueue
+src/queue.c:74:queue_enqueue(): From queue_enqueue: Enqued element at index 5
+src/word_break.c:379:main(): Created consumer thread
+src/word_break.c:377:main(): Creating consumer thread
+src/word_break.c:66:consume_files_to_wrap(): Entering consume_files_to_wrap
+src/queue.c:96:queue_dequeue(): Entering queue_dequeue
+src/word_break.c:81:consume_files_to_wrap(): Dequeing file, tid: 0x700004d10000 input file path: tests/test4.txt output file path: tests/wrap.test4.txt
+src/word_break.c:283:fill_pool_and_queue_with_data(): Input-file found with path tests/newlines.txt
+src/word_break.c:284:fill_pool_and_queue_with_data(): Output-file found with path tests/wrap.newlines.txt
+src/queue.c:65:queue_enqueue(): Entering queue_enqueue
+src/queue.c:74:queue_enqueue(): From queue_enqueue: Enqued element at index 6
+src/word_break.c:283:fill_pool_and_queue_with_data(): Input-file found with path tests/test1.txt
+src/word_break.c:284:fill_pool_and_queue_with_data(): Output-file found with path tests/wrap.test1.txt
+src/queue.c:65:queue_enqueue(): Entering queue_enqueue
+src/queue.c:74:queue_enqueue(): From queue_enqueue: Enqued element at index 7
+src/word_break.c:379:main(): Created consumer thread
+src/word_break.c:377:main(): Creating consumer thread
+src/word_break.c:66:consume_files_to_wrap(): Entering consume_files_to_wrap
+src/queue.c:96:queue_dequeue(): Entering queue_dequeue
+src/word_break.c:81:consume_files_to_wrap(): Dequeing file, tid: 0x700004d93000 input file path: tests/test5.txt output file path: tests/wrap.test5.txt
+src/word_break.c:283:fill_pool_and_queue_with_data(): Input-file found with path tests/nothing.txt
+src/word_break.c:284:fill_pool_and_queue_with_data(): Output-file found with path tests/wrap.nothing.txt
+src/queue.c:65:queue_enqueue(): Entering queue_enqueue
+src/queue.c:74:queue_enqueue(): From queue_enqueue: Enqued element at index 8
+src/word_break.c:379:main(): Created consumer thread
+src/word_break.c:377:main(): Creating consumer thread
+src/word_break.c:66:consume_files_to_wrap(): Entering consume_files_to_wrap
+src/queue.c:96:queue_dequeue(): Entering queue_dequeue
+src/word_break.c:283:fill_pool_and_queue_with_data(): Input-file found with path tests/output7.txt
+src/word_break.c:284:fill_pool_and_queue_with_data(): Output-file found with path tests/wrap.output7.txt
+src/word_break.c:81:consume_files_to_wrap(): Dequeing file, tid: 0x700004e16000 input file path: tests/newlines.txt output file path: tests/wrap.newlines.txt
+src/queue.c:65:queue_enqueue(): Entering queue_enqueue
+src/queue.c:74:queue_enqueue(): From queue_enqueue: Enqued element at index 9
+src/word_break.c:283:fill_pool_and_queue_with_data(): Input-file found with path tests/test2.txt
+src/word_break.c:284:fill_pool_and_queue_with_data(): Output-file found with path tests/wrap.test2.txt
+src/queue.c:65:queue_enqueue(): Entering queue_enqueue
+src/queue.c:74:queue_enqueue(): From queue_enqueue: Enqued element at index 10
+src/word_break.c:66:consume_files_to_wrap(): Entering consume_files_to_wrap
+src/queue.c:96:queue_dequeue(): Entering queue_dequeue
+src/word_break.c:283:fill_pool_and_queue_with_data(): Input-file found with path tests/test3.txt
+src/word_break.c:284:fill_pool_and_queue_with_data(): Output-file found with path tests/wrap.test3.txt
+src/word_break.c:81:consume_files_to_wrap(): Dequeing file, tid: 0x700004e99000 input file path: tests/test1.txt output file path: tests/wrap.test1.txt
+src/word_break.c:379:main(): Created consumer thread
+src/word_break.c:377:main(): Creating consumer thread
+src/queue.c:65:queue_enqueue(): Entering queue_enqueue
+src/queue.c:74:queue_enqueue(): From queue_enqueue: Enqued element at index 11
+src/word_break.c:283:fill_pool_and_queue_with_data(): Input-file found with path tests/orig.txt
+src/word_break.c:284:fill_pool_and_queue_with_data(): Output-file found with path tests/wrap.orig.txt
+src/queue.c:65:queue_enqueue(): Entering queue_enqueue
+src/queue.c:74:queue_enqueue(): From queue_enqueue: Enqued element at index 12
+src/word_break.c:283:fill_pool_and_queue_with_data(): Input-file found with path tests/single.txt
+src/word_break.c:284:fill_pool_and_queue_with_data(): Output-file found with path tests/wrap.single.txt
+src/queue.c:65:queue_enqueue(): Entering queue_enqueue
+src/queue.c:74:queue_enqueue(): From queue_enqueue: Enqued element at index 13
+src/word_break.c:308:fill_pool_and_queue_with_data(): Sub-directory found with path tests/foo foo
+src/word_break.c:283:fill_pool_and_queue_with_data(): Input-file found with path tests/output8.txt
+src/word_break.c:284:fill_pool_and_queue_with_data(): Output-file found with path tests/wrap.output8.txt
+src/queue.c:65:queue_enqueue(): Entering queue_enqueue
+src/queue.c:74:queue_enqueue(): From queue_enqueue: Enqued element at index 14
+src/word_break.c:283:fill_pool_and_queue_with_data(): Input-file found with path tests/exceed.txt
+src/word_break.c:284:fill_pool_and_queue_with_data(): Output-file found with path tests/wrap.exceed.txt
+src/queue.c:65:queue_enqueue(): Entering queue_enqueue
+src/queue.c:74:queue_enqueue(): From queue_enqueue: Enqued element at index 15
+src/queue.c:96:queue_dequeue(): Entering queue_dequeue
+src/word_break.c:81:consume_files_to_wrap(): Dequeing file, tid: 0x700004b04000 input file path: tests/nothing.txt output file path: tests/wrap.nothing.txt
+src/word_break.c:283:fill_pool_and_queue_with_data(): Input-file found with path tests/out_single.txt
+src/word_break.c:284:fill_pool_and_queue_with_data(): Output-file found with path tests/wrap.out_single.txt
+src/queue.c:65:queue_enqueue(): Entering queue_enqueue
+src/queue.c:74:queue_enqueue(): From queue_enqueue: Enqued element at index 16
+src/queue.c:96:queue_dequeue(): Entering queue_dequeue
+src/word_break.c:81:consume_files_to_wrap(): Dequeing file, tid: 0x700004e16000 input file path: tests/output7.txt output file path: tests/wrap.output7.txt
+src/word_break.c:283:fill_pool_and_queue_with_data(): Input-file found with path tests/test8.txt
+src/word_break.c:284:fill_pool_and_queue_with_data(): Output-file found with path tests/wrap.test8.txt
+src/queue.c:65:queue_enqueue(): Entering queue_enqueue
+src/queue.c:74:queue_enqueue(): From queue_enqueue: Enqued element at index 17
+src/word_break.c:66:consume_files_to_wrap(): Entering consume_files_to_wrap
+src/queue.c:96:queue_dequeue(): Entering queue_dequeue
+src/word_break.c:81:consume_files_to_wrap(): Dequeing file, tid: 0x700004b87000 input file path: tests/test2.txt output file path: tests/wrap.test2.txt
+src/queue.c:96:queue_dequeue(): Entering queue_dequeue
+src/word_break.c:81:consume_files_to_wrap(): Dequeing file, tid: 0x700004f1c000 input file path: tests/test3.txt output file path: tests/wrap.test3.txt
+src/word_break.c:379:main(): Created consumer thread
+src/word_break.c:377:main(): Creating consumer thread
+src/queue.c:96:queue_dequeue(): Entering queue_dequeue
+src/word_break.c:81:consume_files_to_wrap(): Dequeing file, tid: 0x700004b04000 input file path: tests/orig.txt output file path: tests/wrap.orig.txt
+src/word_break.c:283:fill_pool_and_queue_with_data(): Input-file found with path tests/re-wrap.orig.txt
+src/word_break.c:284:fill_pool_and_queue_with_data(): Output-file found with path tests/wrap.re-wrap.orig.txt
+src/queue.c:65:queue_enqueue(): Entering queue_enqueue
+src/queue.c:74:queue_enqueue(): From queue_enqueue: Enqued element at index 18
+src/word_break.c:46:produce_files_to_wrap(): Address of pool 0x60d000000040 and dequed data: 0x6020000013b0
+src/word_break.c:253:fill_pool_and_queue_with_data(): Dequeing parent directory, tid: 0x7000045e6000 parent directory path: tests/foo
+src/word_break.c:66:consume_files_to_wrap(): Entering consume_files_to_wrap
+src/queue.c:96:queue_dequeue(): Entering queue_dequeue
+src/word_break.c:81:consume_files_to_wrap(): Dequeing file, tid: 0x700004f9f000 input file path: tests/single.txt output file path: tests/wrap.single.txt
+src/word_break.c:283:fill_pool_and_queue_with_data(): Input-file found with path tests/foo/alex
+src/word_break.c:284:fill_pool_and_queue_with_data(): Output-file found with path tests/foo/wrap.alex
+src/queue.c:65:queue_enqueue(): Entering queue_enqueue
+src/queue.c:74:queue_enqueue(): From queue_enqueue: Enqued element at index 19
+src/word_break.c:283:fill_pool_and_queue_with_data(): Input-file found with path tests/foo/rohan
+src/word_break.c:284:fill_pool_and_queue_with_data(): Output-file found with path tests/foo/wrap.rohan
+src/queue.c:65:queue_enqueue(): Entering queue_enqueue
+src/queue.c:74:queue_enqueue(): From queue_enqueue: Enqued element at index 20
+src/queue.c:96:queue_dequeue(): Entering queue_dequeue
+src/word_break.c:308:fill_pool_and_queue_with_data(): Sub-directory found with path tests/foo/foo_b foo_b
+src/word_break.c:81:consume_files_to_wrap(): Dequeing file, tid: 0x700004f1c000 input file path: tests/output8.txt output file path: tests/wrap.output8.txt
+src/word_break.c:283:fill_pool_and_queue_with_data(): Input-file found with path tests/foo/selin
+src/word_break.c:284:fill_pool_and_queue_with_data(): Output-file found with path tests/foo/wrap.selin
+src/queue.c:65:queue_enqueue(): Entering queue_enqueue
+src/queue.c:74:queue_enqueue(): From queue_enqueue: Enqued element at index 21
+src/word_break.c:379:main(): Created consumer thread
+src/word_break.c:377:main(): Creating consumer thread
+src/word_break.c:308:fill_pool_and_queue_with_data(): Sub-directory found with path tests/foo/foo_a foo_a
+src/word_break.c:46:produce_files_to_wrap(): Address of pool 0x60d000000040 and dequed data: 0x602000001770
+src/word_break.c:253:fill_pool_and_queue_with_data(): Dequeing parent directory, tid: 0x7000045e6000 parent directory path: tests/foo/foo_a
+src/queue.c:96:queue_dequeue(): Entering queue_dequeue
+src/word_break.c:81:consume_files_to_wrap(): Dequeing file, tid: 0x700004b87000 input file path: tests/exceed.txt output file path: tests/wrap.exceed.txt
+src/queue.c:96:queue_dequeue(): Entering queue_dequeue
+src/word_break.c:81:consume_files_to_wrap(): Dequeing file, tid: 0x700004e16000 input file path: tests/out_single.txt output file path: tests/wrap.out_single.txt
+src/queue.c:96:queue_dequeue(): Entering queue_dequeue
+src/word_break.c:81:consume_files_to_wrap(): Dequeing file, tid: 0x700004d10000 input file path: tests/test8.txt output file path: tests/wrap.test8.txt
+src/queue.c:96:queue_dequeue(): Entering queue_dequeue
+src/word_break.c:81:consume_files_to_wrap(): Dequeing file, tid: 0x700004f9f000 input file path: tests/re-wrap.orig.txt output file path: tests/wrap.re-wrap.orig.txt
+src/word_break.c:308:fill_pool_and_queue_with_data(): Sub-directory found with path tests/foo/foo_a/foo_c foo_c
+src/word_break.c:283:fill_pool_and_queue_with_data(): Input-file found with path tests/foo/foo_a/c.txt
+src/word_break.c:284:fill_pool_and_queue_with_data(): Output-file found with path tests/foo/foo_a/wrap.c.txt
+src/queue.c:65:queue_enqueue(): Entering queue_enqueue
+src/queue.c:74:queue_enqueue(): From queue_enqueue: Enqued element at index 22
+src/word_break.c:66:consume_files_to_wrap(): Entering consume_files_to_wrap
+src/queue.c:96:queue_dequeue(): Entering queue_dequeue
+src/word_break.c:81:consume_files_to_wrap(): Dequeing file, tid: 0x700005022000 input file path: tests/foo/alex output file path: tests/foo/wrap.alex
+src/word_break.c:283:fill_pool_and_queue_with_data(): Input-file found with path tests/foo/foo_a/b.txt
+src/word_break.c:284:fill_pool_and_queue_with_data(): Output-file found with path tests/foo/foo_a/wrap.b.txt
+src/queue.c:65:queue_enqueue(): Entering queue_enqueue
+src/queue.c:74:queue_enqueue(): From queue_enqueue: Enqued element at index 23
+src/queue.c:96:queue_dequeue(): Entering queue_dequeue
+src/word_break.c:81:consume_files_to_wrap(): Dequeing file, tid: 0x700004b87000 input file path: tests/foo/rohan output file path: tests/foo/wrap.rohan
+src/word_break.c:283:fill_pool_and_queue_with_data(): Input-file found with path tests/foo/foo_a/a.txt
+src/word_break.c:284:fill_pool_and_queue_with_data(): Output-file found with path tests/foo/foo_a/wrap.a.txt
+src/queue.c:65:queue_enqueue(): Entering queue_enqueue
+src/queue.c:74:queue_enqueue(): From queue_enqueue: Enqued element at index 24
+src/word_break.c:46:produce_files_to_wrap(): Address of pool 0x60d000000040 and dequed data: 0x602000001790
+src/word_break.c:253:fill_pool_and_queue_with_data(): Dequeing parent directory, tid: 0x7000045e6000 parent directory path: tests/foo/foo_a/foo_c
+src/word_break.c:283:fill_pool_and_queue_with_data(): Input-file found with path tests/foo/foo_a/foo_c/b.txt
+src/word_break.c:284:fill_pool_and_queue_with_data(): Output-file found with path tests/foo/foo_a/foo_c/wrap.b.txt
+src/queue.c:65:queue_enqueue(): Entering queue_enqueue
+src/queue.c:74:queue_enqueue(): From queue_enqueue: Enqued element at index 25
+src/queue.c:96:queue_dequeue(): Entering queue_dequeue
+src/word_break.c:81:consume_files_to_wrap(): Dequeing file, tid: 0x700004c0a000 input file path: tests/foo/selin output file path: tests/foo/wrap.selin
+src/word_break.c:283:fill_pool_and_queue_with_data(): Input-file found with path tests/foo/foo_a/foo_c/a.txt
+src/word_break.c:284:fill_pool_and_queue_with_data(): Output-file found with path tests/foo/foo_a/foo_c/wrap.a.txt
+src/queue.c:65:queue_enqueue(): Entering queue_enqueue
+src/queue.c:74:queue_enqueue(): From queue_enqueue: Enqued element at index 26
+src/word_break.c:46:produce_files_to_wrap(): Address of pool 0x60d000000040 and dequed data: 0x602000001670
+src/word_break.c:253:fill_pool_and_queue_with_data(): Dequeing parent directory, tid: 0x7000045e6000 parent directory path: tests/foo/foo_b
+src/queue.c:96:queue_dequeue(): Entering queue_dequeue
+src/word_break.c:81:consume_files_to_wrap(): Dequeing file, tid: 0x700004e16000 input file path: tests/foo/foo_a/c.txt output file path: tests/foo/foo_a/wrap.c.txt
+src/queue.c:96:queue_dequeue(): Entering queue_dequeue
+src/word_break.c:81:consume_files_to_wrap(): Dequeing file, tid: 0x700004c0a000 input file path: tests/foo/foo_a/b.txt output file path: tests/foo/foo_a/wrap.b.txt
+src/queue.c:96:queue_dequeue(): Entering queue_dequeue
+src/word_break.c:283:fill_pool_and_queue_with_data(): Input-file found with path tests/foo/foo_b/b.txt
+src/queue.c:96:queue_dequeue(): Entering queue_dequeue
+src/word_break.c:284:fill_pool_and_queue_with_data(): Output-file found with path tests/foo/foo_b/wrap.b.txt
+src/word_break.c:81:consume_files_to_wrap(): Dequeing file, tid: 0x700004f1c000 input file path: tests/foo/foo_a/foo_c/b.txt output file path: tests/foo/foo_a/foo_c/wrap.b.txt
+src/word_break.c:81:consume_files_to_wrap(): Dequeing file, tid: 0x700004d10000 input file path: tests/foo/foo_a/a.txt output file path: tests/foo/foo_a/wrap.a.txt
+src/queue.c:65:queue_enqueue(): Entering queue_enqueue
+src/queue.c:74:queue_enqueue(): From queue_enqueue: Enqued element at index 27
+src/word_break.c:283:fill_pool_and_queue_with_data(): Input-file found with path tests/foo/foo_b/a.txt
+src/word_break.c:284:fill_pool_and_queue_with_data(): Output-file found with path tests/foo/foo_b/wrap.a.txt
+src/queue.c:65:queue_enqueue(): Entering queue_enqueue
+src/queue.c:74:queue_enqueue(): From queue_enqueue: Enqued element at index 28
+src/word_break.c:59:produce_files_to_wrap(): Exiting produce_files_to_wrap
+src/queue.c:96:queue_dequeue(): Entering queue_dequeue
+src/word_break.c:379:main(): Created consumer thread
+src/word_break.c:377:main(): Creating consumer thread
+src/word_break.c:81:consume_files_to_wrap(): Dequeing file, tid: 0x700004b04000 input file path: tests/foo/foo_a/foo_c/a.txt output file path: tests/foo/foo_a/foo_c/wrap.a.txt
+src/queue.c:96:queue_dequeue(): Entering queue_dequeue
+src/word_break.c:81:consume_files_to_wrap(): Dequeing file, tid: 0x700004c8d000 input file path: tests/foo/foo_b/b.txt output file path: tests/foo/foo_b/wrap.b.txt
+src/word_break.c:66:consume_files_to_wrap(): Entering consume_files_to_wrap
+src/queue.c:96:queue_dequeue(): Entering queue_dequeue
+src/word_break.c:85:consume_files_to_wrap(): Exiting consume_files_to_wrap
+src/word_break.c:81:consume_files_to_wrap(): Dequeing file, tid: 0x7000050a5000 input file path: tests/foo/foo_b/a.txt output file path: tests/foo/foo_b/wrap.a.txt
+src/queue.c:96:queue_dequeue(): Entering queue_dequeue
+src/word_break.c:85:consume_files_to_wrap(): Exiting consume_files_to_wrap
+src/word_break.c:379:main(): Created consumer thread
+src/word_break.c:377:main(): Creating consumer thread
+src/word_break.c:66:consume_files_to_wrap(): Entering consume_files_to_wrap
+src/word_break.c:85:consume_files_to_wrap(): Exiting consume_files_to_wrap
+src/word_break.c:379:main(): Created consumer thread
+src/word_break.c:377:main(): Creating consumer thread
+src/word_break.c:85:consume_files_to_wrap(): Exiting consume_files_to_wrap
+src/word_break.c:66:consume_files_to_wrap(): Entering consume_files_to_wrap
+src/word_break.c:85:consume_files_to_wrap(): Exiting consume_files_to_wrap
+src/word_break.c:85:consume_files_to_wrap(): Exiting consume_files_to_wrap
+src/word_break.c:85:consume_files_to_wrap(): Exiting consume_files_to_wrap
+src/word_break.c:85:consume_files_to_wrap(): Exiting consume_files_to_wrap
+src/word_break.c:379:main(): Created consumer thread
+src/word_break.c:377:main(): Creating consumer thread
+src/word_break.c:66:consume_files_to_wrap(): Entering consume_files_to_wrap
+src/word_break.c:85:consume_files_to_wrap(): Exiting consume_files_to_wrap
+src/word_break.c:379:main(): Created consumer thread
+src/word_break.c:377:main(): Creating consumer thread
+src/word_break.c:85:consume_files_to_wrap(): Exiting consume_files_to_wrap
+src/word_break.c:85:consume_files_to_wrap(): Exiting consume_files_to_wrap
+src/word_break.c:66:consume_files_to_wrap(): Entering consume_files_to_wrap
+src/word_break.c:85:consume_files_to_wrap(): Exiting consume_files_to_wrap
+src/word_break.c:379:main(): Created consumer thread
+src/word_break.c:377:main(): Creating consumer thread
+src/word_break.c:85:consume_files_to_wrap(): Exiting consume_files_to_wrap
+src/word_break.c:379:main(): Created consumer thread
+src/word_break.c:377:main(): Creating consumer thread
+src/word_break.c:66:consume_files_to_wrap(): Entering consume_files_to_wrap
+src/word_break.c:85:consume_files_to_wrap(): Exiting consume_files_to_wrap
+src/word_break.c:379:main(): Created consumer thread
+src/word_break.c:377:main(): Creating consumer thread
+src/word_break.c:66:consume_files_to_wrap(): Entering consume_files_to_wrap
+src/word_break.c:85:consume_files_to_wrap(): Exiting consume_files_to_wrap
+src/word_break.c:66:consume_files_to_wrap(): Entering consume_files_to_wrap
+src/word_break.c:85:consume_files_to_wrap(): Exiting consume_files_to_wrap
+src/word_break.c:379:main(): Created consumer thread
+src/word_break.c:377:main(): Creating consumer thread
+src/word_break.c:85:consume_files_to_wrap(): Exiting consume_files_to_wrap
+src/word_break.c:85:consume_files_to_wrap(): Exiting consume_files_to_wrap
+src/word_break.c:85:consume_files_to_wrap(): Exiting consume_files_to_wrap
+src/word_break.c:66:consume_files_to_wrap(): Entering consume_files_to_wrap
+src/word_break.c:85:consume_files_to_wrap(): Exiting consume_files_to_wrap
+src/word_break.c:379:main(): Created consumer thread
+src/word_break.c:386:main(): Joining producer thread
+
+src/word_break.c:388:main(): Joined producer thread
+
+src/word_break.c:386:main(): Joining producer thread
+
+src/word_break.c:388:main(): Joined producer thread
+
+src/word_break.c:386:main(): Joining producer thread
+
+src/word_break.c:388:main(): Joined producer thread
+
+src/word_break.c:386:main(): Joining producer thread
+
+src/word_break.c:388:main(): Joined producer thread
+
+src/word_break.c:386:main(): Joining producer thread
+
+src/word_break.c:388:main(): Joined producer thread
+
+src/word_break.c:386:main(): Joining producer thread
+
+src/word_break.c:388:main(): Joined producer thread
+
+src/word_break.c:386:main(): Joining producer thread
+
+src/word_break.c:388:main(): Joined producer thread
+
+src/word_break.c:386:main(): Joining producer thread
+
+src/word_break.c:388:main(): Joined producer thread
+
+src/word_break.c:386:main(): Joining producer thread
+
+src/word_break.c:388:main(): Joined producer thread
+
+src/word_break.c:386:main(): Joining producer thread
+
+src/word_break.c:388:main(): Joined producer thread
+
+src/word_break.c:392:main(): Joining consumer thread
+
+src/word_break.c:394:main(): Joined consumer thread
+
+src/word_break.c:392:main(): Joining consumer thread
+
+src/word_break.c:394:main(): Joined consumer thread
+
+src/word_break.c:392:main(): Joining consumer thread
+
+src/word_break.c:394:main(): Joined consumer thread
+
+src/word_break.c:392:main(): Joining consumer thread
+
+src/word_break.c:394:main(): Joined consumer thread
+
+src/word_break.c:392:main(): Joining consumer thread
+
+src/word_break.c:394:main(): Joined consumer thread
+
+src/word_break.c:392:main(): Joining consumer thread
+
+src/word_break.c:394:main(): Joined consumer thread
+
+src/word_break.c:392:main(): Joining consumer thread
+
+src/word_break.c:394:main(): Joined consumer thread
+
+src/word_break.c:392:main(): Joining consumer thread
+
+src/word_break.c:394:main(): Joined consumer thread
+
+src/word_break.c:392:main(): Joining consumer thread
+
+src/word_break.c:394:main(): Joined consumer thread
+
+src/word_break.c:392:main(): Joining consumer thread
+
+src/word_break.c:394:main(): Joined consumer thread
+
+src/word_break.c:392:main(): Joining consumer thread
+
+src/word_break.c:394:main(): Joined consumer thread
+
+src/word_break.c:392:main(): Joining consumer thread
+
+src/word_break.c:394:main(): Joined consumer thread
+
+src/word_break.c:392:main(): Joining consumer thread
+
+src/word_break.c:394:main(): Joined consumer thread
+
+src/word_break.c:392:main(): Joining consumer thread
+
+src/word_break.c:394:main(): Joined consumer thread
+
+src/word_break.c:392:main(): Joining consumer thread
+
+src/word_break.c:394:main(): Joined consumer thread
+
+src/word_break.c:392:main(): Joining consumer thread
+
+src/word_break.c:394:main(): Joined consumer thread
+
+src/word_break.c:392:main(): Joining consumer thread
+
+src/word_break.c:394:main(): Joined consumer thread
+
+src/word_break.c:392:main(): Joining consumer thread
+
+src/word_break.c:394:main(): Joined consumer thread
+
+src/word_break.c:392:main(): Joining consumer thread
+
+src/word_break.c:394:main(): Joined consumer thread
+
+src/word_break.c:392:main(): Joining consumer thread
+
+src/word_break.c:394:main(): Joined consumer thread
+

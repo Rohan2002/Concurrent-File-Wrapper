@@ -14,18 +14,20 @@ struct file_producer
     Queue* file_queue;
     Pool* dir_pool;
     char* initial_directory;
+    int alive_producers;
 };
 typedef struct file_producer producer_type;
-// Note: consumer threads should not access directory pool.
 struct file_consumer
 {
     Queue* file_queue;
+    Pool* dir_pool;
+    int max_width;
 };
 typedef struct file_consumer consumer_type;
 
 // wrapping infastructure
 int wrap_text(char *optional_input_file, int max_width, char *optional_output_file);
-int wrap_text_for_directory(char *dir_name, int max_width, Queue *file_queue, int run_mode);
+int fill_pool_and_queue_with_data(char *parent_dir_path, Pool *dir_pool, Queue *file_q);
 
 // threading infastructure
 void* produce_files_to_wrap(void *arg);

@@ -17,7 +17,7 @@ Pool *pool_init(int pool_size)
     Pool *pool_pointer = malloc(sizeof(Pool));
     if (pool_pointer == NULL)
     {
-        error_print("%s", "Failed to allocate queue!\n");
+        error_print("%s", "Failed to allocate pool!\n");
         return NULL;
     }
     pool_pointer->data = (pool_data_type **) malloc(sizeof(pool_data_type *) * pool_size);
@@ -29,7 +29,7 @@ Pool *pool_init(int pool_size)
     int mutex_init_status = pthread_mutex_init(&(pool_pointer->lock), NULL);
     if (mutex_init_status != 0)
     {
-        error_print("Failed to INIT queue mutex with error code: %d!\n", mutex_init_status);
+        error_print("Failed to INIT pool mutex with error code: %d!\n", mutex_init_status);
         return NULL;
     }
     int ready_to_consume_status = pthread_cond_init(&(pool_pointer->ready_to_consume), NULL);
@@ -39,8 +39,8 @@ Pool *pool_init(int pool_size)
         return NULL;
     }
 
-    debug_print("Created queue mutex at address %p\n", &(pool_pointer->lock));
-    debug_print("Created queue at address %p\n", pool_pointer);
+    debug_print("Created pool mutex at address %p\n", &(pool_pointer->lock));
+    debug_print("Created pool at address %p\n", pool_pointer);
 
     return pool_pointer;
 }

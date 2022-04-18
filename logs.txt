@@ -1,0 +1,636 @@
+Created queue mutex at address 0x6110000001a0
+Created queue with size 100 at address 0x611000000180
+src/pool.c:42:pool_init(): Created pool mutex at address 0x60d000000050
+src/pool.c:43:pool_init(): Created pool at address 0x60d000000040
+src/word_break.c:372:main(): Creating producer thread
+src/word_break.c:374:main(): Created producer thread
+src/word_break.c:378:main(): Creating consumer thread
+src/word_break.c:34:produce_files_to_wrap(): Entering produce_files_to_wrap
+src/word_break.c:56:produce_files_to_wrap(): Dequeing parent directory, tid: 0x70000d1d3000 parent directory path: tests/
+src/word_break.c:380:main(): Created consumer thread
+src/word_break.c:378:main(): Creating consumer thread
+src/word_break.c:75:consume_files_to_wrap(): Entering consume_files_to_wrap
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/.
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/..
+src/word_break.c:56:produce_files_to_wrap(): Dequeing parent directory, tid: 0x70000d1d3000 parent directory path: tests/..
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../.
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../..
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../logs.txt
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../wrap.logs.txt
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 0
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../obj
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../bin
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../unit_tests
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../Makefile
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../wrap.Makefile
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 1
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../deadlocks.txt
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../wrap.deadlocks.txt
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 2
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../tests
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../README.md
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../wrap.README.md
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 3
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../.git
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../.vscode
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../test_q
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../wrap.test_q
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 4
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../README.pdf
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../wrap.README.pdf
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 5
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src
+src/word_break.c:56:produce_files_to_wrap(): Dequeing parent directory, tid: 0x70000d1d3000 parent directory path: tests/../src
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/.
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/..
+src/word_break.c:56:produce_files_to_wrap(): Dequeing parent directory, tid: 0x70000d1d3000 parent directory path: tests/../src/..
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../.
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../..
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../logs.txt
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../wrap.logs.txt
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 6
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../obj
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../bin
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../unit_tests
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../Makefile
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../wrap.Makefile
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 7
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../deadlocks.txt
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../wrap.deadlocks.txt
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 8
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../tests
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../README.md
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../wrap.README.md
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 9
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../.git
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../.vscode
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../test_q
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../wrap.test_q
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 10
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../README.pdf
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../wrap.README.pdf
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 11
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src
+src/word_break.c:56:produce_files_to_wrap(): Dequeing parent directory, tid: 0x70000d1d3000 parent directory path: tests/../src/../src
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/.
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/..
+src/word_break.c:56:produce_files_to_wrap(): Dequeing parent directory, tid: 0x70000d1d3000 parent directory path: tests/../src/../src/..
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../.
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../..
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../logs.txt
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../wrap.logs.txt
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 12
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../obj
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../bin
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../unit_tests
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../Makefile
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../wrap.Makefile
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 13
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../deadlocks.txt
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../wrap.deadlocks.txt
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 14
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../tests
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../README.md
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../wrap.README.md
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 15
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../.git
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../.vscode
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../test_q
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../wrap.test_q
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 16
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../README.pdf
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../wrap.README.pdf
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 17
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src
+src/word_break.c:56:produce_files_to_wrap(): Dequeing parent directory, tid: 0x70000d1d3000 parent directory path: tests/../src/../src/../src
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/.
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/..
+src/word_break.c:56:produce_files_to_wrap(): Dequeing parent directory, tid: 0x70000d1d3000 parent directory path: tests/../src/../src/../src/..
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../.
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../..
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../logs.txt
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../wrap.logs.txt
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 18
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../obj
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../bin
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../unit_tests
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../Makefile
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../wrap.Makefile
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 19
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../deadlocks.txt
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../wrap.deadlocks.txt
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 20
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../tests
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../README.md
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../wrap.README.md
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 21
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../.git
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../.vscode
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../test_q
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../wrap.test_q
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 22
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../README.pdf
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../wrap.README.pdf
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 23
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src
+src/word_break.c:56:produce_files_to_wrap(): Dequeing parent directory, tid: 0x70000d1d3000 parent directory path: tests/../src/../src/../src/../src
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/.
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/..
+src/word_break.c:56:produce_files_to_wrap(): Dequeing parent directory, tid: 0x70000d1d3000 parent directory path: tests/../src/../src/../src/../src/..
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../.
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../..
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../logs.txt
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../wrap.logs.txt
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 24
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../obj
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../bin
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../unit_tests
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../Makefile
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../wrap.Makefile
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 25
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../deadlocks.txt
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../wrap.deadlocks.txt
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 26
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../tests
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../README.md
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../wrap.README.md
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 27
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../.git
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../.vscode
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../test_q
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../wrap.test_q
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 28
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../README.pdf
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../wrap.README.pdf
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 29
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src
+src/word_break.c:56:produce_files_to_wrap(): Dequeing parent directory, tid: 0x70000d1d3000 parent directory path: tests/../src/../src/../src/../src/../src
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/.
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/..
+src/word_break.c:56:produce_files_to_wrap(): Dequeing parent directory, tid: 0x70000d1d3000 parent directory path: tests/../src/../src/../src/../src/../src/..
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../.
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../..
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../logs.txt
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../wrap.logs.txt
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 30
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../obj
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../bin
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../unit_tests
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../Makefile
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../wrap.Makefile
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 31
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../deadlocks.txt
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../wrap.deadlocks.txt
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 32
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../tests
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../README.md
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../wrap.README.md
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 33
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../.git
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../.vscode
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../test_q
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../wrap.test_q
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 34
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../README.pdf
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../wrap.README.pdf
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 35
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src
+src/word_break.c:56:produce_files_to_wrap(): Dequeing parent directory, tid: 0x70000d1d3000 parent directory path: tests/../src/../src/../src/../src/../src/../src
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/.
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/..
+src/word_break.c:56:produce_files_to_wrap(): Dequeing parent directory, tid: 0x70000d1d3000 parent directory path: tests/../src/../src/../src/../src/../src/../src/..
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../.
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../..
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../src/../logs.txt
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../src/../wrap.logs.txt
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 36
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../obj
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../bin
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../unit_tests
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../src/../Makefile
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../src/../wrap.Makefile
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 37
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../src/../deadlocks.txt
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../src/../wrap.deadlocks.txt
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 38
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../tests
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../src/../README.md
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../src/../wrap.README.md
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 39
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../.git
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../.vscode
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../src/../test_q
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../src/../wrap.test_q
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 40
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../src/../README.pdf
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../src/../wrap.README.pdf
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 41
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src
+src/word_break.c:56:produce_files_to_wrap(): Dequeing parent directory, tid: 0x70000d1d3000 parent directory path: tests/../src/../src/../src/../src/../src/../src/../src
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/.
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/..
+src/word_break.c:56:produce_files_to_wrap(): Dequeing parent directory, tid: 0x70000d1d3000 parent directory path: tests/../src/../src/../src/../src/../src/../src/../src/..
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../.
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../..
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../logs.txt
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../wrap.logs.txt
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 42
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../obj
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../bin
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../unit_tests
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../Makefile
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../wrap.Makefile
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 43
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../deadlocks.txt
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../wrap.deadlocks.txt
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 44
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../tests
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../README.md
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../wrap.README.md
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 45
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../.git
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../.vscode
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../test_q
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../wrap.test_q
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 46
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../README.pdf
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../wrap.README.pdf
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 47
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src
+src/word_break.c:56:produce_files_to_wrap(): Dequeing parent directory, tid: 0x70000d1d3000 parent directory path: tests/../src/../src/../src/../src/../src/../src/../src/../src
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/.
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/..
+src/word_break.c:56:produce_files_to_wrap(): Dequeing parent directory, tid: 0x70000d1d3000 parent directory path: tests/../src/../src/../src/../src/../src/../src/../src/../src/..
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../.
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../..
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../logs.txt
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../wrap.logs.txt
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 48
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../obj
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../bin
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../unit_tests
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../Makefile
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../wrap.Makefile
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 49
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../deadlocks.txt
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../wrap.deadlocks.txt
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 50
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../tests
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../README.md
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../wrap.README.md
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 51
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../.git
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../.vscode
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../test_q
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../wrap.test_q
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 52
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../README.pdf
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../wrap.README.pdf
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 53
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src
+src/word_break.c:56:produce_files_to_wrap(): Dequeing parent directory, tid: 0x70000d1d3000 parent directory path: tests/../src/../src/../src/../src/../src/../src/../src/../src/../src
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/.
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/..
+src/word_break.c:56:produce_files_to_wrap(): Dequeing parent directory, tid: 0x70000d1d3000 parent directory path: tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/..
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../.
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../..
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../logs.txt
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../wrap.logs.txt
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 54
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../obj
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../bin
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../unit_tests
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../Makefile
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../wrap.Makefile
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 55
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../deadlocks.txt
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../wrap.deadlocks.txt
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 56
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../tests
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../README.md
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../wrap.README.md
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 57
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../.git
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../.vscode
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../test_q
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../wrap.test_q
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 58
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../README.pdf
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../wrap.README.pdf
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 59
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src
+src/word_break.c:56:produce_files_to_wrap(): Dequeing parent directory, tid: 0x70000d1d3000 parent directory path: tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/.
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/..
+src/word_break.c:56:produce_files_to_wrap(): Dequeing parent directory, tid: 0x70000d1d3000 parent directory path: tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/..
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../.
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../..
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../logs.txt
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../wrap.logs.txt
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 60
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../obj
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../bin
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../unit_tests
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../Makefile
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../wrap.Makefile
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 61
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../deadlocks.txt
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../wrap.deadlocks.txt
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 62
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../tests
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../README.md
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../wrap.README.md
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 63
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../.git
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../.vscode
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../test_q
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../wrap.test_q
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 64
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../README.pdf
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../wrap.README.pdf
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 65
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src
+src/word_break.c:56:produce_files_to_wrap(): Dequeing parent directory, tid: 0x70000d1d3000 parent directory path: tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/.
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/..
+src/pool.c:72:pool_enqueue(): Reallocated stack!
+src/word_break.c:56:produce_files_to_wrap(): Dequeing parent directory, tid: 0x70000d1d3000 parent directory path: tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/..
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../.
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../..
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../logs.txt
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../wrap.logs.txt
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 66
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../obj
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../bin
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../unit_tests
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../Makefile
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../wrap.Makefile
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 67
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../deadlocks.txt
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../wrap.deadlocks.txt
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 68
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../tests
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../README.md
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../wrap.README.md
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 69
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../.git
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../.vscode
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../test_q
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../wrap.test_q
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 70
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../README.pdf
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../wrap.README.pdf
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 71
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src
+src/word_break.c:56:produce_files_to_wrap(): Dequeing parent directory, tid: 0x70000d1d3000 parent directory path: tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/.
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/..
+src/word_break.c:56:produce_files_to_wrap(): Dequeing parent directory, tid: 0x70000d1d3000 parent directory path: tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/..
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../.
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../..
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../logs.txt
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../wrap.logs.txt
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 72
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../obj
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../bin
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../unit_tests
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../Makefile
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../wrap.Makefile
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 73
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../deadlocks.txt
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../wrap.deadlocks.txt
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 74
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../tests
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../README.md
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../wrap.README.md
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 75
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../.git
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../.vscode
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../test_q
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../wrap.test_q
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 76
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../README.pdf
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../wrap.README.pdf
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 77
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src
+src/word_break.c:56:produce_files_to_wrap(): Dequeing parent directory, tid: 0x70000d1d3000 parent directory path: tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/.
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/..
+src/word_break.c:56:produce_files_to_wrap(): Dequeing parent directory, tid: 0x70000d1d3000 parent directory path: tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/..
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../.
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../..
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../logs.txt
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../wrap.logs.txt
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 78
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../obj
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../bin
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../unit_tests
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../Makefile
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../wrap.Makefile
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 79
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../deadlocks.txt
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../wrap.deadlocks.txt
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 80
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../tests
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../README.md
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../wrap.README.md
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 81
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../.git
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../.vscode
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../test_q
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../wrap.test_q
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 82
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../README.pdf
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../wrap.README.pdf
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 83
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src
+src/word_break.c:56:produce_files_to_wrap(): Dequeing parent directory, tid: 0x70000d1d3000 parent directory path: tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/.
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/..
+src/word_break.c:56:produce_files_to_wrap(): Dequeing parent directory, tid: 0x70000d1d3000 parent directory path: tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/..
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../.
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../..
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../logs.txt
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../wrap.logs.txt
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 84
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../obj
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../bin
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../unit_tests
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../Makefile
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../wrap.Makefile
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 85
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../deadlocks.txt
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../wrap.deadlocks.txt
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 86
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../tests
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../README.md
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../wrap.README.md
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 87
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../.git
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../.vscode
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../test_q
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../wrap.test_q
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 88
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../README.pdf
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../wrap.README.pdf
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 89
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src
+src/word_break.c:56:produce_files_to_wrap(): Dequeing parent directory, tid: 0x70000d1d3000 parent directory path: tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/.
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/..
+src/word_break.c:56:produce_files_to_wrap(): Dequeing parent directory, tid: 0x70000d1d3000 parent directory path: tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/..
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../.
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../..
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../logs.txt
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../wrap.logs.txt
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 90
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../obj
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../bin
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../unit_tests
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../Makefile
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../wrap.Makefile
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 91
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../deadlocks.txt
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../wrap.deadlocks.txt
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 92
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../tests
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../README.md
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../wrap.README.md
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 93
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../.git
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../.vscode
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../test_q
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../wrap.test_q
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 94
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../README.pdf
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../wrap.README.pdf
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 95
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src
+src/word_break.c:56:produce_files_to_wrap(): Dequeing parent directory, tid: 0x70000d1d3000 parent directory path: tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/.
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/..
+src/word_break.c:56:produce_files_to_wrap(): Dequeing parent directory, tid: 0x70000d1d3000 parent directory path: tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/..
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../.
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../..
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../logs.txt
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../wrap.logs.txt
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 96
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../obj
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../bin
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../unit_tests
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../Makefile
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../wrap.Makefile
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 97
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../deadlocks.txt
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../wrap.deadlocks.txt
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 98
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../tests
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../README.md
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../wrap.README.md
+Entering queue_enqueue
+From queue_enqueue: Enqued element at index 99
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../.git
+src/word_break.c:313:fill_pool_and_queue_with_data(): Sub-directory found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../.vscode
+src/word_break.c:290:fill_pool_and_queue_with_data(): Input-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../test_q
+src/word_break.c:291:fill_pool_and_queue_with_data(): Output-file found with path tests/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../src/../wrap.test_q
+Entering queue_enqueue
+From queue_enqueue: The queue is full.

@@ -15,7 +15,6 @@ struct Queue_Data
 {
     char *input_file;
     char *output_file;
-    int w;
 };
 typedef struct Queue_Data queue_data_type;
 
@@ -40,5 +39,6 @@ bool queue_is_empty(Queue *);
 bool queue_is_full(Queue *);
 int queue_destroy(Queue *);
 void print_queue_metadata(Queue *queue_pointer, size_t index);
+int queue_close(Queue *queue_pointer);
 
 #endif

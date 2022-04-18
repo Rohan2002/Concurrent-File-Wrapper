@@ -10,5 +10,6 @@
         "utils.h": "c",
         "string.h": "c",
         "logger.h": "c"
-    }
+    },
+    "python.formatting.provider": "black"
 }

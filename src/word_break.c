@@ -58,8 +58,6 @@ void *produce_files_to_wrap(void *arg)
             }
         }
     }
-    // number_of_producers--;
-    // debug_print("The number of producers that are currently alive %d\n", number_of_producers);
     pool_close(dir_pool);
     queue_close(file_q);
 
@@ -351,14 +349,14 @@ int main(int argv, char **argc)
     int max_width = 30;
 
     // thread params
-    int producer_threads = 1;
-    int consumer_threads = 1;
+    int producer_threads = 5;
+    int consumer_threads = 5;
 
     pthread_t *producer_tids = malloc(producer_threads * sizeof(pthread_t));
     pthread_t *consumer_tids = malloc(consumer_threads * sizeof(pthread_t));
 
     // thread arguements.
-    producer_type producer_args = {file_queue, dir_pool, "tests/", producer_threads};
+    producer_type producer_args = {file_queue, dir_pool, "d/", producer_threads};
     // producer_args->file_queue = file_queue;
     // producer_args->dir_pool = dir_pool;
     // producer_args->initial_directory = "tests/"; // interface

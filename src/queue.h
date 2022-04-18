@@ -9,7 +9,6 @@
 
 #include <pthread.h>
 #include <stdbool.h>
-#define DEBUG 1
 
 struct Queue_Data
 {

@@ -2,3 +2,4 @@ obj/*.o
 bin/*
 tests/wrap*
 unit_tests/bin
+d/

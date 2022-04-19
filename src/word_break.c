@@ -43,7 +43,8 @@ void *produce_files_to_wrap(void *arg)
     while (!pool_is_empty(dir_pool) || dir_pool->number_of_active_producers > 0)
     {
         pool_data_type *pool_init_data = pool_dequeue(dir_pool);
-        if(pool_is_empty(dir_pool)){
+        if (pool_is_empty(dir_pool))
+        {
             decrement_producers(dir_pool);
             debug_print("Active directory threads: %d\n", dir_pool->number_of_active_producers);
         }
@@ -330,16 +331,16 @@ int fill_pool_and_queue_with_data(char *parent_dir_path, Pool *optional_dir_pool
     return 0;
 }
 int main(int argv, char **argc)
-{   
+{
     // wrapping params
     int max_width = 1;
 
     // thread params
     int producer_threads = 10;
     int consumer_threads = 20;
-    
+
     // directory of interest
-    char* dir_of_interest = "small/";
+    char *dir_of_interest = "big/";
 
     // data structures setup
     Queue *file_queue = queue_init(QUEUESIZE);
@@ -358,34 +359,33 @@ int main(int argv, char **argc)
     pool_data_type *pool_init_data = malloc(sizeof(pool_data_type));
     pool_init_data->directory_path = dir_of_interest;
     pool_enqueue(dir_pool, pool_init_data);
-    
+
     // threads setup
     pthread_t *producer_tids = malloc(producer_threads * sizeof(pthread_t));
     pthread_t *consumer_tids = malloc(consumer_threads * sizeof(pthread_t));
 
     // thread arguements.
-    producer_type producer_args = {file_queue, dir_pool,producer_threads};
-    // producer_args->file_queue = file_queue;
-    // producer_args->dir_pool = dir_pool;
-    // producer_args->initial_directory = "tests/"; // interface
-    // producer_args->alive_producers = producer_threads;
+    producer_type *producer_args = malloc(sizeof(producer_type));
+    producer_args->file_queue = file_queue;
+    producer_args->dir_pool = dir_pool;
+    producer_args->alive_producers = producer_threads;
 
-    consumer_type consumer_args = {file_queue, dir_pool, max_width};
-    // consumer_args->file_queue = file_queue;
-    // consumer_args->max_width = max_width;
-    
+    consumer_type *consumer_args = malloc(sizeof(consumer_type));
+    consumer_args->file_queue = file_queue;
+    consumer_args->max_width = max_width;
+
     int i = 0;
     int j = 0;
     for (i = 0; i < producer_threads; i++)
     {
         debug_print("%s\n", "Creating producer thread");
-        pthread_create(&producer_tids[i], NULL, produce_files_to_wrap, &producer_args);
+        pthread_create(&producer_tids[i], NULL, produce_files_to_wrap, producer_args);
         debug_print("%s\n", "Created producer thread");
     }
     for (j = 0; j < consumer_threads; j++)
     {
         debug_print("%s\n", "Creating consumer thread");
-        pthread_create(&consumer_tids[j], NULL, consume_files_to_wrap, &consumer_args);
+        pthread_create(&consumer_tids[j], NULL, consume_files_to_wrap, consumer_args);
         debug_print("%s\n", "Created consumer thread");
     }
 
@@ -404,160 +404,9 @@ int main(int argv, char **argc)
         debug_print("%s\n", "Joined consumer thread\n");
     }
 
-    //     // free(producer_args);
-    //     // free(consumer_args);
-    //     free(producer_tids);
-    //     free(consumer_tids);
-    // }
-
+    free(producer_args);
+    free(consumer_args);
+    free(producer_tids);
+    free(consumer_tids);
     queue_destroy(file_queue);
 }
-// int main(int argv, char **argc)
-// {
-//     int rtn = 0;
-//     int N = -1;
-//     int M = -1;
-//     int run_mode = get_run_mode(argc[1], &N, &M);
-//     // printf("runmode : %d, M: %d, N:%d\n",rm,M,N);
-//     if (argv < 2)
-//     {
-//         error_print("%s", "At least provide the max_width argument\n");
-//         return EXIT_FAILURE;
-//     }
-//     int max_width = atoi(argc[argv - 2]);
-//     // int rtn = -1;
-
-//     // If the file name is not present, ww will read from standard input and print to standard output.
-//     if (argv == 2)
-//     {
-//         wrap_text(NULL, max_width, NULL);
-//     }
-//     else
-//     {
-//         // If the file name is a regular file, ww will read from the file and print to standard output.
-//         char *file_name = argc[argv - 1];
-
-//         struct stat dir_status;
-//         stat(file_name, &dir_status);
-
-//         // If the file name is a directory, invoke recursive directory traversal function.
-//         if (check_file_or_directory(&dir_status) == 2)
-//         {
-//             Queue *file_queue = queue_init(QUEUESIZE);
-//             Pool *directory_pool = pool_init(QUEUESIZE);
-
-//             if (run_mode == 0)
-//             {
-//                 rtn = wrap_text_for_directory(file_name, max_width, NULL, run_mode);
-//             }
-//             else if (run_mode == 2)
-//             {
-//                 Queue *file_queue = queue_init(QUEUESIZE);
-
-//                 int number_of_wrapper_threads = N; // TODO: put this in user interface.
-
-//                 pthread_t *wrapper_threads = malloc(number_of_wrapper_threads * sizeof(pthread_t));
-//                 consumer_worker_type *consumer_args = malloc(number_of_wrapper_threads * sizeof(consumer_worker_type));
-
-//                 rtn = wrap_text_for_directory(file_name, max_width, file_queue, run_mode); // TODO: currently running in main thread. Need to make a producer model for this.
-
-//                 int i;
-//                 for (i = 0; i < number_of_wrapper_threads; i++)
-//                 {
-//                     consumer_args[i].file_queue = file_queue;
-
-//                     pthread_create(&wrapper_threads[i], NULL, consumer_wrapper_worker, &consumer_args[i]);
-//                 }
-
-//                 // wait for all threads to finish
-//                 // int total = 0;
-//                 for (i = 0; i < number_of_wrapper_threads; i++)
-//                 {
-//                     if (DEBUG)
-//                     {
-//                         printf("Joining consumer wrapper thread %d\n", i);
-//                     }
-//                     pthread_join(wrapper_threads[i], NULL);
-//                     if (DEBUG)
-//                     {
-//                         printf("Joined consumer wrapper thread %d\n", i);
-//                     }
-//                 }
-//             }
-//             else if (run_mode == 3)
-//             {
-//                 Queue *file_queue = queue_init(QUEUESIZE);
-//                 Queue *dir_queue = queue_init(QUEUESIZE);
-//                 queue_data_type *qd = malloc(sizeof(queue_data_type));
-//                 qd->input_file = (char *)malloc(1 + strlen(file_name) * sizeof(char));
-//                 qd->output_file = NULL;
-//                 strcpy(qd->input_file, file_name);
-//                 qd->w = max_width;
-//                 queue_enqueue(dir_queue, qd);
-
-//                 int number_of_wrapper_threads = N;
-//                 int number_of_directory_threads = M;
-
-//                 pthread_t *wrapper_threads = malloc(number_of_wrapper_threads * sizeof(pthread_t));
-//                 consumer_worker_type *arg_file = malloc(number_of_wrapper_threads * sizeof(consumer_worker_type));
-//                 pthread_t *directory_threads = malloc(number_of_directory_threads * sizeof(pthread_t));
-//                 consumer_worker_type *arg_dir = malloc(number_of_directory_threads * sizeof(consumer_worker_type));
-
-//                 int i;
-//                 for (i = 0; i < number_of_wrapper_threads; i++)
-//                 {
-//                     arg_dir[i].dir_queue = dir_queue;
-//                     arg_dir[i].file_queue = file_queue;
-//                     pthread_create(&directory_threads[i], NULL, consumer_directory_worker, &arg_dir[i]);
-//                 }
-
-//                 for (i = 0; i < number_of_wrapper_threads; i++)
-//                 {
-//                     arg_file[i].file_queue = file_queue;
-//                     pthread_create(&wrapper_threads[i], NULL, consumer_wrapper_worker, &arg_file[i]);
-//                 }
-
-//                 // wait for all threads to finish
-//                 // int total = 0;
-//                 for (i = 0; i < number_of_wrapper_threads; i++)
-//                 {
-//                     if (DEBUG)
-//                     {
-//                         printf("Joining consumer wrapper thread %d\n", i);
-//                     }
-//                     pthread_join(wrapper_threads[i], NULL);
-//                     if (DEBUG)
-//                     {
-//                         printf("Joined consumer wrapper thread %d\n", i);
-//                     }
-//                 }
-
-//                 for (i = 0; i < number_of_directory_threads; i++)
-//                 {
-//                     if (DEBUG)
-//                     {
-//                         printf("Joining consumer wrapper thread %d\n", i);
-//                     }
-//                     pthread_join(directory_threads[i], NULL);
-//                     if (DEBUG)
-//                     {
-//                         printf("Joined consumer wrapper thread %d\n", i);
-//                     }
-//                 }
-
-//                 // rtn = wrap_text_for_directory(file_name, max_width);
-//             }
-//             else if (check_file_or_directory(&dir_status) == 1)
-//             {
-//                 // If the file name is a regular file, ww will read from the file and print to standard output.
-//                 rtn = wrap_text(file_name, max_width, NULL);
-//             }
-//             else
-//             {
-//                 error_print("Invalid file path. Please input only a regular file or directory. Input file: %s\n", file_name);
-//                 return EXIT_FAILURE;
-//             }
-//         }
-//     }
-//     return rtn;
-// }

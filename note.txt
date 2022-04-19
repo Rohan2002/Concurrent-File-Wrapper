@@ -36,11 +36,16 @@ while(!pool_is_empty(dir_pool) || alive_directory_threads > 0)
 How?
 Solution: Count alive_directory_threads. 
 
+Semaphore use cases
 
+Allow a certain number of threads to access a resource at once (generalized mutex)
+wait for a condition
 
+Deadlock
 
+Specific to mutex
 
-
+Lock resources in same order A then B then C. and unlock them in C, B, A.
 
 
 

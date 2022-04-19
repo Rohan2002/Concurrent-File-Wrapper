@@ -4,3 +4,4 @@ tests/wrap*
 unit_tests/bin
 small/
 big/
+logs/*

@@ -40,10 +40,14 @@ void *produce_files_to_wrap(void *arg)
     Queue *file_q = producer_args->file_queue;
     // int number_of_producers = producer_args->alive_producers;
 
-    while (!pool_is_empty(dir_pool))
+    while (!pool_is_empty(dir_pool) || dir_pool->number_of_active_producers > 0)
     {
         pool_data_type *pool_init_data = pool_dequeue(dir_pool);
-        debug_print("Address of pool %p and dequed data: %p\n",dir_pool, pool_init_data);
+        if(pool_is_empty(dir_pool)){
+            decrement_producers(dir_pool);
+            debug_print("Active directory threads: %d\n", dir_pool->number_of_active_producers);
+        }
+        debug_print("Dequed data: %p\n", pool_init_data);
         if (pool_init_data != NULL)
         {
             int fill_status = fill_pool_and_queue_with_data(pool_init_data->directory_path, dir_pool, file_q);
@@ -78,7 +82,7 @@ void *consume_files_to_wrap(void *arg)
 
         if (q_data_pointer != NULL)
         {
-            debug_print("Dequeing file, tid: %lu input file path: %s output file path: %s\n", pthread_self(), q_data_pointer->input_file, q_data_pointer->output_file);
+            debug_print("Dequeing file, tid: %p input file path: %s output file path: %s\n", pthread_self(), q_data_pointer->input_file, q_data_pointer->output_file);
             wrap_text(q_data_pointer->input_file, max_width, q_data_pointer->output_file);
         }
     }
@@ -250,7 +254,7 @@ int fill_pool_and_queue_with_data(char *parent_dir_path, Pool *optional_dir_pool
     DIR *dfd;
     struct dirent *directory_pointer;
 
-    debug_print("Dequeing parent directory, tid: %lu parent directory path: %s\n", pthread_self(), parent_dir_path);
+    debug_print("Dequeing parent directory, tid: %p parent directory path: %s\n", pthread_self(), parent_dir_path);
 
     if ((dfd = opendir(parent_dir_path)) == NULL)
     {
@@ -326,34 +330,39 @@ int fill_pool_and_queue_with_data(char *parent_dir_path, Pool *optional_dir_pool
     return 0;
 }
 int main(int argv, char **argc)
-{
-    // data structures
+{   
+    // wrapping params
+    int max_width = 1;
+
+    // thread params
+    int producer_threads = 10;
+    int consumer_threads = 20;
+    
+    // directory of interest
+    char* dir_of_interest = "small/";
+
+    // data structures setup
     Queue *file_queue = queue_init(QUEUESIZE);
     if (file_queue == NULL)
     {
         error_print("%s\n", "Failed to init file queue.");
         return EXIT_FAILURE;
     }
-    Pool *dir_pool = pool_init(QUEUESIZE);
+    Pool *dir_pool = pool_init(QUEUESIZE, producer_threads);
     if (dir_pool == NULL)
     {
         error_print("%s\n", "Failed to init directory pool.");
         return EXIT_FAILURE;
     }
+
+    pool_data_type *pool_init_data = malloc(sizeof(pool_data_type));
+    pool_init_data->directory_path = dir_of_interest;
+    pool_enqueue(dir_pool, pool_init_data);
     
-    // wrapping params
-    int max_width = 30;
-
-    // thread params
-    int producer_threads = 10;
-    int consumer_threads = 20;
-
+    // threads setup
     pthread_t *producer_tids = malloc(producer_threads * sizeof(pthread_t));
     pthread_t *consumer_tids = malloc(consumer_threads * sizeof(pthread_t));
 
-    pool_data_type *pool_init_data = malloc(sizeof(pool_data_type));
-    pool_init_data->directory_path = "d/";
-    pool_enqueue(dir_pool, pool_init_data);
     // thread arguements.
     producer_type producer_args = {file_queue, dir_pool,producer_threads};
     // producer_args->file_queue = file_queue;
@@ -364,6 +373,7 @@ int main(int argv, char **argc)
     consumer_type consumer_args = {file_queue, dir_pool, max_width};
     // consumer_args->file_queue = file_queue;
     // consumer_args->max_width = max_width;
+    
     int i = 0;
     int j = 0;
     for (i = 0; i < producer_threads; i++)

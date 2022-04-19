@@ -12,7 +12,7 @@
 #include <string.h>
 #include <stdio.h>
 
-Pool *pool_init(int pool_size)
+Pool *pool_init(int pool_size, int producers)
 {
     Pool *pool_pointer = malloc(sizeof(Pool));
     if (pool_pointer == NULL)
@@ -25,6 +25,7 @@ Pool *pool_init(int pool_size)
     pool_pointer->pool_size = pool_size;
     pool_pointer->number_of_elements_buffered = 0;
     pool_pointer->close = false;
+    pool_pointer->number_of_active_producers = producers;
 
     int mutex_init_status = pthread_mutex_init(&(pool_pointer->lock), NULL);
     if (mutex_init_status != 0)
@@ -69,7 +70,7 @@ int pool_enqueue(Pool *pool_pointer, pool_data_type *data)
         pool_pointer->data = new_pool;
         pool_pointer->pool_size *= 2;
         
-        debug_print("%s","Reallocated stack!\n");
+        debug_print("Reallocated stack with new size as %d!\n", pool_pointer->pool_size);
     }
 
     pool_pointer->data[pool_pointer->end++] = data;
@@ -153,6 +154,25 @@ int pool_close(Pool *pool_pointer){
 
     pool_pointer->close = true;
     pthread_cond_broadcast(&pool_pointer->ready_to_consume);
+
+    int unlock_status = pthread_mutex_unlock(&pool_pointer->lock);
+    if (unlock_status != 0)
+    {
+        error_print("Failed to unlock with error code: %d!\n", unlock_status);
+        return lock_status;
+    }
+    return 0;
+}
+int decrement_producers(Pool *pool_pointer)
+{
+    int lock_status = pthread_mutex_lock(&pool_pointer->lock);
+    if (lock_status != 0)
+    {
+        error_print("Failed to lock with error code: %d!\n", lock_status);
+        return lock_status;
+    }
+
+    pool_pointer->number_of_active_producers--;
 
     int unlock_status = pthread_mutex_unlock(&pool_pointer->lock);
     if (unlock_status != 0)

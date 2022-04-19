@@ -5,3 +5,4 @@ unit_tests/bin
 small/
 big/
 logs/*
+!logs/keep

@@ -48,7 +48,8 @@ void *produce_files_to_wrap(void *arg)
             decrement_producers(dir_pool);
             debug_print("Active directory threads: %d\n", dir_pool->number_of_active_producers);
         }
-        else{
+        else
+        {
             debug_print("Dequed directory: %s\n", pool_init_data->directory_path);
         }
         if (pool_init_data != NULL)
@@ -90,11 +91,14 @@ void *consume_files_to_wrap(void *arg)
         if (q_data_pointer != NULL)
         {
             debug_print("Dequeing file, tid: %p input file path: %s output file path: %s\n", pthread_self(), q_data_pointer->input_file, q_data_pointer->output_file);
-            wrap_text(q_data_pointer->input_file, max_width, q_data_pointer->output_file);
+            if (q_data_pointer->input_file != NULL && q_data_pointer->output_file != NULL)
+            {
+                wrap_text(q_data_pointer->input_file, max_width, q_data_pointer->output_file);
+                free(q_data_pointer->input_file);
+                free(q_data_pointer->output_file);
+                free(q_data_pointer);
+            }
         }
-        free(q_data_pointer->input_file);
-        free(q_data_pointer->output_file);
-        free(q_data_pointer);
     }
     debug_print("%s", "Exiting consume_files_to_wrap\n");
     return NULL;
@@ -334,10 +338,9 @@ int fill_pool_and_queue_with_data(char *parent_dir_path, Pool *optional_dir_pool
                 }
             }
         }
-
     }
     closedir(dfd);
-    
+
     return 0;
 }
 int main(int argv, char **argc)

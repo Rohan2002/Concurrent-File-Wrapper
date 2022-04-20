@@ -38,7 +38,6 @@ void *produce_files_to_wrap(void *arg)
     // unpack thread args for producer
     Pool *dir_pool = producer_args->dir_pool;
     Queue *file_q = producer_args->file_queue;
-    // int number_of_producers = producer_args->alive_producers;
 
     while (!pool_is_empty(dir_pool) || dir_pool->number_of_active_producers >= dir_pool->number_of_elements_enqued__in_lifetime_of_pool)
     {
@@ -59,10 +58,11 @@ void *produce_files_to_wrap(void *arg)
             {
                 error_print("%s\n", "Couldn't fill the data");
             }
-            // if(pool_init_data->directory_path!=NULL){
-            //     free(pool_init_data->directory_path);
-            // }
-            // free(pool_init_data);
+            if (pool_init_data->directory_path != NULL)
+            {
+                free(pool_init_data->directory_path);
+            }
+            free(pool_init_data);
         }
     }
     pool_close(dir_pool);
@@ -90,13 +90,16 @@ void *consume_files_to_wrap(void *arg)
         if (q_data_pointer != NULL)
         {
             debug_print("Dequeing file, tid: %ld input file path: %s output file path: %s\n", pthread_self(), q_data_pointer->input_file, q_data_pointer->output_file);
-            if (q_data_pointer->input_file != NULL && q_data_pointer->output_file != NULL)
+            wrap_text(q_data_pointer->input_file, max_width, q_data_pointer->output_file);
+            if (q_data_pointer->input_file != NULL)
             {
-                wrap_text(q_data_pointer->input_file, max_width, q_data_pointer->output_file);
                 free(q_data_pointer->input_file);
-                free(q_data_pointer->output_file);
-                free(q_data_pointer);
             }
+            if (q_data_pointer->output_file != NULL)
+            {
+                free(q_data_pointer->output_file);
+            }
+            free(q_data_pointer);
         }
     }
     debug_print("%s", "Exiting consume_files_to_wrap\n");
@@ -295,7 +298,7 @@ int fill_pool_and_queue_with_data(char *parent_dir_path, Pool *optional_dir_pool
                 // output file name computation.
                 char *new_file_name = concat_string("wrap.", directory_pointer->d_name, 5, strlen(directory_pointer->d_name));
                 char *output_file_name = append_file_path_to_existing_path(parent_dir_path, new_file_name);
-                free(new_file_name); // Maybe?
+                free(new_file_name);
 
                 debug_print("Input-file found with path %s\n", file_path_in_directory);
                 debug_print("Output-file found with path %s\n", output_file_name);
@@ -312,12 +315,16 @@ int fill_pool_and_queue_with_data(char *parent_dir_path, Pool *optional_dir_pool
                     qd->output_file = output_file_name;
 
                     queue_enqueue(optional_file_queue, qd);
-                    // print_queue_metadata(file_q, file_q->end - 1);
                 }
+            }
+            else
+            {
+                free(file_path_in_directory);
             }
         }
         else
         {
+            free(file_path_in_directory);
             if (directory_pointer->d_name[0] != '.')
             {
                 // it is a sub-directory
@@ -352,8 +359,7 @@ int main(int argv, char **argc)
     int consumer_threads = 20;
 
     // directory of interest
-    char *dir_of_interest = "tests/";
-
+    char *dir_of_interest = concat_string("tests/", "\0", -1, -1);
     // data structures setup
     Queue *file_queue = queue_init(QUEUESIZE);
     if (file_queue == NULL)

@@ -48,7 +48,9 @@ void *produce_files_to_wrap(void *arg)
             decrement_producers(dir_pool);
             debug_print("Active directory threads: %d\n", dir_pool->number_of_active_producers);
         }
-        debug_print("Dequed data: %p\n", pool_init_data);
+        else{
+            debug_print("Dequed data: %p\n", pool_init_data);
+        }
         if (pool_init_data != NULL)
         {
             int fill_status = fill_pool_and_queue_with_data(pool_init_data->directory_path, dir_pool, file_q);

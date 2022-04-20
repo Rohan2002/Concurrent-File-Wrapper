@@ -26,6 +26,7 @@ struct Pool_Model
     pthread_cond_t ready_to_consume;
     int number_of_elements_buffered;
     int number_of_active_producers;
+    int number_of_elements_enqued__in_lifetime_of_pool;
     bool close;
 };
 typedef struct Pool_Model Pool;

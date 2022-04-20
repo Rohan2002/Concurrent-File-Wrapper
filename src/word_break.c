@@ -40,7 +40,7 @@ void *produce_files_to_wrap(void *arg)
     Queue *file_q = producer_args->file_queue;
     // int number_of_producers = producer_args->alive_producers;
 
-    while (!pool_is_empty(dir_pool) || dir_pool->number_of_active_producers > 0)
+    while (!pool_is_empty(dir_pool) || dir_pool->number_of_active_producers >= dir_pool->number_of_elements_enqued__in_lifetime_of_pool)
     {
         pool_data_type *pool_init_data = pool_dequeue(dir_pool);
         if (pool_is_empty(dir_pool))
@@ -349,7 +349,7 @@ int main(int argv, char **argc)
     int max_width = 1;
 
     // thread params
-    int producer_threads = 5;
+    int producer_threads = 3;
     int consumer_threads = 20;
 
     // directory of interest

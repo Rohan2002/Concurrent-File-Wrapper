@@ -26,6 +26,7 @@ Pool *pool_init(int pool_size, int producers)
     pool_pointer->number_of_elements_buffered = 0;
     pool_pointer->close = false;
     pool_pointer->number_of_active_producers = producers;
+    pool_pointer->number_of_elements_enqued__in_lifetime_of_pool = 0;
 
     int mutex_init_status = pthread_mutex_init(&(pool_pointer->lock), NULL);
     if (mutex_init_status != 0)
@@ -75,6 +76,7 @@ int pool_enqueue(Pool *pool_pointer, pool_data_type *data)
 
     pool_pointer->data[pool_pointer->end++] = data;
     pool_pointer->number_of_elements_buffered += 1;
+    pool_pointer->number_of_elements_enqued__in_lifetime_of_pool += 1;
     pthread_cond_signal(&(pool_pointer->ready_to_consume));
 
     int unlock_status = pthread_mutex_unlock(&pool_pointer->lock);

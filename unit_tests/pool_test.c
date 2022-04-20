@@ -63,7 +63,8 @@ void *consumer(void *vargs)
         {
             debug_print("Consumer Dequed: %s with total count as %d\n", dq->directory_path, pool_pointer->number_of_elements_buffered);
             // TODO free.
-            // free(dq);
+            free(dq->directory_path);
+            free(dq);
         }
         else
         {
@@ -150,4 +151,5 @@ int main()
     int number_of_consumers = 5;
     Pool* pool = pool_init(1, number_of_producers);
     threading_test(pool, number_of_producers, number_of_consumers, data_size);
+    pool_destroy(pool);
 }

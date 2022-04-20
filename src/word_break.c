@@ -409,4 +409,5 @@ int main(int argv, char **argc)
     free(producer_tids);
     free(consumer_tids);
     queue_destroy(file_queue);
+    pool_destroy(dir_pool);
 }

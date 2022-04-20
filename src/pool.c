@@ -20,7 +20,7 @@ Pool *pool_init(int pool_size, int producers)
         error_print("%s", "Failed to allocate pool!\n");
         return NULL;
     }
-    pool_pointer->data = (pool_data_type **) malloc(sizeof(pool_data_type *) * pool_size);
+    pool_pointer->data = (pool_data_type **)malloc(sizeof(pool_data_type *) * pool_size);
     pool_pointer->end = 0;
     pool_pointer->pool_size = pool_size;
     pool_pointer->number_of_elements_buffered = 0;
@@ -56,8 +56,8 @@ int pool_enqueue(Pool *pool_pointer, pool_data_type *data)
     if (pool_is_full(pool_pointer))
     {
         // realloc sucks lol. https://stackoverflow.com/a/46461293/10016132
-        pool_data_type ** new_pool = (pool_data_type **) malloc(2 * pool_pointer->pool_size * sizeof(pool_data_type *));
-        
+        pool_data_type **new_pool = (pool_data_type **)malloc(2 * pool_pointer->pool_size * sizeof(pool_data_type *));
+
         if (new_pool == NULL)
         {
             error_print("%s", "Failed to re-malloc pool_pointer!\n");
@@ -69,7 +69,7 @@ int pool_enqueue(Pool *pool_pointer, pool_data_type *data)
 
         pool_pointer->data = new_pool;
         pool_pointer->pool_size *= 2;
-        
+
         debug_print("Reallocated stack with new size as %d!\n", pool_pointer->pool_size);
     }
 
@@ -95,7 +95,8 @@ pool_data_type *pool_dequeue(Pool *pool_pointer)
     }
     while (pool_is_empty(pool_pointer))
     {
-        if(pool_pointer->close){
+        if (pool_pointer->close)
+        {
             pthread_mutex_unlock(&pool_pointer->lock);
             return NULL;
         }
@@ -126,7 +127,8 @@ bool pool_is_empty(Pool *pool_pointer)
 {
     return pool_pointer->number_of_elements_buffered == 0;
 }
-int pool_open(Pool *pool_pointer){
+int pool_open(Pool *pool_pointer)
+{
     int lock_status = pthread_mutex_lock(&pool_pointer->lock);
     if (lock_status != 0)
     {
@@ -144,7 +146,8 @@ int pool_open(Pool *pool_pointer){
     }
     return 0;
 }
-int pool_close(Pool *pool_pointer){
+int pool_close(Pool *pool_pointer)
+{
     int lock_status = pthread_mutex_lock(&pool_pointer->lock);
     if (lock_status != 0)
     {
@@ -180,5 +183,35 @@ int decrement_producers(Pool *pool_pointer)
         error_print("Failed to unlock with error code: %d!\n", unlock_status);
         return lock_status;
     }
+    return 0;
+}
+int pool_destroy(Pool *pool_pointer)
+{
+    int mutex_destroy_status = pthread_mutex_destroy(&pool_pointer->lock);
+    if (mutex_destroy_status != 0)
+    {
+        error_print("pool mutex can't be destroyed with error code: %d\n", mutex_destroy_status);
+        return mutex_destroy_status;
+    }
+    int consume_condition_variable_destroy = pthread_cond_destroy(&pool_pointer->ready_to_consume);
+    if (consume_condition_variable_destroy != 0)
+    {
+        error_print("Condition variable for consume can't be destroyed with error code: %d\n", consume_condition_variable_destroy);
+        return mutex_destroy_status;
+    }
+    // In theory pool should be empty at this point. However, we cannot guarantee anything so just check if pool is empty, and free from there.
+    if (pool_pointer->number_of_elements_buffered != 0)
+    {
+        error_print("%s", "From Pool Destroy(), the pool is still not empty!\n");
+        while (!pool_is_empty(pool_pointer))
+        {
+            pool_data_type *p_data = pool_dequeue(pool_pointer);
+            free(p_data->directory_path);
+            free(p_data);
+        }
+    }
+    debug_print("Pool has been destroyed and has size %d\n", pool_pointer->number_of_elements_buffered);
+    free(pool_pointer->data); // At this point all pointers exisiting inside queue_pointer->data is freed, so free queue_pointer->data.
+    free(pool_pointer);
     return 0;
 }

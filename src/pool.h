@@ -10,8 +10,6 @@
 #include <stdio.h>
 #include <pthread.h>
 #include <stdbool.h>
-#define POOL_DEBUG 1
-#define debug_log(MESSAGE)  (POOL_DEBUG ? fprintf(stdout, "Failed to allocate queue!\n"); : (Y))
 
 struct Pool_Data
 {
@@ -39,3 +37,4 @@ bool pool_is_empty(Pool *);
 int pool_open(Pool *);
 int pool_close(Pool *);
 int decrement_producers(Pool *);
+int pool_destroy(Pool *);

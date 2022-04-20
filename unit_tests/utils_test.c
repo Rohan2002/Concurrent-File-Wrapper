@@ -66,7 +66,7 @@ void test_concat_strings()
     {
         debug_print("Failed Concat String Test 3: %s\n", added_3);
     }
-    free(added_3);
+   free(added_3);
     char *added_4 = concat_string("", "", -1, -1);
     if (strcmp(added_4, "") == 0)
     {
@@ -86,7 +86,7 @@ void test_concat_strings()
     {
         debug_print("Failed Concat String Test 5: %s\n", added_5);
     }
-    free(added_5);
+   free(added_5);
     char *added_6 = concat_string("", "s", -1, -1);
     if (strcmp(added_6, "s") == 0)
     {

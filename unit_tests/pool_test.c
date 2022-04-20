@@ -21,7 +21,7 @@ void *producer(void *vargs)
     while(!pool_pointer->close)
     {
         pthread_mutex_lock(&producer_data_lock);
-        debug_print("Firing thread: %p, Producer_data: %d and pool_close status: %s\n", pthread_self() ,producer_data, pool_pointer->close ? "yes" : "no");
+        debug_print("Firing thread: %ld, Producer_data: %d and pool_close status: %s\n", pthread_self() ,producer_data, pool_pointer->close ? "yes" : "no");
         if(producer_data > producer_data_size){
             break;
         }
@@ -78,7 +78,7 @@ void vanilla_test()
     /*
         Without any threading.
     */
-    Pool *pool = pool_init(4000);
+    Pool *pool = pool_init(4000, 1);
 
     for (int a = 0; a < 4000; a++)
     {
@@ -116,7 +116,7 @@ void threading_test(Pool *pool, int n_producers, int n_consumers, int data_size)
 
     for (int i = 0; i < number_of_producer; i++)
     {
-        debug_print("%s and created thread %p\n", "Creating producer thread\n", pthread_self() );
+        debug_print("%s and created thread %ld\n", "Creating producer thread\n", pthread_self() );
         pthread_create(&producer_tids[i], NULL, producer, &worker_args);
         debug_print("%s\n", "Created producer thread\n");
     }
@@ -148,6 +148,6 @@ int main()
     int data_size = 10;
     int number_of_producers = 1;
     int number_of_consumers = 5;
-    Pool* pool = pool_init(1);
+    Pool* pool = pool_init(1, number_of_producers);
     threading_test(pool, number_of_producers, number_of_consumers, data_size);
 }

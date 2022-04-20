@@ -166,6 +166,8 @@ int queue_destroy(Queue *queue_pointer)
         while (!queue_is_empty(queue_pointer))
         {
             queue_data_type *q_data = queue_dequeue(queue_pointer);
+            free(q_data->input_file);
+            free(q_data->output_file);
             free(q_data);
         }
     }

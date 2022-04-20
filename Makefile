@@ -32,6 +32,6 @@ obj/:
 	mkdir -p $@
 
 fresh:
-	find big/ -type f -name "wrap*" -exec rm -rf {} \;
+	find tests/ -type f -name "wrap*" -exec rm -rf {} \;
 clean:
 	rm -rf bin/ obj/

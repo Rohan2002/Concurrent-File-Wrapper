@@ -58,48 +58,31 @@ int check_file_or_directory(struct stat *file_in_dir_pointer)
     }
     return 0;
 }
-
-// void fill_threads_count_by_user_arguememt(char *arg, int *N, int *M)
-// {
-//     int run_mode = 0;
-//     if (strcmp(arg, "-r") == 0)
-//     {
-//         run_mode = 1;
-//     }
-//     else if (arg[0] == '-' && arg[1] == 'r')
-//     {
-//         int i;
-//         run_mode = 2;
-//         for (i = 0; i < strlen(arg); i++)
-//         {
-//             if (arg[i] == ',')
-//             {
-//                 run_mode = 3;
-//             }
-//         }
-//         if (run_mode == 2)
-//         {
-//             arg += 2;
-//             *N = atoi(arg);
-//         }
-//         else if (run_mode == 3)
-//         {
-//             char tempM[20];
-//             int digitsM = 0;
-//             arg += 2;
-//             while (arg[digitsM] != ',')
-//             {
-//                 tempM[digitsM] = arg[digitsM];
-//                 digitsM++;
-//             }
-//             tempM[digitsM] = '\0';
-//             arg += digitsM + 1;
-//             *N = atoi(arg);
-//             *M = atoi(tempM);
-//         }
-//     }
-//     return run_mode;
-// }
+int fill_param_by_user_arguememt(char **arg, int *max_width, int *producer_threads, int *consumer_threads)
+{
+    if (strcmp(arg[1], "-r") == 0)
+    {
+        *consumer_threads = 1;
+        *producer_threads = 1;
+    }
+    else
+    {
+        char *rec_threads = arg[1];
+        int strlen_rec_threads = strlen(rec_threads);
+        if (strlen_rec_threads != 5)
+        {
+            error_print("%s\n", "Provide recursive arguement properly! It should be like -rN,M where N is the number of directory/producer threads, and M is the number of wrapping/consumer threads");
+            return -1;
+        }
+        else
+        {
+            *producer_threads = atoi(&rec_threads[2]); // directory threads
+            *consumer_threads = atoi(&rec_threads[4]); // wrapping threads
+        }
+    }
+    *max_width = atoi(arg[2]);
+    return 0;
+}
 char *concat_string(char *prev_str, char *new_str, int optional_prev_length, int optional_new_length)
 {
     /*
@@ -108,11 +91,11 @@ char *concat_string(char *prev_str, char *new_str, int optional_prev_length, int
         Note if optional_prev_length = -1 or optional_new_length -1, the string length for the appropriate string will be computed.
             else it is the client's responsibility to give a valid string length for the appropriate string.
 
-        Example usage:  
-        
+        Example usage:
+
         char* concatenated = concat_string("lorem", "ipsum", -1, -1);
                         concatenated = "loremipsum".
-        
+
         char* concatenated_two = concat_string("lorem", "ipsum", 5, 5);
                         concatenated = "loremipsum".
 

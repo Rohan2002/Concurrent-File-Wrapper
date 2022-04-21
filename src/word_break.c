@@ -351,15 +351,37 @@ int fill_pool_and_queue_with_data(char *parent_dir_path, Pool *optional_dir_pool
 }
 int main(int argv, char **argc)
 {
+    if (argv == 1)
+    {
+        error_print("%s\n", "Recursive arguement not provided!");
+        return EXIT_FAILURE;
+    }
+    else if (argv == 2)
+    {
+        error_print("%s\n", "Max width not provided!");
+        return EXIT_FAILURE;
+    }
+    else if (argv == 3)
+    {
+        error_print("%s\n", "Directory not provided!");
+        return EXIT_FAILURE;
+    }
     // wrapping params
-    int max_width = 1;
+    int max_width;
 
     // thread params
-    int producer_threads = 3;
-    int consumer_threads = 20;
+    int producer_threads;
+    int consumer_threads;
 
     // directory of interest
-    char *dir_of_interest = concat_string("tests/", "\0", -1, -1);
+    char *dir_of_interest = concat_string(argc[3], "\0", -1, -1);
+
+    int args_filler_status = fill_param_by_user_arguememt(argc, &max_width, &producer_threads, &consumer_threads);
+    if(args_filler_status == -1){
+        error_print("%s\n", "Error with parsing arguements.");
+        free(dir_of_interest);
+        return EXIT_FAILURE;
+    }
     // data structures setup
     Queue *file_queue = queue_init(QUEUESIZE);
     if (file_queue == NULL)

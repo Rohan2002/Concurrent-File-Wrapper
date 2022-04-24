@@ -6,9 +6,10 @@
     Rohan Deshpande and Selin Altiparmak
 */
 #ifndef QUEUE_H
-
+#define QUEUE_H
 #include <pthread.h>
 #include <stdbool.h>
+
 
 struct Queue_Data
 {

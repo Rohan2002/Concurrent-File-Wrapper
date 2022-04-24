@@ -5,6 +5,8 @@
     @ authors
     Rohan Deshpande and Selin Altiparmak
 */
+#ifndef POOL_H
+#define POOL_H
 #pragma once
 #include <stdlib.h>
 #include <stdio.h>
@@ -39,3 +41,5 @@ int pool_open(Pool *);
 int pool_close(Pool *);
 int decrement_producers(Pool *);
 int pool_destroy(Pool *);
+
+#endif

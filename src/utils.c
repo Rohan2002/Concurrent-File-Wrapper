@@ -14,6 +14,7 @@
 #include "utils.h"
 #include "logger.h"
 
+
 void print_buffer(char *word_buffer, int length)
 {
     if (word_buffer == NULL)
@@ -58,10 +59,18 @@ int check_file_or_directory(struct stat *file_in_dir_pointer)
     }
     return 0;
 }
-int fill_param_by_user_arguememt(char **arg, int *max_width, int *producer_threads, int *consumer_threads)
+int fill_param_by_user_arguememt(int argv,char **arg, int *max_width, int *producer_threads, int *consumer_threads,int *isrecursive,int *widthindex )
 {
-    if (strcmp(arg[1], "-r") == 0)
+    *widthindex=2;
+    if(arg[1][0]!='-' ) {
+        *widthindex=1;
+        *isrecursive=0;
+        *consumer_threads = 1;
+        *producer_threads = 1;
+
+    } else if (strcmp(arg[1], "-r") == 0)
     {
+        *isrecursive=1;
         *consumer_threads = 1;
         *producer_threads = 1;
     }
@@ -76,11 +85,65 @@ int fill_param_by_user_arguememt(char **arg, int *max_width, int *producer_threa
         }
         else
         {
+            *isrecursive=1;
             *producer_threads = atoi(&rec_threads[2]); // directory threads
             *consumer_threads = atoi(&rec_threads[4]); // wrapping threads
         }
     }
-    *max_width = atoi(arg[2]);
+    *max_width = atoi(arg[*widthindex]);
+
+
+    return 0;
+}
+int fill_queue_and_pool_by_user_arguememt(int widthindex,int argv,char **arg, Queue *optional_file_queue,Pool *dir_pool )
+{
+    for (int i=widthindex+1; i<argv; i++) {
+         char *dir_of_interest = concat_string(arg[i], "\0", -1, -1);
+         struct stat file_in_dir;
+            int status_of_file_metadata = stat(dir_of_interest, &file_in_dir); // directory_pointer->d_name is the filename.
+            if (status_of_file_metadata != 0)
+            {
+                error_print("Can't get stat of file %s\n", dir_of_interest);
+                return status_of_file_metadata;
+            }
+            if (check_file_or_directory(&file_in_dir) == 1){ // regular file enque to file queue
+                // Only wrap files that don't start with wrap. or .
+                if (dir_of_interest[0] != '.' && memcmp(dir_of_interest, "wrap.", 5) != 0)
+                {
+                    // output file name computation.
+                    char *new_file_name = concat_string("wrap.", arg[i], 5, strlen(arg[i]));
+                    char *output_file_name = append_file_path_to_existing_path(new_file_name, "");
+                    free(new_file_name);
+
+                    debug_print("Input-file found with path %s\n", dir_of_interest);
+                    debug_print("Output-file found with path %s\n", output_file_name);
+
+                    if (optional_file_queue != NULL)
+                    {
+                        queue_data_type *qd = malloc(sizeof(queue_data_type));
+                        if (qd == NULL)
+                        {
+                            error_print("%s\n", "Malloc failure!");
+                            return -1;
+                        }
+                        qd->input_file = dir_of_interest;
+                        qd->output_file = output_file_name;
+
+                        queue_enqueue(optional_file_queue, qd);
+                    }
+                }
+
+            }
+            else if (check_file_or_directory(&file_in_dir) == 2){
+                printf("%s\n",dir_of_interest);
+                pool_data_type *pool_init_data = malloc(sizeof(pool_data_type));
+                pool_init_data->directory_path = dir_of_interest;
+                pool_enqueue(dir_pool, pool_init_data);
+            }
+      
+    }
+
+
     return 0;
 }
 char *concat_string(char *prev_str, char *new_str, int optional_prev_length, int optional_new_length)

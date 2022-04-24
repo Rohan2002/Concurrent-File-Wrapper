@@ -89,7 +89,7 @@ void *consume_files_to_wrap(void *arg)
 
         if (q_data_pointer != NULL)
         {
-            debug_print("Dequeing file, tid: %ld input file path: %s output file path: %s\n", pthread_self(), q_data_pointer->input_file, q_data_pointer->output_file);
+            debug_print("Dequeing file, tid: %p input file path: %s output file path: %s\n", pthread_self(), q_data_pointer->input_file, q_data_pointer->output_file);
             wrap_text(q_data_pointer->input_file, max_width, q_data_pointer->output_file);
             if (q_data_pointer->input_file != NULL)
             {
@@ -270,7 +270,7 @@ int fill_pool_and_queue_with_data(char *parent_dir_path, Pool *optional_dir_pool
     DIR *dfd;
     struct dirent *directory_pointer;
 
-    debug_print("Dequeing parent directory, tid: %ld parent directory path: %s\n", pthread_self(), parent_dir_path);
+    debug_print("Dequeing parent directory, tid: %p parent directory path: %s\n", pthread_self(), parent_dir_path);
 
     if ((dfd = opendir(parent_dir_path)) == NULL)
     {
@@ -361,29 +361,34 @@ int main(int argv, char **argc)
         error_print("%s\n", "Max width not provided!");
         return EXIT_FAILURE;
     }
-    else if (argv == 3)
-    {
-        error_print("%s\n", "Directory not provided!");
-        return EXIT_FAILURE;
-    }
+    // else if (argv == 3)
+    // {
+    //     error_print("%s\n", "Directory not provided!");
+    //     return EXIT_FAILURE;
+    // }
     // wrapping params
     int max_width;
 
     // thread params
     int producer_threads;
     int consumer_threads;
+    int isrecursive;
+    int widthindex;
 
-    // directory of interest
-    char *dir_of_interest = concat_string(argc[3], "\0", -1, -1);
-
-    int args_filler_status = fill_param_by_user_arguememt(argc, &max_width, &producer_threads, &consumer_threads);
-    if(args_filler_status == -1){
+    int args_filler_status = fill_param_by_user_arguememt(argv, argc, &max_width, &producer_threads, &consumer_threads, &isrecursive, &widthindex);
+    if (args_filler_status == -1)
+    {
         error_print("%s\n", "Error with parsing arguements.");
-        free(dir_of_interest);
+        // free(dir_of_interest);
         return EXIT_FAILURE;
     }
+    // directory of interest
+    // char *dir_of_interest = concat_string(argc[3], "\0", -1, -1);
+
     // data structures setup
+    
     Queue *file_queue = queue_init(QUEUESIZE);
+   
     if (file_queue == NULL)
     {
         error_print("%s\n", "Failed to init file queue.");
@@ -394,11 +399,12 @@ int main(int argv, char **argc)
     {
         error_print("%s\n", "Failed to init directory pool.");
         return EXIT_FAILURE;
-    }
 
-    pool_data_type *pool_init_data = malloc(sizeof(pool_data_type));
-    pool_init_data->directory_path = dir_of_interest;
-    pool_enqueue(dir_pool, pool_init_data);
+    }
+    fill_queue_and_pool_by_user_arguememt(widthindex,argv,argc, file_queue,dir_pool );
+    // pool_data_type *pool_init_data = malloc(sizeof(pool_data_type));
+    // pool_init_data->directory_path = dir_of_interest;
+    // pool_enqueue(dir_pool, pool_init_data);
 
     // threads setup
     pthread_t *producer_tids = malloc(producer_threads * sizeof(pthread_t));

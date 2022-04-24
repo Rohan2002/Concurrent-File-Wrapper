@@ -5,9 +5,12 @@
     @ authors
     Rohan Deshpande and Selin Altiparmak
 */
+
+#ifndef WORD_BREAK_H
+#define  WORD_BREAK_H
+
 #include "queue.h"
 #include "pool.h"
-#ifndef WORD_BREAK_H
 
 struct file_producer
 {

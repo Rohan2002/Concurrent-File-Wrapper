@@ -16,10 +16,11 @@ struct file_producer
     int alive_producers;
 };
 typedef struct file_producer producer_type;
+// Notice: file consumer never has access to the directory pool as the only means of communication between the producer and consumer is the file queue.
+// Which consists of the regular files that will be wrapped in the consumer.
 struct file_consumer
 {
     Queue* file_queue;
-    Pool* dir_pool;
     int max_width;
 };
 typedef struct file_consumer consumer_type;

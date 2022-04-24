@@ -39,20 +39,17 @@ void *produce_files_to_wrap(void *arg)
     Pool *dir_pool = producer_args->dir_pool;
     Queue *file_q = producer_args->file_queue;
 
-    while (!pool_is_empty(dir_pool) || dir_pool->number_of_active_producers >= dir_pool->number_of_elements_enqued__in_lifetime_of_pool)
+    while (!dir_pool->close)
     {
+        if (pool_is_empty(dir_pool) && dir_pool->number_of_active_producers == 0)
+        {
+            break;
+        }
         pool_data_type *pool_init_data = pool_dequeue(dir_pool);
-        if (pool_is_empty(dir_pool))
-        {
-            decrement_producers(dir_pool);
-            debug_print("Active directory threads: %d\n", dir_pool->number_of_active_producers);
-        }
-        else
-        {
-            debug_print("Dequed directory: %s\n", pool_init_data->directory_path);
-        }
         if (pool_init_data != NULL)
         {
+            increment_active_producers(dir_pool); // a directory thread is working...
+            debug_print("The number of directory threads that are working %d\n", dir_pool->number_of_active_producers);
             int fill_status = fill_pool_and_queue_with_data(pool_init_data->directory_path, dir_pool, file_q);
             if (fill_status == -1)
             {
@@ -63,9 +60,12 @@ void *produce_files_to_wrap(void *arg)
                 free(pool_init_data->directory_path);
             }
             free(pool_init_data);
+            decrement_active_producers(dir_pool); // a directory thread is done working...
         }
     }
+    debug_print("%s\n", "Closing directory POOL");
     pool_close(dir_pool);
+    debug_print("%s\n", "Closing file QUEUE");
     queue_close(file_q);
 
     debug_print("%s", "Exiting produce_files_to_wrap\n");
@@ -89,7 +89,7 @@ void *consume_files_to_wrap(void *arg)
 
         if (q_data_pointer != NULL)
         {
-            debug_print("Dequeing file, tid: %ld input file path: %s output file path: %s\n", pthread_self(), q_data_pointer->input_file, q_data_pointer->output_file);
+            debug_print("Dequeing file, tid: %p input file path: %s output file path: %s\n", pthread_self(), q_data_pointer->input_file, q_data_pointer->output_file);
             wrap_text(q_data_pointer->input_file, max_width, q_data_pointer->output_file);
             if (q_data_pointer->input_file != NULL)
             {
@@ -100,6 +100,10 @@ void *consume_files_to_wrap(void *arg)
                 free(q_data_pointer->output_file);
             }
             free(q_data_pointer);
+        }
+        else
+        {
+            debug_print("Dequeing file, tid: %p input file path: NULL output file path: NULL\n", pthread_self());
         }
     }
     debug_print("%s", "Exiting consume_files_to_wrap\n");
@@ -270,7 +274,7 @@ int fill_pool_and_queue_with_data(char *parent_dir_path, Pool *optional_dir_pool
     DIR *dfd;
     struct dirent *directory_pointer;
 
-    debug_print("Dequeing parent directory, tid: %ld parent directory path: %s\n", pthread_self(), parent_dir_path);
+    debug_print("Dequeing parent directory, tid: %p parent directory path: %s\n", pthread_self(), parent_dir_path);
 
     if ((dfd = opendir(parent_dir_path)) == NULL)
     {
@@ -328,9 +332,7 @@ int fill_pool_and_queue_with_data(char *parent_dir_path, Pool *optional_dir_pool
             if (directory_pointer->d_name[0] != '.')
             {
                 // it is a sub-directory
-                char *sub_directory_path = append_file_path_to_existing_path(parent_dir_path, directory_pointer->d_name); // TODO: free.
-                debug_print("Sub-directory found with path %s %s\n", sub_directory_path, directory_pointer->d_name);
-
+                char *sub_directory_path = append_file_path_to_existing_path(parent_dir_path, directory_pointer->d_name);
                 if (optional_dir_pool != NULL)
                 {
                     pool_data_type *pd = malloc(sizeof(pool_data_type));
@@ -346,42 +348,10 @@ int fill_pool_and_queue_with_data(char *parent_dir_path, Pool *optional_dir_pool
         }
     }
     closedir(dfd);
-
     return 0;
 }
-int main(int argv, char **argc)
+int threaded_wrap_program(int producer_threads, int consumer_threads, int max_width, char *dir_of_interest)
 {
-    if (argv == 1)
-    {
-        error_print("%s\n", "Recursive arguement not provided!");
-        return EXIT_FAILURE;
-    }
-    else if (argv == 2)
-    {
-        error_print("%s\n", "Max width not provided!");
-        return EXIT_FAILURE;
-    }
-    else if (argv == 3)
-    {
-        error_print("%s\n", "Directory not provided!");
-        return EXIT_FAILURE;
-    }
-    // wrapping params
-    int max_width;
-
-    // thread params
-    int producer_threads;
-    int consumer_threads;
-
-    // directory of interest
-    char *dir_of_interest = concat_string(argc[3], "\0", -1, -1);
-
-    int args_filler_status = fill_param_by_user_arguememt(argc, &max_width, &producer_threads, &consumer_threads);
-    if(args_filler_status == -1){
-        error_print("%s\n", "Error with parsing arguements.");
-        free(dir_of_interest);
-        return EXIT_FAILURE;
-    }
     // data structures setup
     Queue *file_queue = queue_init(QUEUESIZE);
     if (file_queue == NULL)
@@ -389,7 +359,7 @@ int main(int argv, char **argc)
         error_print("%s\n", "Failed to init file queue.");
         return EXIT_FAILURE;
     }
-    Pool *dir_pool = pool_init(QUEUESIZE, producer_threads);
+    Pool *dir_pool = pool_init(QUEUESIZE);
     if (dir_pool == NULL)
     {
         error_print("%s\n", "Failed to init directory pool.");
@@ -450,4 +420,42 @@ int main(int argv, char **argc)
     free(consumer_tids);
     queue_destroy(file_queue);
     pool_destroy(dir_pool);
+    return EXIT_SUCCESS;
+}
+int main(int argv, char **argc)
+{
+    if (argv == 1)
+    {
+        error_print("%s\n", "Recursive arguement not provided!");
+        return EXIT_FAILURE;
+    }
+    else if (argv == 2)
+    {
+        error_print("%s\n", "Max width not provided!");
+        return EXIT_FAILURE;
+    }
+    else if (argv == 3)
+    {
+        error_print("%s\n", "Directory not provided!");
+        return EXIT_FAILURE;
+    }
+    // wrapping params
+    int max_width;
+
+    // thread params
+    int producer_threads;
+    int consumer_threads;
+
+    // directory of interest
+    char *dir_of_interest = concat_string(argc[3], "\0", -1, -1);
+
+    int args_filler_status = fill_param_by_user_arguememt(argc, &max_width, &producer_threads, &consumer_threads);
+    if (args_filler_status == -1)
+    {
+        error_print("%s\n", "Error with parsing arguements.");
+        free(dir_of_interest);
+        return EXIT_FAILURE;
+    }
+    int rtn_val = threaded_wrap_program(producer_threads, consumer_threads, max_width, dir_of_interest);
+    return rtn_val;
 }

@@ -106,7 +106,7 @@ queue_data_type *queue_dequeue(Queue *queue_pointer)
             return NULL;
         }
         // wait to get the data.
-        debug_print("%s", "From queue_dequeue: The queue is empty\n");
+        debug_print("%s", "Queue is empty... waiting for data to come inside queue!\n");
         pthread_cond_wait(&(queue_pointer->ready_to_consume), &queue_pointer->lock);
     }
     queue_data_type *data = queue_pointer->data[queue_pointer->start];
@@ -127,10 +127,6 @@ queue_data_type *queue_peek(Queue *queue_pointer)
 {
     return queue_pointer->data[queue_pointer->start];
 }
-bool data_queue_is_empty(queue_data_type *empty_data)
-{
-    return empty_data->input_file == NULL && empty_data->output_file == NULL;
-}
 bool queue_is_empty(Queue *queue_pointer)
 {
     return queue_pointer->number_of_elements_buffered == 0;
@@ -141,6 +137,24 @@ bool queue_is_full(Queue *queue_pointer)
 }
 int queue_destroy(Queue *queue_pointer)
 {
+    // In theory queue should be empty at this point. However, we cannot guarantee anything so just check if queue is empty, and free from there.
+    if (queue_pointer->number_of_elements_buffered != 0)
+    {
+        error_print("%s", "From Queue Destroy(), the queue is still not empty!\n");
+        while (!queue_is_empty(queue_pointer))
+        {
+            queue_data_type *q_data = queue_dequeue(queue_pointer);
+            if(q_data != NULL){                
+                if(q_data->input_file != NULL){
+                    free(q_data->input_file);
+                }
+                if(q_data->output_file != NULL){
+                    free(q_data->output_file);
+                }
+                free(q_data);
+            }
+        }
+    }
     int mutex_destroy_status = pthread_mutex_destroy(&queue_pointer->lock);
     if (mutex_destroy_status != 0)
     {
@@ -159,20 +173,9 @@ int queue_destroy(Queue *queue_pointer)
         error_print("Condition variable for produce can't be destroyed with error code: %d\n", produce_condition_variable_destroy);
         return mutex_destroy_status;
     }
-    // In theory queue should be empty at this point. However, we cannot guarantee anything so just check if queue is empty, and free from there.
-    if (queue_pointer->number_of_elements_buffered != 0)
-    {
-        error_print("%s", "From Queue Destroy(), the queue is still not empty!\n");
-        while (!queue_is_empty(queue_pointer))
-        {
-            queue_data_type *q_data = queue_dequeue(queue_pointer);
-            free(q_data->input_file);
-            free(q_data->output_file);
-            free(q_data);
-        }
-    }
     free(queue_pointer->data); // At this point all pointers exisiting inside queue_pointer->data is freed, so free queue_pointer->data.
     free(queue_pointer);
+    debug_print("%s", "Queue has been destroyed!\n");
     return 0;
 }
 int queue_close(Queue *queue_pointer){

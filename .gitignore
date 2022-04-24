@@ -6,3 +6,5 @@ small/
 big/
 logs/*
 !logs/keep
+simple/
+single/

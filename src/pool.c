@@ -12,7 +12,7 @@
 #include <string.h>
 #include <stdio.h>
 
-Pool *pool_init(int pool_size, int producers)
+Pool *pool_init(int pool_size)
 {
     Pool *pool_pointer = malloc(sizeof(Pool));
     if (pool_pointer == NULL)
@@ -25,8 +25,7 @@ Pool *pool_init(int pool_size, int producers)
     pool_pointer->pool_size = pool_size;
     pool_pointer->number_of_elements_buffered = 0;
     pool_pointer->close = false;
-    pool_pointer->number_of_active_producers = producers;
-    pool_pointer->number_of_elements_enqued__in_lifetime_of_pool = 0;
+    pool_pointer->number_of_active_producers = 0;
 
     int mutex_init_status = pthread_mutex_init(&(pool_pointer->lock), NULL);
     if (mutex_init_status != 0)
@@ -76,7 +75,6 @@ int pool_enqueue(Pool *pool_pointer, pool_data_type *data)
 
     pool_pointer->data[pool_pointer->end++] = data;
     pool_pointer->number_of_elements_buffered += 1;
-    pool_pointer->number_of_elements_enqued__in_lifetime_of_pool += 1;
     pthread_cond_signal(&(pool_pointer->ready_to_consume));
 
     int unlock_status = pthread_mutex_unlock(&pool_pointer->lock);
@@ -102,6 +100,7 @@ pool_data_type *pool_dequeue(Pool *pool_pointer)
             pthread_mutex_unlock(&pool_pointer->lock);
             return NULL;
         }
+        debug_print("%s\n", "Pool is empty... waiting for data to come inside pool!");
         int wait_status = pthread_cond_wait(&(pool_pointer->ready_to_consume), &pool_pointer->lock);
         if (wait_status != 0)
         {
@@ -168,7 +167,7 @@ int pool_close(Pool *pool_pointer)
     }
     return 0;
 }
-int decrement_producers(Pool *pool_pointer)
+int decrement_active_producers(Pool *pool_pointer)
 {
     int lock_status = pthread_mutex_lock(&pool_pointer->lock);
     if (lock_status != 0)
@@ -187,8 +186,44 @@ int decrement_producers(Pool *pool_pointer)
     }
     return 0;
 }
+int increment_active_producers(Pool *pool_pointer)
+{
+    int lock_status = pthread_mutex_lock(&pool_pointer->lock);
+    if (lock_status != 0)
+    {
+        error_print("Failed to lock with error code: %d!\n", lock_status);
+        return lock_status;
+    }
+
+    pool_pointer->number_of_active_producers++;
+
+    int unlock_status = pthread_mutex_unlock(&pool_pointer->lock);
+    if (unlock_status != 0)
+    {
+        error_print("Failed to unlock with error code: %d!\n", unlock_status);
+        return lock_status;
+    }
+    return 0;
+}
 int pool_destroy(Pool *pool_pointer)
 {
+    // In theory pool should be empty at this point. However, we cannot guarantee anything so just check if pool is empty, and free from there.
+    if (pool_pointer->number_of_elements_buffered != 0)
+    {
+        error_print("%s", "From Pool Destroy(), the pool is still not empty!\n");
+        while (!pool_is_empty(pool_pointer))
+        {
+            pool_data_type *p_data = pool_dequeue(pool_pointer);
+            if (p_data != NULL)
+            {
+                if (p_data->directory_path != NULL)
+                {
+                    free(p_data->directory_path);
+                }
+                free(p_data);
+            }
+        }
+    }
     int mutex_destroy_status = pthread_mutex_destroy(&pool_pointer->lock);
     if (mutex_destroy_status != 0)
     {
@@ -201,19 +236,8 @@ int pool_destroy(Pool *pool_pointer)
         error_print("Condition variable for consume can't be destroyed with error code: %d\n", consume_condition_variable_destroy);
         return mutex_destroy_status;
     }
-    // In theory pool should be empty at this point. However, we cannot guarantee anything so just check if pool is empty, and free from there.
-    if (pool_pointer->number_of_elements_buffered != 0)
-    {
-        error_print("%s", "From Pool Destroy(), the pool is still not empty!\n");
-        while (!pool_is_empty(pool_pointer))
-        {
-            pool_data_type *p_data = pool_dequeue(pool_pointer);
-            free(p_data->directory_path);
-            free(p_data);
-        }
-    }
-    debug_print("Pool has been destroyed and has size %d\n", pool_pointer->number_of_elements_buffered);
     free(pool_pointer->data); // At this point all pointers exisiting inside queue_pointer->data is freed, so free queue_pointer->data.
     free(pool_pointer);
+    debug_print("%s", "Pool has been destroyed!\n");
     return 0;
 }

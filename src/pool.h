@@ -41,5 +41,4 @@ int pool_close(Pool *);
 int increment_active_producers(Pool *);
 int decrement_active_producers(Pool *);
 int pool_destroy(Pool *);
-
 #endif

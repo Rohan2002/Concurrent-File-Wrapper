@@ -83,10 +83,10 @@ class GenerateSubDir:
 
 if __name__ == "__main__":
     gs = GenerateSubDir(
-        root="big",
-        levels=150,
+        root="single",
+        levels=1,
         files_range=(10, 30),
-        subdirectory_range=(10, 20),
+        subdirectory_range=(0, 0),
         paragraph_setting={
             "range_word_length": (3, 6),
             "range_sentence_length": (5, 10),

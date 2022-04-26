@@ -38,7 +38,7 @@ void *produce_files_to_wrap(void *arg)
     // unpack thread args for producer
     Pool *dir_pool = producer_args->dir_pool;
     Queue *file_q = producer_args->file_queue;
-    int isrecursive=producer_args->isrecursive;
+    int isrecursive = producer_args->isrecursive;
 
     while (!dir_pool->close)
     {
@@ -51,7 +51,7 @@ void *produce_files_to_wrap(void *arg)
         {
             increment_active_producers(dir_pool); // a directory thread is working...
             debug_print("The number of directory threads that are working %d\n", dir_pool->number_of_active_producers);
-            int fill_status = fill_pool_and_queue_with_data(pool_init_data->directory_path, dir_pool, file_q,isrecursive);
+            int fill_status = fill_pool_and_queue_with_data(pool_init_data->directory_path, dir_pool, file_q, isrecursive);
             if (fill_status == -1)
             {
                 error_print("%s\n", "Couldn't fill the data");
@@ -366,7 +366,7 @@ int threaded_wrap_program(int producer_threads, int consumer_threads, int max_wi
         error_print("%s\n", "Failed to init directory pool.");
         return EXIT_FAILURE;
     }
-    fill_queue_and_pool_by_user_arguememt(widthindex,argv,argc, file_queue,dir_pool );
+    fill_initial_data_in_queue_and_pool_from_user_arguememt(widthindex, argv, argc, file_queue, dir_pool);
     // pool_data_type *pool_init_data = malloc(sizeof(pool_data_type));
     // pool_init_data->directory_path = dir_of_interest;
     // pool_enqueue(dir_pool, pool_init_data);
@@ -448,20 +448,20 @@ int main(int argv, char **argc)
     int producer_threads;
     int consumer_threads;
     int isrecursive;
-    int widthindex;    
+    int widthindex;
 
     // directory of interest
-    //char *dir_of_interest = concat_string(argc[3], "\0", -1, -1);
+    // char *dir_of_interest = concat_string(argc[3], "\0", -1, -1);
 
     int args_filler_status = fill_param_by_user_arguememt(argv, argc, &max_width, &producer_threads, &consumer_threads, &isrecursive, &widthindex);
 
-    //int args_filler_status = fill_param_by_user_arguememt(argc, &max_width, &producer_threads, &consumer_threads);
+    // int args_filler_status = fill_param_by_user_arguememt(argc, &max_width, &producer_threads, &consumer_threads);
     if (args_filler_status == -1)
     {
         error_print("%s\n", "Error with parsing arguements.");
-        //free(dir_of_interest);
+        // free(dir_of_interest);
         return EXIT_FAILURE;
     }
-    int rtn_val = threaded_wrap_program(producer_threads, consumer_threads, max_width, isrecursive,widthindex,argv, argc);
+    int rtn_val = threaded_wrap_program(producer_threads, consumer_threads, max_width, isrecursive, widthindex, argv, argc);
     return rtn_val;
 }

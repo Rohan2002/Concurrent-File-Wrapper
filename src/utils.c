@@ -58,18 +58,19 @@ int check_file_or_directory(struct stat *file_in_dir_pointer)
     }
     return 0;
 }
-int fill_param_by_user_arguememt(int argv,char **arg, int *max_width, int *producer_threads, int *consumer_threads,int *isrecursive,int *widthindex )
+int fill_param_by_user_arguememt(int argv, char **arg, int *max_width, int *producer_threads, int *consumer_threads, int *isrecursive, int *widthindex)
 {
-    *widthindex=2;
-    if(arg[1][0]!='-' ) {
-        *widthindex=1;
-        *isrecursive=0;
+    *widthindex = 2;
+    if (arg[1][0] != '-')
+    {
+        *widthindex = 1;
+        *isrecursive = 0;
         *consumer_threads = 1;
         *producer_threads = 1;
-
-    } else if (strcmp(arg[1], "-r") == 0)
+    }
+    else if (strcmp(arg[1], "-r") == 0)
     {
-        *isrecursive=1;
+        *isrecursive = 1;
         *consumer_threads = 1;
         *producer_threads = 1;
     }
@@ -84,99 +85,95 @@ int fill_param_by_user_arguememt(int argv,char **arg, int *max_width, int *produ
         }
         else
         {
-            *isrecursive=1;
+            *isrecursive = 1;
             *producer_threads = atoi(&rec_threads[2]); // directory threads
             *consumer_threads = atoi(&rec_threads[4]); // wrapping threads
         }
     }
     *max_width = atoi(arg[*widthindex]);
 
-
     return 0;
 }
-int fill_queue_and_pool_by_user_arguememt(int widthindex,int argv,char **arg, Queue *optional_file_queue,Pool *dir_pool )
+int fill_initial_data_in_queue_and_pool_from_user_arguememt(int widthindex, int argv, char **arg, Queue *optional_file_queue, Pool *dir_pool)
 {
-    for (int i=widthindex+1; i<argv; i++) {
-         char *dir_of_interest = concat_string(arg[i], "\0", -1, -1);
-         struct stat file_in_dir;
-            int status_of_file_metadata = stat(dir_of_interest, &file_in_dir); // directory_pointer->d_name is the filename.
-            if (status_of_file_metadata != 0)
+    for (int i = widthindex + 1; i < argv; i++)
+    {
+        char *dir_of_interest = concat_string(arg[i], "\0", -1, -1);
+        struct stat file_in_dir;
+        int status_of_file_metadata = stat(dir_of_interest, &file_in_dir); // directory_pointer->d_name is the filename.
+        if (status_of_file_metadata != 0)
+        {
+            error_print("Can't get stat of file %s\n", dir_of_interest);
+            return status_of_file_metadata;
+        }
+        if (check_file_or_directory(&file_in_dir) == 1)
+        { // regular file enque to file queue
+            // Only wrap files that don't start with wrap. or .
+            if (dir_of_interest[0] != '.' && memcmp(dir_of_interest, "wrap.", 5) != 0)
             {
-                error_print("Can't get stat of file %s\n", dir_of_interest);
-                return status_of_file_metadata;
-            }
-            if (check_file_or_directory(&file_in_dir) == 1){ // regular file enque to file queue
-                // Only wrap files that don't start with wrap. or .
-                if (dir_of_interest[0] != '.' && memcmp(dir_of_interest, "wrap.", 5) != 0)
+                // output file name computation.
+                int index = 0;
+                for (int j = 0; j < strlen(dir_of_interest); j++)
                 {
-                    // output file name computation.
-                    int index=0;
-                    for (int j=0;j<strlen(dir_of_interest);j++){
-                        if (dir_of_interest[j]=='/' || dir_of_interest[j]=='\\') {
-                            index=j+1;
-                        }
-                    }
-                    char *filename = &dir_of_interest[index];
-                    
-                    char *dirname=(char *)malloc((strlen(dir_of_interest)+1)*sizeof(char));
-                    strcpy(dirname,dir_of_interest);
-                    char *new_file_name = concat_string("wrap.", filename, 5, strlen(filename));
-                    char *output_file_name;
-                    if (index>0){
-                        dirname[index]='\0';
-                        //printf("new_file_name : %s\n",new_file_name);
-                        //printf("dirname : %s\n",dirname);
-                        output_file_name = append_file_path_to_existing_path(dirname, new_file_name);
-                        //printf("output_file_name : %s\n",output_file_name);
-
-                    } else {
-                        output_file_name=(char *)malloc((strlen(new_file_name)+1)*sizeof(char));
-                        strcpy(output_file_name,new_file_name);
-                        
-                    }
-                    free(new_file_name);
-                    free(dirname);
-                    
-                    
-
-
-
-                    //arg[i] file name with folder ex. tests/alex
-                    //output_file_name shoulde be tests/wrap.alex
-
-                    //
-
-
-
-                    debug_print("Input-file found with path %s\n", dir_of_interest);
-                    debug_print("Output-file found with path %s\n", output_file_name);
-
-                    if (optional_file_queue != NULL)
+                    if (dir_of_interest[j] == '/' || dir_of_interest[j] == '\\')
                     {
-                        queue_data_type *qd = malloc(sizeof(queue_data_type));
-                        if (qd == NULL)
-                        {
-                            error_print("%s\n", "Malloc failure!");
-                            return -1;
-                        }
-                        qd->input_file = dir_of_interest;
-                        qd->output_file = output_file_name;
-                        //strcpy(qd->output_file ,"wrap.test.txt");
-
-                        queue_enqueue(optional_file_queue, qd);
+                        index = j + 1;
                     }
                 }
+                char *filename = &dir_of_interest[index];
 
+                char *dirname = (char *)malloc((strlen(dir_of_interest) + 1) * sizeof(char));
+                strcpy(dirname, dir_of_interest);
+                char *new_file_name = concat_string("wrap.", filename, 5, strlen(filename));
+                char *output_file_name;
+                if (index > 0)
+                {
+                    dirname[index] = '\0';
+                    // printf("new_file_name : %s\n",new_file_name);
+                    // printf("dirname : %s\n",dirname);
+                    output_file_name = append_file_path_to_existing_path(dirname, new_file_name);
+                    // printf("output_file_name : %s\n",output_file_name);
+                }
+                else
+                {
+                    output_file_name = (char *)malloc((strlen(new_file_name) + 1) * sizeof(char));
+                    strcpy(output_file_name, new_file_name);
+                }
+                free(new_file_name);
+                free(dirname);
+
+                // arg[i] file name with folder ex. tests/alex
+                // output_file_name shoulde be tests/wrap.alex
+
+                //
+
+                debug_print("Input-file found with path %s\n", dir_of_interest);
+                debug_print("Output-file found with path %s\n", output_file_name);
+
+                if (optional_file_queue != NULL)
+                {
+                    queue_data_type *qd = malloc(sizeof(queue_data_type));
+                    if (qd == NULL)
+                    {
+                        error_print("%s\n", "Malloc failure!");
+                        return -1;
+                    }
+                    qd->input_file = dir_of_interest;
+                    qd->output_file = output_file_name;
+                    // strcpy(qd->output_file ,"wrap.test.txt");
+
+                    queue_enqueue(optional_file_queue, qd);
+                }
             }
-            else if (check_file_or_directory(&file_in_dir) == 2){
-                //printf("%s\n",dir_of_interest);
-                pool_data_type *pool_init_data = malloc(sizeof(pool_data_type));
-                pool_init_data->directory_path = dir_of_interest;
-                pool_enqueue(dir_pool, pool_init_data);
-            }
-      
+        }
+        else if (check_file_or_directory(&file_in_dir) == 2)
+        {
+            // printf("%s\n",dir_of_interest);
+            pool_data_type *pool_init_data = malloc(sizeof(pool_data_type));
+            pool_init_data->directory_path = dir_of_interest;
+            pool_enqueue(dir_pool, pool_init_data);
+        }
     }
-
 
     return 0;
 }

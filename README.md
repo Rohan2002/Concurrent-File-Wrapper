@@ -1,8 +1,5 @@
 # Word Wrap
 
-A brief description of your testing strategy. How did you determine that your program is
-correct? What sorts of files and scenarios did you check?
-
 # Testing strategy
 ## General Properties of the Algorithm
 1. For Word Wrap to ```Wrap Correctly``` the following properties must be satisfied.

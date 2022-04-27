@@ -79,7 +79,7 @@ void vanilla_test()
     /*
         Without any threading.
     */
-    Pool *pool = pool_init(4000, 1);
+    Pool *pool = pool_init(4000);
 
     for (int a = 0; a < 4000; a++)
     {

@@ -15,7 +15,10 @@
         "ctype.h": "c",
         "stdbool.h": "c",
         "stdlib.h": "c",
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "__locale": "c",
+        "cstring": "c",
+        "typeinfo": "c"
     },
     "python.formatting.provider": "black"
 }

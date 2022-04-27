@@ -68,7 +68,7 @@ int queue_enqueue(Queue *queue_pointer, queue_data_type *data)
     {
         // there will be no more data incoming as queue has queue_enqueued all available data at this point. So whatever data is remaining, just tell consumer to queue_dequeue.
         debug_print("%s", "From queue_enqueue: The queue is full.\n");
-        pthread_cond_wait(&(queue_pointer->ready_to_produce), &queue_pointer->lock);
+        pthread_cond_wait(&(queue_pointer->ready_to_produce), &queue_pointer->lock); // selins mom will say plate is full.. eat the food.
     }
     queue_pointer->data[queue_pointer->end] = data;
     debug_print("From queue_enqueue: Enqued element at index %lu\n", queue_pointer->end);
@@ -97,8 +97,10 @@ queue_data_type *queue_dequeue(Queue *queue_pointer)
     // if there is no data in queue and there is still available data from the stream then then wait until I get that data.
     while (queue_is_empty(queue_pointer))
     {
+        // mom says no more food in kitchen, so plate is closed. Unlock. selin says im done with her plate retun NULL
+        // when queue_pointer->close is set to true then mom says no more food in the kitchen.
         if(queue_pointer->close){
-            int unlock_init_status = pthread_mutex_unlock(&queue_pointer->lock);
+            int unlock_init_status = pthread_mutex_unlock(&queue_pointer->lock); 
             if(unlock_init_status != 0){
                 error_print("Failed to unlock with error code: %d!\n", unlock_init_status);
                 return NULL;
@@ -107,7 +109,7 @@ queue_data_type *queue_dequeue(Queue *queue_pointer)
         }
         // wait to get the data.
         debug_print("%s", "Queue is empty... waiting for data to come inside queue!\n");
-        pthread_cond_wait(&(queue_pointer->ready_to_consume), &queue_pointer->lock);
+        pthread_cond_wait(&(queue_pointer->ready_to_consume), &queue_pointer->lock); // call my mother to put food in the plate.
     }
     queue_data_type *data = queue_pointer->data[queue_pointer->start];
     queue_pointer->start = queue_pointer->start + 1;

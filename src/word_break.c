@@ -22,6 +22,7 @@
 #include "logger.h"
 
 #define QUEUESIZE 100
+#define POOLSIZE 1
 
 void *produce_files_to_wrap(void *arg)
 {
@@ -360,16 +361,17 @@ int threaded_wrap_program(int producer_threads, int consumer_threads, int max_wi
         error_print("%s\n", "Failed to init file queue.");
         return EXIT_FAILURE;
     }
-    Pool *dir_pool = pool_init(QUEUESIZE);
+    Pool *dir_pool = pool_init(POOLSIZE);
     if (dir_pool == NULL)
     {
         error_print("%s\n", "Failed to init directory pool.");
         return EXIT_FAILURE;
     }
-    fill_initial_data_in_queue_and_pool_from_user_arguememt(widthindex, argv, argc, file_queue, dir_pool);
-    // pool_data_type *pool_init_data = malloc(sizeof(pool_data_type));
-    // pool_init_data->directory_path = dir_of_interest;
-    // pool_enqueue(dir_pool, pool_init_data);
+    // fill_initial_data_in_queue_and_pool_from_user_arguememt(widthindex, argv, argc, file_queue, dir_pool);
+    pool_data_type *pool_init_data = malloc(sizeof(pool_data_type));
+    pool_init_data->directory_path = concat_string(argc[3], "\0", -1, -1);
+    pool_enqueue(dir_pool, pool_init_data);
+    debug_print("The directory of interest is %s\n", argc[3]);
 
     // threads setup
     pthread_t *producer_tids = malloc(producer_threads * sizeof(pthread_t));
@@ -420,8 +422,10 @@ int threaded_wrap_program(int producer_threads, int consumer_threads, int max_wi
     free(consumer_args);
     free(producer_tids);
     free(consumer_tids);
+
     queue_destroy(file_queue);
     pool_destroy(dir_pool);
+
     return EXIT_SUCCESS;
 }
 int main(int argv, char **argc)

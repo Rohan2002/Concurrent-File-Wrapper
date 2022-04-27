@@ -7,9 +7,9 @@
 */
 #ifndef QUEUE_H
 #define QUEUE_H
+
 #include <pthread.h>
 #include <stdbool.h>
-
 
 struct Queue_Data
 {

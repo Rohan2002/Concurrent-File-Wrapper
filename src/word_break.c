@@ -453,11 +453,12 @@ int main(int argv, char **argc)
     int consumer_threads;
     int isrecursive;
     int widthindex;
+    int one_file_only;
 
     // directory of interest
     // char *dir_of_interest = concat_string(argc[3], "\0", -1, -1);
 
-    int args_filler_status = fill_param_by_user_arguememt(argv, argc, &max_width, &producer_threads, &consumer_threads, &isrecursive, &widthindex);
+    int args_filler_status = fill_param_by_user_arguememt(argv, argc, &max_width, &producer_threads, &consumer_threads, &isrecursive, &widthindex, &one_file_only);
 
     // int args_filler_status = fill_param_by_user_arguememt(argc, &max_width, &producer_threads, &consumer_threads);
     if (args_filler_status == -1)
@@ -466,6 +467,14 @@ int main(int argv, char **argc)
         // free(dir_of_interest);
         return EXIT_FAILURE;
     }
-    int rtn_val = threaded_wrap_program(producer_threads, consumer_threads, max_width, isrecursive, widthindex, argv, argc);
-    return rtn_val;
+    if (one_file_only==1) {
+        //printf("1 file only\n");
+        char *dir_of_interest = concat_string(argc[widthindex+1], "\0", -1, -1);
+        int r=wrap_text(dir_of_interest,max_width,NULL);
+        free(dir_of_interest);
+        return r;
+    } else {
+        int rtn_val = threaded_wrap_program(producer_threads, consumer_threads, max_width, isrecursive, widthindex, argv, argc);
+        return rtn_val;
+    }
 }

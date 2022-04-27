@@ -58,7 +58,7 @@ int check_file_or_directory(struct stat *file_in_dir_pointer)
     }
     return 0;
 }
-int fill_param_by_user_arguememt(int argv, char **arg, int *max_width, int *producer_threads, int *consumer_threads, int *isrecursive, int *widthindex, int *one_file_only)
+int fill_param_by_user_arguememt(int argv, char **arg, int *max_width, int *producer_threads, int *consumer_threads, int *isrecursive, int *widthindex)
 {
     *widthindex = 2;
     if (arg[1][0] != '-')
@@ -99,29 +99,8 @@ int fill_param_by_user_arguememt(int argv, char **arg, int *max_width, int *prod
         free(tempM);
     }
     *max_width = atoi(arg[*widthindex]);
-    *one_file_only = 0;
-    //printf("argv :%d wi %d\n",argv,*widthindex);
-    if (( argv - (*widthindex) ) ==2) {
-        //printf("IF entered\n");
-        char *dir_of_interest = concat_string(arg[*widthindex+1], "\0", -1, -1);
-         struct stat file_in_dir;
-            int status_of_file_metadata = stat(dir_of_interest, &file_in_dir); // directory_pointer->d_name is the filename.
-            if (status_of_file_metadata != 0)
-            {
-                error_print("Can't get stat of file %s\n", dir_of_interest);
-                return status_of_file_metadata;
-            }
-            //printf("Checking\n");
-            if (check_file_or_directory(&file_in_dir) == 1){ // regular file enque to file queue
-                *one_file_only = 1;
-                //printf("1 file\n");
-            }
-            free(dir_of_interest);
-
-    }
 
     return 0;
-
 }
 // int fill_initial_data_in_queue_and_pool_from_user_arguememt(int widthindex, int argv, char **arg, Queue *optional_file_queue, Pool *dir_pool)
 // {

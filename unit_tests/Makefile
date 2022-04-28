@@ -8,7 +8,7 @@ bin/utils_test: bin/ ../obj/utils.o utils_test.c
 	$(CC) $(CFLAGS) ../obj/utils.o utils_test.c -o $@
 
 bin/pool_test: bin/ ../obj/pool.o pool_test.c
-	$(CC) $(CFLAGS) pool_test.c ../obj/pool.o -o $@
+	$(CC) $(CFLAGS) ../obj/pool.o pool_test.c -o $@
 
 bin/:
 	mkdir -p $@

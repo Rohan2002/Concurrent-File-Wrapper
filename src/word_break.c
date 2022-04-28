@@ -91,7 +91,7 @@ void *consume_files_to_wrap(void *arg)
 
         if (q_data_pointer != NULL)
         {
-            debug_print("Dequeing file, tid: %ld input file path: %s output file path: %s\n", pthread_self(), q_data_pointer->input_file, q_data_pointer->output_file);
+            debug_print("Dequeing file, tid: %p input file path: %s output file path: %s\n", pthread_self(), q_data_pointer->input_file, q_data_pointer->output_file);
             wrap_text(q_data_pointer->input_file, max_width, q_data_pointer->output_file);
             if (q_data_pointer->input_file != NULL)
             {
@@ -105,7 +105,7 @@ void *consume_files_to_wrap(void *arg)
         }
         else
         {
-            debug_print("Dequeing file, tid: %ld input file path: NULL output file path: NULL\n", pthread_self());
+            debug_print("Dequeing file, tid: %p input file path: NULL output file path: NULL\n", pthread_self());
         }
     }
     debug_print("%s", "Exiting consume_files_to_wrap\n");
@@ -276,7 +276,7 @@ int fill_pool_and_queue_with_data(char *parent_dir_path, Pool *optional_dir_pool
     DIR *dfd;
     struct dirent *directory_pointer;
 
-    debug_print("Dequeing parent directory, tid: %ld parent directory path: %s\n", pthread_self(), parent_dir_path);
+    debug_print("Dequeing parent directory, tid: %p parent directory path: %s\n", pthread_self(), parent_dir_path);
 
     if ((dfd = opendir(parent_dir_path)) == NULL)
     {

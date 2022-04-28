@@ -101,12 +101,16 @@ int fill_param_by_user_arguememt(int argv, char **arg, int *max_width, int *prod
             *producer_threads = 1;
             *consumer_threads = 1;
             *max_width = atoi(arg[*widthindex]);
-
+            free(str_producer_thread);
+            if(*max_width == 0){
+                error_print("%s\n", "Max width was either not provided or it cannot be 0!");
+                return -1;
+            }
             debug_print("Producer threads %d\n", *producer_threads);
             debug_print("Consumer threads %d\n", *consumer_threads);
             debug_print("Max Width %d\n", *max_width);
-
-            free(str_producer_thread);
+            
+            
             return 0;
         }
         // Case2 or Case3. We assume there is always a comma -rN, or -rM,N

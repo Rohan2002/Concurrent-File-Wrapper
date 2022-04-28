@@ -157,8 +157,12 @@ int pool_close(Pool *pool_pointer)
     }
 
     pool_pointer->close = true;
-    pthread_cond_broadcast(&pool_pointer->ready_to_consume);
-
+    int broad_stat = pthread_cond_broadcast(&pool_pointer->ready_to_consume);
+    if (broad_stat != 0)
+    {
+        error_print("Failed to broadcast with error code: %d!\n", broad_stat);
+        return broad_stat;
+    }
     int unlock_status = pthread_mutex_unlock(&pool_pointer->lock);
     if (unlock_status != 0)
     {

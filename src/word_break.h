@@ -15,6 +15,7 @@ struct file_producer
     Queue* file_queue;
     Pool* dir_pool;
     int isrecursive;
+    int* error_code;
 };
 typedef struct file_producer producer_type;
 // Notice: file consumer never has access to the directory pool as the only means of communication between the producer and consumer is the file queue.
@@ -23,6 +24,7 @@ struct file_consumer
 {
     Queue* file_queue;
     int max_width;
+    int* error_code;
 };
 typedef struct file_consumer consumer_type;
 

@@ -129,24 +129,79 @@ We tested the Queue by two main testing approaches.
 ## Consumer threads
 
 ## Utils
-The purpose of this program it manipulates the user interface according to what is asked from the client.
+The purpose of this program it is a shared tool functions interface that is used in ```word_break.c``` and manipulate it accordingly.
 
 ## Utils functions that is used for debugging purpose
 
 1. ```print_buffer``` is used for debugging purpose and print the buffer in ```wrap_text```.
 2. ```safe_write``` checks whether or not it is succesfully written ```number of bytes``` into the file.  Otherwise, it returns -1 when error occurs.
 ## Util functions
+Our util can be found in ```src/utils.c```.
 
-1.```check_file_or_directory```returns 1 when it is a regular file,returns 2 when it is a directory name, oterwise it returns 0.
-2. ```check_rsyntax``` it includes ```-r``` syntax.
-3. ```fill_param_by_use_argumemt``` checks how many ```*producer_threads``` and ```*consumer_threads``` is used according to the given first argument. First case checks if the first argument only includes ```-r``` syntax, which uses only 1 thread for reading and 1 thread for wrapping. In second case, we assume there is always ```,```after number of threads are provided beforehand. If in our first argument there is only number of ```*consumer_threads``` provided for wrapping, the number of ```*producer_threads``` used for reading automatically would be 1. In third case, if both ```*producer_threads``` and ```*consumer_threads```(after comma) is provided, it will update the number of ```*producer_threads``` and ```*consumer_threads``` is used. In last case, if the ```-r``` syntax is not provided it updates ```*isrecursive``` parameter to be 0. At the end. function checks the error case if the first argument is provided using ```*max_width``` parameter.
-3. ```handle_multiple_input_files``` handles multiple files and directories in the user interface where client is asked for to wrap. The first parameter of this function ```widthindex``` it has the index value of the ```width``` parameter that client provided. This function will loop through the arguments greater than the widthindex to trace through the input files and directories. If the argument is a regular file it will use the ```wrapt_text()``` function. If it is a directory it will be ```enqued``` in the directory_pool which is provided as ```*dir_pool```. If there is only one regular file provided it wraps and writes the standard output according to ```max_width```.
-4. ```*concat_string``` it concetenates the first and second parameter accoroding to ```optional_prev_length``` and ```optional_new_length```. If ```optional_prev_length``` = -1 or ```optional_new_length``` = -1, the string length for the appropriate string will be computed, else it is the client's responsibility to give a valid string length for the appropriate string.```*concat_string``` is used to concatenate the ```dir_of_interest```regular file name string that we are interested in with string of ``wrap.`` before the regular file name interest.
-5. ```*append_file_path_to_existing_path``` appends the name of a directory or regular file to an existing given path.
+1. ```check_file_or_directory``` returns 1 when it is a regular file, returns 2 when it is a directory name, otherwise it returns 0.
+2. ```check_rsyntax``` includes ```-r``` syntax.
+3. ```fill_param_by_use_argumemt``` checks how many ```*producer_threads``` and ```*consumer_threads``` is used according to the given first argument. 
+    - In first case, we check if the first argument only includes ```-r``` syntax, which uses only 1 thread for reading and 1 thread for wrapping. 
+    - In second case, we assume there is always ```,``` after number of threads are provided beforehand. If in our first argument there is only number of ```*consumer_threads``` provided for wrapping, the number of ```*producer_threads``` used for reading automatically would be updated to 1. 
+    - In third case, if both ```*producer_threads``` and ```*consumer_threads```(after comma) is provided, it will update the number of ```*producer_threads``` and ```*consumer_threads``` is used. In last case, if the ```-r``` syntax is not provided it updates ```*isrecursive``` parameter to be 0. 
+At the end. function checks the error case if the first argument is provided using ```*max_width``` parameter.
+
+4. ```handle_multiple_input_files``` handles multiple files and directories in the user interface where client is asked for to wrap. The first parameter of this function ```widthindex``` it has the index value of the ```width``` parameter that client provided. This function will loop through the arguments greater than the widthindex to trace through the input files and directories. If the argument is a regular file, it will use the ```wrapt_text()``` function. If it is a directory, it will be ```enqued``` in the directory_pool which is provided as ```*dir_pool```. If there is only one regular file provided, it wraps and writes the standard output according to ```max_width```.
+5. ```*concat_string``` it concatenates the first and second parameter accoroding to ```optional_prev_length``` and ```optional_new_length```. If ```optional_prev_length``` = -1 or ```optional_new_length``` = -1, the string length for the appropriate string will be computed, else it is the client's responsibility to give a valid string length for the appropriate string.```*concat_string``` is used to concatenate the ```dir_of_interest```regular file name string that we are interested in with string of ``wrap.`` before the regular file name interest.
+6. ```*append_file_path_to_existing_path``` appends the name of a directory or regular file to an existing given path.
 ### Unit-Tests for Utils
 Our unit test for Utils can be found in ```unit_test/utils_test.c```.
 1. ```test_append_file_path_to_existing_path``` we test whether or not directory or given files name```e_file_name_2``` includes ```/``` at the end or not ```e_file_name_1```, once we test these cases we can see that ```e_file_name_1``` appends with ```new_file_1``` and ```e_file_name_2```  appends with ```new_file_2``` succesfully.
-2. ```test_concat_strings``` if the given ```concat_string``` function concatenates the strings succesfully. We check if there is no string is given on both ends if its concetenating. We check if the one of the string is not given to concetenate, it returns the already given string name after concatenation.
+2. ```test_concat_strings``` if the given ```concat_string``` function concatenates the strings succesfully. We check whether there are no string is given on both parameters if its concetenating. We check if the one of the string is not given to concatenate, it returns the already given string name after concatenation.
+
+## Testing the algorithm
+1. Empty file (```0 bytes```)
+    - <b>Result</b>: The program return an empty file.
+2. ```./bin/word_break -r note.txt```
+    - <b>Result</b>: fill_param_by_user_arguememt(): Max width was either not provided or it cannot be 0!
+3. ```./bin/word_break -r 0 note.txt```
+    - <b>Result</b>: Error w./bin/word_break -r 0 note.txt 
+fill_param_by_user_arguememt(): Max width was either not provided or it cannot be 0! main(): Error with parsing arguements.
+3. ```./bin/word_break -r 10 note.txt```
+    - <b>Result</b>: It wraps the 10 characters per line, creates ```wrap.note.txt``` file and writes to standart output recursively. It uses 1 ```*producer_threads``` and 1 ```*producer_threads```.
+4. ```./bin/word_break -r20, 10 note.txt```
+    - <b>Result</b>: It wraps the 10 characters per line, creates ```wrap.note.txt``` file and writes to standart output recursively. It uses 1 ```*producer_threads``` and 20 ```*consumer_threads```.
+5. ```./bin/word_break -r20, 10 note.txt```
+    - <b>Result</b>: It wraps the 10 characters per line, creates ```wrap.note.txt``` file and writes to standart output recursively. It uses 1 ```*producer_threads``` and 20 ```*consumer_threads```.
+6. ```./bin/word_break -r20,5 10 note.txt```
+    - <b>Result</b>: It wraps the 10 characters per line, creates ```wrap.note.txt``` file and writes to standart output recursively. It uses 20 ```*producer_threads``` and 5 ```*producer_threads```.
+7. ```./bin/word_break -r20,5 10 note.txt```
+    - <b>Result</b>: It wraps the 10 characters per line, creates ```wrap.note.txt``` file and writes to standart output recursively. It uses 20 ```*producer_threads``` and 5 ```*producer_threads```.
+8. ```./bin/word_break -r 10 note.txt commands.txt```
+    - <b>Result</b>: It wraps the 10 characters per line in created ```wrap.note.txt``` and ```wrap.commands.txt``` files recursively. It uses 1 ```*producer_threads``` and 1 ```*producer_threads```.
+9. ```./bin/word_break -r3, 20 note.txt commands.txt```
+    - <b>Result</b>: It wraps the 20 characters per line in created```wrap.note.txt``` and ```wrap.commands.txt``` files recursively. It uses 1 ```*producer_threads``` and 3 ```*producer_threads```.
+10. ```./bin/word_break 20 note.txt commands.txt```
+    - <b>Result</b>: It wraps the 20 characters per line in created ```wrap.note.txt``` and ```wrap.commands.txt``` files without using multithreads.
+11. ``./bin/word_break 20 tests``
+    - <b>Result</b>: It wraps the 20 characters per line in created all the ```wrap.*``` version of the regular files in the ```tests``` directory files without using multithreads, but it does not create ```wrap.*``` version of the files in the sub directories such as  ```tests/foo```, ```tests/foo/foo_a```, ```tests/foo/foo_b```.
+12. ``./bin/word_break -r3,5 20 tests``
+    - <b>Result</b>: It wraps the 20 characters per line in created all the ```wrap.*``` version of the regular files including its subdirectory regular files in the ```tests``` directory recursively. It uses 3 ```*producer_threads``` and 5 ```*producer_threads```.
+13. ``./bin/word_break -r3,5 20 tests/foo tests2``
+    - <b>Result</b>: It wraps the 20 characters per line in created all the ```wrap.*``` version of the regular files including its subdirectory regular files in the ```tests/foo``` directory recursively.It also  wraps the 20 characters per line in created all the ```wrap.*``` version of the regular files including its subdirectory regular files in the ```tests2``` directory recursively. It uses 3 ```*producer_threads``` and 5 ```*producer_threads```.
+14. ```./bin/word_break -r3,5 20 tests/foo/foo_a/foo_c/a.txt tests2```
+    - <b>Result</b>: It wraps the 20 characters per line in created ```tests/foo/foo_a/foo_c/a.txt``` file recursively. It also  wraps the 20 characters per line in created all the ```wrap.*``` version of the regular files including its subdirectory regular files in the ```tests2``` directory recursively. It uses 3 ```*producer_threads``` and 5 ```*producer_threads```.
+15. ```./bin/word_break -r3,5 20 tests tests2 tests3```
+    - <b>Result</b>: It wraps the 20 characters per line in created all the ```wrap.*``` version of the regular files including its subdirectory regular files in the ```tests``` ```tests2``` ```tests3``` directory recursively. It also  wraps the 20 characters per line in created all the ```wrap.*``` version of the regular files including its subdirectory regular files in the ```tests``` ```tests2``` ```tests3``` directory recursively. It uses 3 ```*producer_threads``` and 5 ```*producer_threads```.
+16. ```./bin/word_break  20 tests tests2 tests3```
+    - <b>Result</b>: It wraps the 20 characters per line in created all the ```wrap.*``` version of the regular files including its subdirectory regular files in the ```tests``` ```tests2``` ```tests3``` directories without using multithreads. It does not create ```wrap.*``` version of the files in the sub directories for ```tests``` ```tests2``` ```tests3``` directories.
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ## Terminology

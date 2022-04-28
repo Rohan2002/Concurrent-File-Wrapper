@@ -108,6 +108,51 @@ Our unit test for Utils can be found in ```unit_test/utils_test.c```.
 ## Testing the algorithm
 1. Empty file (```0 bytes```)
     - <b>Result</b>: The program return an empty file.
+2. ```./bin/word_break -r note.txt```
+    - <b>Result</b>: fill_param_by_user_arguememt(): Max width was either not provided or it cannot be 0!
+3. ```./bin/word_break -r 0 note.txt```
+    - <b>Result</b>: Error w./bin/word_break -r 0 note.txt 
+fill_param_by_user_arguememt(): Max width was either not provided or it cannot be 0! main(): Error with parsing arguements.
+3. ```./bin/word_break -r 10 note.txt```
+    - <b>Result</b>: It wraps the 10 characters per line, creates ```wrap.note.txt``` file and writes to standart output recursively. It uses 1 ```*producer_threads``` and 1 ```*producer_threads```.
+4. ```./bin/word_break -r20, 10 note.txt```
+    - <b>Result</b>: It wraps the 10 characters per line, creates ```wrap.note.txt``` file and writes to standart output recursively. It uses 1 ```*producer_threads``` and 20 ```*consumer_threads```.
+5. ```./bin/word_break -r20, 10 note.txt```
+    - <b>Result</b>: It wraps the 10 characters per line, creates ```wrap.note.txt``` file and writes to standart output recursively. It uses 1 ```*producer_threads``` and 20 ```*consumer_threads```.
+6. ```./bin/word_break -r20,5 10 note.txt```
+    - <b>Result</b>: It wraps the 10 characters per line, creates ```wrap.note.txt``` file and writes to standart output recursively. It uses 20 ```*producer_threads``` and 5 ```*producer_threads```.
+7. ```./bin/word_break -r20,5 10 note.txt```
+    - <b>Result</b>: It wraps the 10 characters per line, creates ```wrap.note.txt``` file and writes to standart output recursively. It uses 20 ```*producer_threads``` and 5 ```*producer_threads```.
+8. ```./bin/word_break -r 10 note.txt commands.txt```
+    - <b>Result</b>: It wraps the 10 characters per line in created ```wrap.note.txt``` and ```wrap.commands.txt``` files recursively. It uses 1 ```*producer_threads``` and 1 ```*producer_threads```.
+9. ```./bin/word_break -r3, 20 note.txt commands.txt```
+    - <b>Result</b>: It wraps the 20 characters per line in created```wrap.note.txt``` and ```wrap.commands.txt``` files recursively. It uses 1 ```*producer_threads``` and 3 ```*producer_threads```.
+10. ```./bin/word_break 20 note.txt commands.txt```
+    - <b>Result</b>: It wraps the 20 characters per line in created ```wrap.note.txt``` and ```wrap.commands.txt``` files without using multithreads.
+11. ``./bin/word_break 20 tests``
+    - <b>Result</b>: It wraps the 20 characters per line in created all the ```wrap.*``` version of the regular files in the ```tests``` directory files without using multithreads, but it does not create ```wrap.*``` version of the files in the sub directories such as  ```tests/foo```, ```tests/foo/foo_a```, ```tests/foo/foo_b```.
+12. ``./bin/word_break -r3,5 20 tests``
+    - <b>Result</b>: It wraps the 20 characters per line in created all the ```wrap.*``` version of the regular files including its subdirectory regular files in the ```tests``` directory recursively. It uses 3 ```*producer_threads``` and 5 ```*producer_threads```.
+13. ``./bin/word_break -r3,5 20 tests/foo tests2``
+    - <b>Result</b>: It wraps the 20 characters per line in created all the ```wrap.*``` version of the regular files including its subdirectory regular files in the ```tests/foo``` directory recursively.It also  wraps the 20 characters per line in created all the ```wrap.*``` version of the regular files including its subdirectory regular files in the ```tests2``` directory recursively. It uses 3 ```*producer_threads``` and 5 ```*producer_threads```.
+14. ```./bin/word_break -r3,5 20 tests/foo/foo_a/foo_c/a.txt tests2```
+    - <b>Result</b>: It wraps the 20 characters per line in created ```tests/foo/foo_a/foo_c/a.txt``` file recursively. It also  wraps the 20 characters per line in created all the ```wrap.*``` version of the regular files including its subdirectory regular files in the ```tests2``` directory recursively. It uses 3 ```*producer_threads``` and 5 ```*producer_threads```.
+15. ```./bin/word_break -r3,5 20 tests tests2 tests3```
+    - <b>Result</b>: It wraps the 20 characters per line in created all the ```wrap.*``` version of the regular files including its subdirectory regular files in the ```tests``` ```tests2``` ```tests3``` directory recursively. It also  wraps the 20 characters per line in created all the ```wrap.*``` version of the regular files including its subdirectory regular files in the ```tests``` ```tests2``` ```tests3``` directory recursively. It uses 3 ```*producer_threads``` and 5 ```*producer_threads```.
+16. ```./bin/word_break  20 tests tests2 tests3```
+    - <b>Result</b>: It wraps the 20 characters per line in created all the ```wrap.*``` version of the regular files including its subdirectory regular files in the ```tests``` ```tests2``` ```tests3``` directories without using multithreads. It does not create ```wrap.*``` version of the files in the sub directories for ```tests``` ```tests2``` ```tests3``` directories.
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ## Terminology

@@ -23,7 +23,7 @@ void *producer(void *vargs)
         pool_data_type *ppd = malloc(sizeof(pool_data_type));
         ppd->directory_path = "test-string";
         pool_enqueue(pool_pointer, ppd);
-        debug_print("Thread Enqueued with tid %p and data_size is %d\n", pthread_self(), data_size);
+        debug_print("Thread Enqueued with tid %ld and data_size is %d\n", pthread_self(), data_size);
         data_size--;
     }
     int pool_close_status = pool_close(pool_pointer);
@@ -51,7 +51,7 @@ void *consumer(void *vargs)
         pool_data_type *dq = pool_dequeue(pool_pointer);
         if (dq != NULL)
         {
-            debug_print("Thread Dequeued with tid %p\n", pthread_self());
+            debug_print("Thread Dequeued with tid %ld\n", pthread_self());
             free(dq);
         }
     }

@@ -55,7 +55,8 @@ int pool_enqueue(Pool *pool_pointer, pool_data_type *data)
     }
     if (pool_is_full(pool_pointer))
     {
-        // realloc sucks lol. https://stackoverflow.com/a/46461293/10016132
+        // double the size of the pool.
+        // extend heap space allocatin for the new pool by twice.
         pool_data_type **new_pool = (pool_data_type **)malloc(2 * pool_pointer->pool_size * sizeof(pool_data_type *));
 
         if (new_pool == NULL)
@@ -63,18 +64,22 @@ int pool_enqueue(Pool *pool_pointer, pool_data_type *data)
             error_print("%s", "Failed to re-malloc pool_pointer!\n");
             return -1;
         }
-
+        // copy all of the exisitng data from the old pool to the new pool.
         memcpy(new_pool, pool_pointer->data, pool_pointer->pool_size * sizeof(pool_data_type *)); // pool_pointer->pool_size * sizeof(pool_data_type *) = old-size data.
         free(pool_pointer->data);
 
+        // reassign Pool_Model with new pool and twice size
         pool_pointer->data = new_pool;
         pool_pointer->pool_size *= 2;
 
         debug_print("Reallocated stack with new size as %d!\n", pool_pointer->pool_size);
     }
 
+    // enqueue data
     pool_pointer->data[pool_pointer->end++] = data;
     pool_pointer->number_of_elements_buffered += 1;
+    
+    // signal consumer that there is some data in pool, so unblock dequeue.
     pthread_cond_signal(&(pool_pointer->ready_to_consume));
 
     int unlock_status = pthread_mutex_unlock(&pool_pointer->lock);
@@ -93,14 +98,17 @@ pool_data_type *pool_dequeue(Pool *pool_pointer)
         error_print("Failed to lock with error code: %d!\n", lock_status);
         return NULL;
     }
+    // if pool is empty block pool until enqueue fills the data.
     while (pool_is_empty(pool_pointer))
     {
+        // if there is no more data incoming then just exit and dont wait for enqueue to fill any data.
         if (pool_pointer->close)
         {
             pthread_mutex_unlock(&pool_pointer->lock);
             return NULL;
         }
         debug_print("%s\n", "Pool is empty... waiting for data to come inside pool!");
+        // block dequeue if enqueue still has some data to put.
         int wait_status = pthread_cond_wait(&(pool_pointer->ready_to_consume), &pool_pointer->lock);
         if (wait_status != 0)
         {
@@ -109,6 +117,7 @@ pool_data_type *pool_dequeue(Pool *pool_pointer)
         }
     }
 
+    // dequeue logic
     pool_data_type *dequed_data = pool_pointer->data[--pool_pointer->end];
     pool_pointer->number_of_elements_buffered--;
 
@@ -137,7 +146,9 @@ int pool_close(Pool *pool_pointer)
         return lock_status;
     }
 
+
     pool_pointer->close = true;
+    // wake up all the remaining consumer threads to finish consuming the data as there wont be anymore data incoming to the pool
     int broad_stat = pthread_cond_broadcast(&pool_pointer->ready_to_consume);
     if (broad_stat != 0)
     {
@@ -209,6 +220,7 @@ int pool_destroy(Pool *pool_pointer)
             }
         }
     }
+    // release/unlock resources
     int mutex_destroy_status = pthread_mutex_destroy(&pool_pointer->lock);
     if (mutex_destroy_status != 0)
     {

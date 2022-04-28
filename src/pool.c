@@ -40,8 +40,8 @@ Pool *pool_init(int pool_size)
         return NULL;
     }
 
-    debug_print("Created pool mutex at address %ld\n", &(pool_pointer->lock));
-    debug_print("Created pool at address %ld\n", pool_pointer);
+    debug_print("Created pool mutex at address %p\n", &(pool_pointer->lock));
+    debug_print("Created pool at address %p\n", pool_pointer);
 
     return pool_pointer;
 }

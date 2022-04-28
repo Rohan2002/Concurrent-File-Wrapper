@@ -40,7 +40,8 @@ void *produce_files_to_wrap(void *arg)
     Pool *dir_pool = producer_args->dir_pool;
     Queue *file_q = producer_args->file_queue;
     int isrecursive = producer_args->isrecursive;
-
+    int *error_code = producer_args->error_code;
+    *error_code = 0;
     while (!dir_pool->close)
     {
         if (pool_is_empty(dir_pool) && dir_pool->number_of_active_producers == 0)
@@ -55,6 +56,7 @@ void *produce_files_to_wrap(void *arg)
             int fill_status = fill_pool_and_queue_with_data(pool_init_data->directory_path, dir_pool, file_q, isrecursive);
             if (fill_status == -1)
             {
+                *error_code = fill_status;
                 error_print("%s\n", "Couldn't fill the data");
             }
             if (pool_init_data->directory_path != NULL)
@@ -66,12 +68,37 @@ void *produce_files_to_wrap(void *arg)
         }
     }
     debug_print("%s\n", "Closing directory POOL");
-    pool_close(dir_pool);
+    int pool_close_status = pool_close(dir_pool);
+    if (pool_close_status != 0)
+    {
+        error_print("%s\n", "Error detected in producer thread worker function while closing pool.");
+        *error_code = pool_close_status;
+        pthread_exit(error_code);
+    }
+    else
+    {
+        debug_print("%s\n", "Closed directory POOL");
+    }
     debug_print("%s\n", "Closing file QUEUE");
-    queue_close(file_q);
+    int queue_close_status = queue_close(file_q);
+    if (queue_close_status != 0)
+    {
+        error_print("%s\n", "Error detected in producer thread worker function while closing queue.");
+        *error_code = queue_close_status;
+        pthread_exit(error_code);
+    }
+    else
+    {
+        debug_print("%s\n", "Closed file QUEUE");
+    }
 
     debug_print("%s", "Exiting produce_files_to_wrap\n");
 
+    if (*error_code != 0)
+    {
+        error_print("%s\n", "Error detected in producer thread worker function");
+        pthread_exit(error_code);
+    }
     return NULL;
 }
 
@@ -84,15 +111,20 @@ void *consume_files_to_wrap(void *arg)
     // unpack thread args for consumer
     Queue *file_q = consumer_args->file_queue;
     int max_width = consumer_args->max_width;
-
+    int *error_code = consumer_args->error_code;
+    *error_code = 0;
     while (!queue_is_empty(file_q) || !file_q->close)
     {
         queue_data_type *q_data_pointer = queue_dequeue(file_q);
 
         if (q_data_pointer != NULL)
         {
-            debug_print("Dequeing file, tid: %p input file path: %s output file path: %s\n", pthread_self(), q_data_pointer->input_file, q_data_pointer->output_file);
-            wrap_text(q_data_pointer->input_file, max_width, q_data_pointer->output_file);
+            debug_print("Dequeing file, tid: %ld input file path: %s output file path: %s\n", pthread_self(), q_data_pointer->input_file, q_data_pointer->output_file);
+            int wrap_text_status = wrap_text(q_data_pointer->input_file, max_width, q_data_pointer->output_file);
+            if (wrap_text_status != 0)
+            {
+                *error_code = wrap_text_status;
+            }
             if (q_data_pointer->input_file != NULL)
             {
                 free(q_data_pointer->input_file);
@@ -105,10 +137,15 @@ void *consume_files_to_wrap(void *arg)
         }
         else
         {
-            debug_print("Dequeing file, tid: %p input file path: NULL output file path: NULL\n", pthread_self());
+            debug_print("Dequeing file, tid: %ld input file path: NULL output file path: NULL\n", pthread_self());
         }
     }
     debug_print("%s", "Exiting consume_files_to_wrap\n");
+    if (*error_code != 0)
+    {
+        error_print("%s\n", "Error detected in consumer thread worker function");
+        pthread_exit(error_code);
+    }
     return NULL;
 }
 
@@ -124,11 +161,13 @@ int wrap_text(char *optional_input_file, int max_width, char *optional_output_fi
 
     if (fd_read == -1)
     {
-        perror("Error when opening file for reading");
+        error_print("%s\n", "Error when opening file for reading");
+        return EXIT_FAILURE;
     }
     if (fd_write == -1)
     {
-        perror("Error when opening file for writing");
+        error_print("%s\n", "Error when opening file for writing");
+        return EXIT_FAILURE;
     }
 
     int bytes;
@@ -225,7 +264,7 @@ int wrap_text(char *optional_input_file, int max_width, char *optional_output_fi
             }
             if (bytes == -1)
             {
-                perror("Error reading bytes from a file");
+                error_print("%s\n", "Error reading bytes from a file");
                 return EXIT_FAILURE;
             }
             prev_c = c;
@@ -267,8 +306,8 @@ int wrap_text(char *optional_input_file, int max_width, char *optional_output_fi
     {
         free(word_buffer);
     }
-    close(fd_read);
-    close(fd_write);
+    rtn = close(fd_read);
+    rtn = close(fd_write);
     return rtn;
 }
 int fill_pool_and_queue_with_data(char *parent_dir_path, Pool *dir_pool, Queue *file_queue, int isrecursive)
@@ -276,7 +315,7 @@ int fill_pool_and_queue_with_data(char *parent_dir_path, Pool *dir_pool, Queue *
     DIR *dfd;
     struct dirent *directory_pointer;
 
-    debug_print("Dequeing parent directory, tid: %p parent directory path: %s\n", pthread_self(), parent_dir_path);
+    debug_print("Dequeing parent directory, tid: %ld parent directory path: %s\n", pthread_self(), parent_dir_path);
 
     if ((dfd = opendir(parent_dir_path)) == NULL)
     {
@@ -318,7 +357,15 @@ int fill_pool_and_queue_with_data(char *parent_dir_path, Pool *dir_pool, Queue *
                 qd->input_file = file_path_in_directory;
                 qd->output_file = output_file_name;
 
-                queue_enqueue(file_queue, qd);
+                int q_en_stat = queue_enqueue(file_queue, qd);
+                if (q_en_stat != 0)
+                {
+                    error_print("%s\n", "Could not enqueue data in file queue");
+                    free(qd->input_file);
+                    free(qd->output_file);
+                    free(qd);
+                    return -1;
+                }
             }
             else
             {
@@ -339,11 +386,22 @@ int fill_pool_and_queue_with_data(char *parent_dir_path, Pool *dir_pool, Queue *
                     return -1;
                 }
                 pd->directory_path = sub_directory_path;
-                pool_enqueue(dir_pool, pd);
+                int p_en_stat = pool_enqueue(dir_pool, pd);
+                if (p_en_stat != 0)
+                {
+                    error_print("%s\n", "Could not enqueue data in directory pool!");
+                    free(pd->directory_path);
+                    free(pd);
+                    return -1;
+                }
             }
         }
     }
-    closedir(dfd);
+    int close_dir_status = closedir(dfd);
+    if (close_dir_status != 0)
+    {
+        return -1;
+    }
     return 0;
 }
 int threaded_wrap_program(int producer_threads, int consumer_threads, int max_width, int isrecursive, int widthindex, int argv, char **argc)
@@ -358,87 +416,197 @@ int threaded_wrap_program(int producer_threads, int consumer_threads, int max_wi
     Pool *dir_pool = pool_init(POOLSIZE);
     if (dir_pool == NULL)
     {
+        queue_destroy(file_queue);
         error_print("%s\n", "Failed to init directory pool.");
         return EXIT_FAILURE;
     }
     // we are using more than one folder or file name (extra credit section)
     // so we declare a new function to use more than one file or folder that is specified in the user arguments
     int multiple_hander = handle_multiple_input_files(widthindex, max_width, argv, argc, dir_pool);
-    if(multiple_hander != 0){
+    if (multiple_hander != 0)
+    {
+        queue_destroy(file_queue);
+        pool_destroy(dir_pool);
         error_print("%s\n", "Error in handeling multiple file/directory arguements");
         return EXIT_FAILURE;
     }
     // threads setup
     pthread_t *producer_tids = malloc(producer_threads * sizeof(pthread_t));
+    if (producer_tids == NULL)
+    {
+        queue_destroy(file_queue);
+        pool_destroy(dir_pool);
+        error_print("%s\n", "Malloc Failure");
+        return EXIT_FAILURE;
+    }
     pthread_t *consumer_tids = malloc(consumer_threads * sizeof(pthread_t));
-
+    if (consumer_tids == NULL)
+    {
+        queue_destroy(file_queue);
+        pool_destroy(dir_pool);
+        free(producer_tids);
+        error_print("%s\n", "Malloc Failure");
+        return EXIT_FAILURE;
+    }
     // thread arguements.
     producer_type *producer_args = malloc(sizeof(producer_type));
+    if (producer_args == NULL)
+    {
+        queue_destroy(file_queue);
+        pool_destroy(dir_pool);
+        free(producer_tids);
+        free(consumer_tids);
+        error_print("%s\n", "Malloc Failure");
+        return EXIT_FAILURE;
+    }
     producer_args->file_queue = file_queue;
     producer_args->dir_pool = dir_pool;
     producer_args->isrecursive = isrecursive;
+    producer_args->error_code = malloc((sizeof(int)));
+    if (producer_args->error_code == NULL)
+    {
+        queue_destroy(file_queue);
+        pool_destroy(dir_pool);
+        free(producer_tids);
+        free(consumer_tids);
+        free(producer_args);
+        error_print("%s\n", "Malloc Failure");
+        return EXIT_FAILURE;
+    }
 
     consumer_type *consumer_args = malloc(sizeof(consumer_type));
+    if (consumer_args == NULL)
+    {
+        queue_destroy(file_queue);
+        pool_destroy(dir_pool);
+        free(producer_tids);
+        free(consumer_tids);
+        free(producer_args);
+        free(producer_args->error_code);
+        error_print("%s\n", "Malloc Failure");
+        return EXIT_FAILURE;
+    }
     consumer_args->file_queue = file_queue;
     consumer_args->max_width = max_width;
-
+    consumer_args->error_code = malloc((sizeof(int)));
+    if (consumer_args->error_code == NULL)
+    {
+        queue_destroy(file_queue);
+        pool_destroy(dir_pool);
+        free(producer_tids);
+        free(consumer_tids);
+        free(producer_args);
+        free(producer_args->error_code);
+        free(consumer_args);
+        error_print("%s\n", "Malloc Failure");
+        return EXIT_FAILURE;
+    }
     int i = 0;
     int j = 0;
+    bool err_create_producer = false; // if at least one producer thread create fails return exit failure.
+    bool err_create_consumer = false; // if at least one consumer thread create fails return exit failure.
     for (i = 0; i < producer_threads; i++)
     {
         debug_print("%s\n", "Creating producer thread");
-        pthread_create(&producer_tids[i], NULL, produce_files_to_wrap, producer_args);
+        int created_thread_status = pthread_create(&producer_tids[i], NULL, produce_files_to_wrap, producer_args);
+        if (created_thread_status != 0)
+        {
+            error_print("Could not create producer thread %d\n", i);
+            err_create_producer = true;
+        }
         debug_print("%s\n", "Created producer thread");
     }
     for (j = 0; j < consumer_threads; j++)
     {
         debug_print("%s\n", "Creating consumer thread");
-        pthread_create(&consumer_tids[j], NULL, consume_files_to_wrap, consumer_args);
+        int created_thread_status = pthread_create(&consumer_tids[j], NULL, consume_files_to_wrap, consumer_args);
+        if (created_thread_status != 0)
+        {
+            error_print("Could not create producer thread %d\n", i);
+            err_create_consumer = true;
+        }
         debug_print("%s\n", "Created consumer thread");
     }
 
     int k = 0;
     int l = 0;
+    bool err_joining_producer = false; // if at least one producer thread join fails return exit failure.
+    bool err_joining_consumer = false; // if at least one consumer thread join fails return exit failure.
+
     for (k = 0; k < producer_threads; k++)
     {
         debug_print("%s\n", "Joining producer thread\n");
-        pthread_join(producer_tids[k], NULL);
+        int *intermediate_producer_err_ptr;
+        int join_status = pthread_join(producer_tids[k], (void **)&(intermediate_producer_err_ptr));
+        if (join_status != 0)
+        {
+            err_joining_producer = true;
+            error_print("Error code %d while joining producer thread %d\n", join_status, k);
+        }
+        if (intermediate_producer_err_ptr != NULL && *intermediate_producer_err_ptr != 0)
+        {
+            err_joining_producer = true;
+            error_print("Error code %d after joining producer thread %d\n", *intermediate_producer_err_ptr, k);
+        }
         debug_print("%s\n", "Joined producer thread\n");
     }
     for (l = 0; l < consumer_threads; l++)
     {
         debug_print("%s\n", "Joining consumer thread\n");
-        pthread_join(consumer_tids[l], NULL);
+
+        int *intermediate_consumer_err_ptr;
+        int join_status = pthread_join(consumer_tids[l], (void **)&(intermediate_consumer_err_ptr));
+        if (join_status != 0)
+        {
+            err_joining_consumer = true;
+            error_print("Error code %d while joining producer thread %d\n", join_status, k);
+        }
+        if (intermediate_consumer_err_ptr != NULL && *intermediate_consumer_err_ptr != 0)
+        {
+            err_joining_consumer = true;
+            error_print("Error code %d after joining consumer thread %d\n", *intermediate_consumer_err_ptr, l);
+        }
         debug_print("%s\n", "Joined consumer thread\n");
     }
-
+    free(producer_args->error_code);
+    free(consumer_args->error_code);
     free(producer_args);
     free(consumer_args);
     free(producer_tids);
     free(consumer_tids);
 
-    queue_destroy(file_queue);
-    pool_destroy(dir_pool);
+    int q_destroy_status = queue_destroy(file_queue);
+    if (q_destroy_status != 0)
+    {
+        error_print("Could not destroy queue. Exited with error code %d\n", q_destroy_status);
+        return EXIT_FAILURE;
+    }
+    int p_destroy_status = pool_destroy(dir_pool);
+    if (p_destroy_status != 0)
+    {
+        error_print("Could not destroy pool. Exited with error code %d\n", p_destroy_status);
+        return EXIT_FAILURE;
+    }
 
+    if (err_joining_producer || err_joining_consumer || err_create_consumer || err_create_producer)
+    {
+        return EXIT_FAILURE;
+    }
     return EXIT_SUCCESS;
 }
 int main(int argv, char **argc)
 {
-    if (argv == 1)
-    {
-        error_print("%s\n", "Recursive arguement or Max Width arguement not provided!");
-        return EXIT_FAILURE;
-    }
-    int max_width;
-
     // thread params
     int producer_threads;
     int consumer_threads;
-    int isrecursive;
-    int widthindex;
+
+    // user interface arguements
+    int max_width;
+    int isrecursive; // checks if -r is present. 1 if yes else 0
+    int widthindex;  // calculates where the max_width is located based on the previous user arguements
 
     int args_filler_status = fill_param_by_user_arguememt(argv, argc, &max_width, &producer_threads, &consumer_threads, &isrecursive, &widthindex);
-    if (args_filler_status == -1)
+    if (args_filler_status != 0)
     {
         error_print("%s\n", "Error with parsing arguements.");
         return EXIT_FAILURE;

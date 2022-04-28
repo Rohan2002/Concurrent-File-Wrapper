@@ -36,7 +36,6 @@ int pool_enqueue(Pool *, pool_data_type *);
 pool_data_type* pool_dequeue(Pool *);
 bool pool_is_full(Pool *);
 bool pool_is_empty(Pool *);
-int pool_open(Pool *);
 int pool_close(Pool *);
 int increment_active_producers(Pool *);
 int decrement_active_producers(Pool *);

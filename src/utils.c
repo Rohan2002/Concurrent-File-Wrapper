@@ -70,7 +70,11 @@ int check_rsyntax(char *r)
 
 int fill_param_by_user_arguememt(int argv, char **arg, int *max_width, int *producer_threads, int *consumer_threads, int *isrecursive, int *widthindex)
 {
-
+    if (argv == 1)
+    {
+        error_print("%s\n", "Recursive arguement or Max Width arguement not provided!");
+        return EXIT_FAILURE;
+    }
     *widthindex = 2;
     if (check_rsyntax(arg[1]))
     {
@@ -216,6 +220,8 @@ int handle_multiple_input_files(int widthindex, int max_width, int argv, char **
             rtn = pool_enqueue(dir_pool, pool_init_data);
             if (rtn != 0)
             {
+                free(pool_init_data->directory_path);
+                free(pool_init_data);
                 return rtn;
             }
         }

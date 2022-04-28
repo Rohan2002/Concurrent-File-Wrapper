@@ -1,0 +1,85 @@
+5 dir threads, t1, t2, t3...
+t5
+
+Dir_Queue = dq = []
+
+Solution to our first problem.
+Main thread populates dq with
+the inital directory.
+Dir_Queue = ["tests/"]
+
+Ending condition for dir
+threads: dq is empty. <-
+problem.
+
+t1 attacks producer() ->
+active_dir = "tests/" ->
+reading all sub-directories
+recursively (dq is getting
+populated) -> When dq is empty
+-> t1 dies. t2 attacks
+producer() -> active_dir = ""
+-> dq = [] -> t2 dies t3
+attacks producer() ->
+active_dir = "" -> dq = [] ->
+t3 dies t4 attacks producer()
+-> active_dir = "" -> dq = []
+-> t4 dies t5 attacks
+producer() -> active_dir = ""
+-> dq = [] -> t5 dies
+
+while(!pool_is_empty(dir_pool)
+|| alive_directory_threads >
+0) -> In theory, this should
+solve the multithreaded
+directory traversal.
+
+How? Solution: Count
+alive_directory_threads.
+
+Semaphore use cases
+
+Allow a certain number of
+threads to access a resource
+at once (generalized mutex)
+wait for a condition
+
+Deadlock
+
+Specific to mutex
+
+Lock resources in same order A
+then B then C. and unlock them
+in C, B, A.
+
+ideal: t1 -> dequeue ->
+"tests/". Dir_queue = [] t2 ->
+dequeue -> empty Dir_queue []
+-> sleep/wait t3 -> dequeue ->
+empty Dir_queue [] ->
+sleep/wait t4 -> dequeue ->
+empty Dir_queue [] ->
+sleep/wait t5 -> dequeue ->
+empty Dir_queue [] ->
+sleep/wait
+
+Awake condition t1-> enqueue
+-> "tests/selin_dir".
+Dir_queue =
+["tests/selin_dir"] t1->
+enqueue -> "tests/r_dir".
+Dir_queue = ["tests/r_dir"]
+
+Wake up all the other threads
+to notify that queue is not
+empty anymore.
+
+root -> a -> b -> c -> d -> e
+-> g -> h -> i -> j -> f
+
+enqueue = e dequeue =d
+
+e(root) while(!q.empty()){
+dir_interest = d() // root
+loop(readdir(dir_interest){ //
+a, b, c }) }

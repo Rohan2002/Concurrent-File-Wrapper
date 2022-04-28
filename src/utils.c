@@ -13,6 +13,10 @@
 #include <string.h>
 #include "utils.h"
 #include "logger.h"
+#include "word_break.h"
+#include <libgen.h>
+
+#define MAX(x, y) (((x) > (y)) ? (x) : (y))
 
 void print_buffer(char *word_buffer, int length)
 {
@@ -61,97 +65,106 @@ int check_file_or_directory(struct stat *file_in_dir_pointer)
 
 int check_rsyntax(char *r)
 {
-
-    if (r[0] != '-')
-        return 0;
-    if (r[1] != 'r')
-        return 0;
-    for (int i = 2; i < strlen(r) - 1; i++)
-    {
-        return 2;
-    }
-    return 1;
+    return r[0] == '-' && r[1] == 'r';
 }
 
-int fill_param_by_user_arguememt(int argv, char **arg, int *max_width, int *producer_threads, int *consumer_threads, int *isrecursive, int *widthindex, int *one_file_only)
+int fill_param_by_user_arguememt(int argv, char **arg, int *max_width, int *producer_threads, int *consumer_threads, int *isrecursive, int *widthindex)
 {
 
     *widthindex = 2;
-    if (arg[1][0] != '-')
+    if (check_rsyntax(arg[1]))
     {
+        // Notice: This will handle all cases actually.
+        // Case1: "-r", producer/directory-threads = 1 and consumer/wrapping-threads = 1
+        // Case2: "-rN,", producer = 1 and consumer = N
+        // Case3: "-rM,N", producer = M and consumer = N
+        *isrecursive = 1;
+        char *r_with_number_of_threads = arg[1];
+        int strlen_r_with_number_of_threads = sizeof(r_with_number_of_threads);
+
+        char *str_producer_thread = malloc(strlen_r_with_number_of_threads);
+        if (str_producer_thread == NULL)
+        {
+            error_print("%s\n", "Malloc Failure");
+            return -1;
+        }
+        int producer_thread = 0;
+        r_with_number_of_threads += 2; // skip the first two characters "-r"
+
+        // Case1
+        if (strcmp(r_with_number_of_threads, "\0") == 0)
+        {
+            *producer_threads = 1;
+            *consumer_threads = 1;
+            *max_width = atoi(arg[*widthindex]);
+
+            debug_print("Producer threads %d\n", *producer_threads);
+            debug_print("Consumer threads %d\n", *consumer_threads);
+            debug_print("Max Width %d\n", *max_width);
+
+            free(str_producer_thread);
+            return 0;
+        }
+        // Case2 or Case3. We assume there is always a comma -rN, or -rM,N
+        while (r_with_number_of_threads[producer_thread] != ',')
+        {
+            str_producer_thread[producer_thread] = r_with_number_of_threads[producer_thread];
+            producer_thread++;
+        }
+        str_producer_thread[producer_thread] = '\0';
+        r_with_number_of_threads += producer_thread + 1; // get string after ,
+
+        int num_producer_threads = atoi(str_producer_thread);
+        int num_consumer_threads = atoi(r_with_number_of_threads);
+
+        // extraneous case.
+        if (num_producer_threads <= 0)
+        {
+            *producer_threads = 1;
+        }
+        if (num_consumer_threads <= 0)
+        {
+            *consumer_threads = 1;
+        }
+
+        if (num_producer_threads > 0 && num_consumer_threads == 0)
+        {
+            // Case 2. Note order of producer, consumer assignment switches if its -rN,
+            *producer_threads = 1;
+            *consumer_threads = num_producer_threads;
+        }
+        else if (num_producer_threads >= 0 && num_consumer_threads >= 0)
+        {
+            // Case 3.
+            *producer_threads = MAX(1, num_producer_threads);
+            *consumer_threads = MAX(1, num_consumer_threads);
+        }
+        free(str_producer_thread);
+    }
+    else
+    {
+        // Case when -r is not provided.
         *widthindex = 1;
         *isrecursive = 0;
         *consumer_threads = 1;
         *producer_threads = 1;
     }
-    else if (strcmp(arg[1], "-r") == 0)
-    {
-        *isrecursive = 1;
-        *consumer_threads = 1;
-        *producer_threads = 1;
-    }
-    else if (check_rsyntax(arg[1]) == 1)
-    {
-        *producer_threads = 1;
-        *consumer_threads = atoi(arg[1] + 2);
-    }
-    else if (check_rsyntax(arg[1]) == 2)
-    {
-        *isrecursive = 1;
-        char *rec_threads = arg[1];
-        int strlen_rec_threads = sizeof(rec_threads);
-
-        char *tempM = malloc(strlen_rec_threads);
-        int digitsM = 0;
-        rec_threads += 2;
-        while (rec_threads[digitsM] != ',')
-        {
-            tempM[digitsM] = rec_threads[digitsM];
-            digitsM++;
-        }
-        tempM[digitsM] = '\0';
-        rec_threads += digitsM + 1;
-
-        *producer_threads = atoi(tempM);
-        *consumer_threads = atoi(rec_threads);
-
-        free(tempM);
-    }
-    else
-    {
-        return -1;
-    }
     *max_width = atoi(arg[*widthindex]);
-    *one_file_only = 0;
-    // printf("argv :%d wi %d\n",argv,*widthindex);
-    if ((argv - (*widthindex)) == 2)
-    {
-        // printf("IF entered\n");
-        char *dir_of_interest = concat_string(arg[*widthindex + 1], "\0", -1, -1);
-        struct stat file_in_dir;
-        int status_of_file_metadata = stat(dir_of_interest, &file_in_dir); // directory_pointer->d_name is the filename.
-        if (status_of_file_metadata != 0)
-        {
-            error_print("Can't get stat of file %s\n", dir_of_interest);
-            return status_of_file_metadata;
-        }
-        // printf("Checking\n");
-        if (check_file_or_directory(&file_in_dir) == 1)
-        { // regular file enque to file queue
-            *one_file_only = 1;
-            // printf("1 file\n");
-        }
-        free(dir_of_interest);
-    }
-    debug_print("Producer threads %d\n", *producer_threads);
-    debug_print("Consumer threads %d\n", *consumer_threads);
-    if (*producer_threads <= 0 || *consumer_threads <= 0)
+    if(*max_width == 0){
+        error_print("%s\n", "Max width was either not provided or it cannot be 0!");
         return -1;
+    }
+    debug_print("Arg: Producer threads %d\n", *producer_threads);
+    debug_print("Arg: Consumer threads %d\n", *consumer_threads);
+    debug_print("Arg: Max Width %d\n", *max_width);
     return 0;
 }
 
-int fill_queue_and_pool_by_user_arguememt(int widthindex, int argv, char **arg, Queue *optional_file_queue, Pool *dir_pool)
+int handle_multiple_input_files(int widthindex, int max_width, int argv, char **arg, Pool *dir_pool)
 {
+    int rtn = 0;
+    bool isfile = false;
+    int count_files = 0;
     for (int i = widthindex + 1; i < argv; i++)
     {
         char *dir_of_interest = concat_string(arg[i], "\0", -1, -1);
@@ -164,75 +177,54 @@ int fill_queue_and_pool_by_user_arguememt(int widthindex, int argv, char **arg, 
             return status_of_file_metadata;
         }
         if (check_file_or_directory(&file_in_dir) == 1)
-        { // regular file enque to file queue
-            // Only wrap files that don't start with wrap. or .
-            if (dir_of_interest[0] != '.' && memcmp(dir_of_interest, "wrap.", 5) != 0)
+        {
+            isfile = true;
+            // regular file
+            char *output_file_name = concat_string("wrap.", basename(dir_of_interest), -1, -1);
+            char *output_file_path = append_file_path_to_existing_path(dirname(dir_of_interest), output_file_name);
+
+            if (output_file_name != NULL && output_file_path != NULL)
             {
-                // output file name computation.
-                int index = 0;
-                for (int j = 0; j < strlen(dir_of_interest); j++)
-                {
-                    if (dir_of_interest[j] == '/' || dir_of_interest[j] == '\\')
-                    {
-                        index = j + 1;
-                    }
-                }
-                char *filename = &dir_of_interest[index];
-
-                char *dirname = (char *)malloc((strlen(dir_of_interest) + 1) * sizeof(char));
-                strcpy(dirname, dir_of_interest);
-                char *new_file_name = concat_string("wrap.", filename, 5, strlen(filename));
-                char *output_file_name;
-                if (index > 0)
-                {
-                    dirname[index] = '\0';
-                    // printf("new_file_name : %s\n",new_file_name);
-                    // printf("dirname : %s\n",dirname);
-                    output_file_name = append_file_path_to_existing_path(dirname, new_file_name);
-                    // printf("output_file_name : %s\n",output_file_name);
-                }
-                else
-                {
-                    output_file_name = (char *)malloc((strlen(new_file_name) + 1) * sizeof(char));
-                    strcpy(output_file_name, new_file_name);
-                }
-                free(new_file_name);
-                free(dirname);
-
-                // arg[i] file name with folder ex. tests/alex
-                // output_file_name shoulde be tests/wrap.alex
-
-                //
-
-                debug_print("Input-file found with path %s\n", dir_of_interest);
-                debug_print("Output-file found with path %s\n", output_file_name);
-
-                if (optional_file_queue != NULL)
-                {
-                    queue_data_type *qd = malloc(sizeof(queue_data_type));
-                    if (qd == NULL)
-                    {
-                        error_print("%s\n", "Malloc failure!");
-                        return -1;
-                    }
-                    qd->input_file = dir_of_interest;
-                    qd->output_file = output_file_name;
-                    // strcpy(qd->output_file ,"wrap.test.txt");
-
-                    queue_enqueue(optional_file_queue, qd);
-                }
-                else{
-                    free(dir_of_interest);
-                }
+                rtn = wrap_text(dir_of_interest, max_width, output_file_path);
             }
+            else
+            {
+                rtn = -1;
+            }
+
+            if (rtn != 0)
+            {
+                free(output_file_name);
+                free(output_file_path);
+                free(dir_of_interest);
+                return rtn;
+            }
+            free(output_file_name);
+            free(output_file_path);
+            free(dir_of_interest);
         }
         else if (check_file_or_directory(&file_in_dir) == 2)
         {
-            // printf("%s\n",dir_of_interest);
             pool_data_type *pool_init_data = malloc(sizeof(pool_data_type));
+            if (pool_init_data == NULL)
+            {
+                free(dir_of_interest);
+                error_print("%s\n", "Malloc Failure!");
+                return -1;
+            }
             pool_init_data->directory_path = dir_of_interest;
-            pool_enqueue(dir_pool, pool_init_data);
+            rtn = pool_enqueue(dir_pool, pool_init_data);
+            if (rtn != 0)
+            {
+                return rtn;
+            }
         }
+        count_files++;
+    }
+    // that means the only input file is a regular file, so print to stdout as per extra credit assignment
+    if(isfile && count_files == 1){
+        int rtn_val = wrap_text(arg[widthindex + 1], max_width, NULL);
+        return rtn_val;
     }
 
     return 0;

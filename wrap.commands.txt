@@ -1,0 +1,9 @@
+make fresh file=single/ & make
+&& ./bin/word_break -r3,1 30
+single > logs/log_single.txt
+make fresh file=simple/ & make
+&& ./bin/word_break -r3,1 30
+simple > logs/log_simple.txt
+make fresh file=small/ & make
+&& ./bin/word_break -r3,1 30
+single > logs/log_small.txt

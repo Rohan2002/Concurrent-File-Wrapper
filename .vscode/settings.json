@@ -22,7 +22,8 @@
         "array": "c",
         "string_view": "c",
         "initializer_list": "c",
-        "utility": "c"
+        "utility": "c",
+        "complex": "c"
     },
     "python.formatting.provider": "black"
 }

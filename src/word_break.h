@@ -14,7 +14,6 @@ struct file_producer
 {
     Queue* file_queue;
     Pool* dir_pool;
-    int alive_producers;
     int isrecursive;
 };
 typedef struct file_producer producer_type;
@@ -28,8 +27,12 @@ struct file_consumer
 typedef struct file_consumer consumer_type;
 
 // wrapping infastructure
+
+// used by consumer
 int wrap_text(char *optional_input_file, int max_width, char *optional_output_file);
-int fill_pool_and_queue_with_data(char *parent_dir_path, Pool *dir_pool, Queue *file_q, int isrecursive);
+
+// used by producer
+int fill_pool_and_queue_with_data(char *parent_dir_path, Pool *dir_pool, Queue *file_q,int isrecursive);
 
 // threading infastructure
 void* produce_files_to_wrap(void *arg);

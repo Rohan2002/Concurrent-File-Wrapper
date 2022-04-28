@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include "../src/logger.h"
 #include "../src/pool.h"
+#include "../src/utils.h"
 
 struct worker_args_model
 {
@@ -21,7 +22,7 @@ void *producer(void *vargs)
     while (!pool_pointer->close && data_size != 0)
     {
         pool_data_type *ppd = malloc(sizeof(pool_data_type));
-        ppd->directory_path = "test-string";
+        ppd->directory_path = concat_string("test-string", "\0", -1, -1);
         pool_enqueue(pool_pointer, ppd);
         debug_print("Thread Enqueued with tid %ld and data_size is %d\n", pthread_self(), data_size);
         data_size--;
@@ -68,7 +69,7 @@ void vanilla_test(int pool_init_size)
     for (int a = 0; a < pool_init_size; a++)
     {
         pool_data_type *ppd = malloc(sizeof(pool_data_type));
-        ppd->directory_path = "test-string";
+        ppd->directory_path = concat_string("test-string", "\0", -1, -1);
 
         pool_enqueue(pool, ppd);
         debug_print("Enqueued...%s\n", ppd->directory_path);
@@ -80,10 +81,9 @@ void vanilla_test(int pool_init_size)
         {
             debug_print("Dequed...%s\n", ppd->directory_path);
             free(ppd);
-            
         }
     }
-    printf("Is the pool of initial size %d empty after vanilla test? %s\n",pool_init_size, pool_is_empty(pool) ? "Yes" : "No");
+    printf("Is the pool of initial size %d empty after vanilla test? %s\n", pool_init_size, pool_is_empty(pool) ? "Yes" : "No");
     pool_destroy(pool);
 }
 void threading_test(int pool_init_size, int n_producers, int n_consumers, int data_size)
@@ -118,29 +118,29 @@ void threading_test(int pool_init_size, int n_producers, int n_consumers, int da
         pthread_join(consumer_tids[l], NULL);
         debug_print("%s\n", "Joined consumer thread\n");
     }
-    printf("Is the pool of initial size %d empty after vanilla test? %s\n",pool_init_size, pool_is_empty(pool) ? "Yes" : "No");
+    printf("Is the pool of initial size %d empty after vanilla test? %s\n", pool_init_size, pool_is_empty(pool) ? "Yes" : "No");
     free(producer_tids);
     free(consumer_tids);
     pool_destroy(pool);
 }
 int main()
 {
-    int data_size = 1000;
+    int data_size = 10000;
     int pool_initial_sizes[4] = {1, 10, 100, 1000};
-    for(int i = 0; i < 4; i++){
+    for (int i = 0; i < 4; i++)
+    {
         vanilla_test(pool_initial_sizes[i]);
-    
-    int number_of_producers_t1 = 1;
-    int number_of_consumers_t1 = 1;
-    threading_test(pool_initial_sizes[i], number_of_producers_t1, number_of_consumers_t1, data_size);
 
-    int number_of_producers_t2 = 3;
-    int number_of_consumers_t2 = 5;
-    threading_test(pool_initial_sizes[i], number_of_producers_t2, number_of_consumers_t2, data_size);
+        int number_of_producers_t1 = 1;
+        int number_of_consumers_t1 = 1;
+        threading_test(pool_initial_sizes[i], number_of_producers_t1, number_of_consumers_t1, data_size);
 
-    int number_of_producers_t3 = 5;
-    int number_of_consumers_t3 = 3;
-    threading_test(pool_initial_sizes[i], number_of_producers_t3, number_of_consumers_t3, data_size);
-    
+        int number_of_producers_t2 = 3;
+        int number_of_consumers_t2 = 5;
+        threading_test(pool_initial_sizes[i], number_of_producers_t2, number_of_consumers_t2, data_size);
+
+        int number_of_producers_t3 = 5;
+        int number_of_consumers_t3 = 3;
+        threading_test(pool_initial_sizes[i], number_of_producers_t3, number_of_consumers_t3, data_size);
     }
 }

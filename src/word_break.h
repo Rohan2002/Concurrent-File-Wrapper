@@ -48,5 +48,7 @@ int handle_multiple_input_files(int widthindex, int max_width, int argv, char **
 #define STDIN 0
 #define STDOUT 1
 #define STDERR 2
+#define QUEUESIZE 100
+#define POOLSIZE 1
 
 #endif

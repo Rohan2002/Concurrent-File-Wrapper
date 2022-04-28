@@ -22,10 +22,6 @@
 #include "utils.h"
 #include "logger.h"
 
-
-#define QUEUESIZE 100
-#define POOLSIZE 1
-
 void *produce_files_to_wrap(void *arg)
 {
     /*

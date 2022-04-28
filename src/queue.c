@@ -86,7 +86,6 @@ int queue_enqueue(Queue *queue_pointer, queue_data_type *data)
 }
 queue_data_type *queue_dequeue(Queue *queue_pointer)
 {
-    // pthread_mutex_lock is better than pthread_mutex_trylock here because we want the current thread to block (i.e. be locked) until data has been queue_enqueued.
     int lock_init_status = pthread_mutex_lock(&queue_pointer->lock);
     if (lock_init_status != 0)
     {
@@ -97,8 +96,7 @@ queue_data_type *queue_dequeue(Queue *queue_pointer)
     // if there is no data in queue and there is still available data from the stream then then wait until I get that data.
     while (queue_is_empty(queue_pointer))
     {
-        // mom says no more food in kitchen, so plate is closed. Unlock. selin says im done with her plate retun NULL
-        // when queue_pointer->close is set to true then mom says no more food in the kitchen.
+        // when queue_pointer->close is set to true wake up rest of consumer threads to finish dequeu.
         if(queue_pointer->close){
             int unlock_init_status = pthread_mutex_unlock(&queue_pointer->lock); 
             if(unlock_init_status != 0){

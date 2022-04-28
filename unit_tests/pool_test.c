@@ -21,7 +21,7 @@ void *producer(void *vargs)
     while(!pool_pointer->close)
     {
         pthread_mutex_lock(&producer_data_lock);
-        debug_print("Firing thread: %p, Producer_data: %d and pool_close status: %s\n", pthread_self() ,producer_data, pool_pointer->close ? "yes" : "no");
+        debug_print("Firing thread: %ld, Producer_data: %d and pool_close status: %s\n", pthread_self() ,producer_data, pool_pointer->close ? "yes" : "no");
         if(producer_data > producer_data_size){
             break;
         }
@@ -117,7 +117,7 @@ void threading_test(Pool *pool, int n_producers, int n_consumers, int data_size)
 
     for (int i = 0; i < number_of_producer; i++)
     {
-        debug_print("%s and created thread %p\n", "Creating producer thread\n", pthread_self() );
+        debug_print("%s and created thread %ld\n", "Creating producer thread\n", pthread_self() );
         pthread_create(&producer_tids[i], NULL, producer, &worker_args);
         debug_print("%s\n", "Created producer thread\n");
     }

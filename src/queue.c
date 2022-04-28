@@ -48,8 +48,8 @@ Queue *queue_init(size_t q_size)
         return NULL;
     }
     
-    debug_print("Created queue mutex at address %p\n", &(queue_pointer->lock));
-    debug_print("Created queue with size %lu at address %p\n",q_size, queue_pointer);
+    debug_print("Created queue mutex at address %ld\n", &(queue_pointer->lock));
+    debug_print("Created queue with size %lu at address %ld\n",q_size, queue_pointer);
     
     return queue_pointer;
 }

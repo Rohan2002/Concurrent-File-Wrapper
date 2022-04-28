@@ -80,24 +80,34 @@ d
 ## Consumer threads
 
 ## Utils
-The purpose of this program it manipulates the user interface according to what is asked from the client.
+The purpose of this program it is a shared tool functions interface that is used in ```word_break.c``` and manipulate it accordingly.
 
 ## Utils functions that is used for debugging purpose
 
 1. ```print_buffer``` is used for debugging purpose and print the buffer in ```wrap_text```.
 2. ```safe_write``` checks whether or not it is succesfully written ```number of bytes``` into the file.  Otherwise, it returns -1 when error occurs.
 ## Util functions
+Our util can be found in ```src/utils.c```.
 
-1.```check_file_or_directory```returns 1 when it is a regular file,returns 2 when it is a directory name, oterwise it returns 0.
-2. ```check_rsyntax``` it includes ```-r``` syntax.
-3. ```fill_param_by_use_argumemt``` checks how many ```*producer_threads``` and ```*consumer_threads``` is used according to the given first argument. First case checks if the first argument only includes ```-r``` syntax, which uses only 1 thread for reading and 1 thread for wrapping. In second case, we assume there is always ```,```after number of threads are provided beforehand. If in our first argument there is only number of ```*consumer_threads``` provided for wrapping, the number of ```*producer_threads``` used for reading automatically would be 1. In third case, if both ```*producer_threads``` and ```*consumer_threads```(after comma) is provided, it will update the number of ```*producer_threads``` and ```*consumer_threads``` is used. In last case, if the ```-r``` syntax is not provided it updates ```*isrecursive``` parameter to be 0. At the end. function checks the error case if the first argument is provided using ```*max_width``` parameter.
-3. ```handle_multiple_input_files``` handles multiple files and directories in the user interface where client is asked for to wrap. The first parameter of this function ```widthindex``` it has the index value of the ```width``` parameter that client provided. This function will loop through the arguments greater than the widthindex to trace through the input files and directories. If the argument is a regular file it will use the ```wrapt_text()``` function. If it is a directory it will be ```enqued``` in the directory_pool which is provided as ```*dir_pool```. If there is only one regular file provided it wraps and writes the standard output according to ```max_width```.
-4. ```*concat_string``` it concetenates the first and second parameter accoroding to ```optional_prev_length``` and ```optional_new_length```. If ```optional_prev_length``` = -1 or ```optional_new_length``` = -1, the string length for the appropriate string will be computed, else it is the client's responsibility to give a valid string length for the appropriate string.```*concat_string``` is used to concatenate the ```dir_of_interest```regular file name string that we are interested in with string of ``wrap.`` before the regular file name interest.
-5. ```*append_file_path_to_existing_path``` appends the name of a directory or regular file to an existing given path.
+1. ```check_file_or_directory``` returns 1 when it is a regular file, returns 2 when it is a directory name, otherwise it returns 0.
+2. ```check_rsyntax``` includes ```-r``` syntax.
+3. ```fill_param_by_use_argumemt``` checks how many ```*producer_threads``` and ```*consumer_threads``` is used according to the given first argument. 
+    - In first case, we check if the first argument only includes ```-r``` syntax, which uses only 1 thread for reading and 1 thread for wrapping. 
+    - In second case, we assume there is always ```,``` after number of threads are provided beforehand. If in our first argument there is only number of ```*consumer_threads``` provided for wrapping, the number of ```*producer_threads``` used for reading automatically would be updated to 1. 
+    - In third case, if both ```*producer_threads``` and ```*consumer_threads```(after comma) is provided, it will update the number of ```*producer_threads``` and ```*consumer_threads``` is used. In last case, if the ```-r``` syntax is not provided it updates ```*isrecursive``` parameter to be 0. 
+At the end. function checks the error case if the first argument is provided using ```*max_width``` parameter.
+
+4. ```handle_multiple_input_files``` handles multiple files and directories in the user interface where client is asked for to wrap. The first parameter of this function ```widthindex``` it has the index value of the ```width``` parameter that client provided. This function will loop through the arguments greater than the widthindex to trace through the input files and directories. If the argument is a regular file, it will use the ```wrapt_text()``` function. If it is a directory, it will be ```enqued``` in the directory_pool which is provided as ```*dir_pool```. If there is only one regular file provided, it wraps and writes the standard output according to ```max_width```.
+5. ```*concat_string``` it concatenates the first and second parameter accoroding to ```optional_prev_length``` and ```optional_new_length```. If ```optional_prev_length``` = -1 or ```optional_new_length``` = -1, the string length for the appropriate string will be computed, else it is the client's responsibility to give a valid string length for the appropriate string.```*concat_string``` is used to concatenate the ```dir_of_interest```regular file name string that we are interested in with string of ``wrap.`` before the regular file name interest.
+6. ```*append_file_path_to_existing_path``` appends the name of a directory or regular file to an existing given path.
 ### Unit-Tests for Utils
 Our unit test for Utils can be found in ```unit_test/utils_test.c```.
 1. ```test_append_file_path_to_existing_path``` we test whether or not directory or given files name```e_file_name_2``` includes ```/``` at the end or not ```e_file_name_1```, once we test these cases we can see that ```e_file_name_1``` appends with ```new_file_1``` and ```e_file_name_2```  appends with ```new_file_2``` succesfully.
-2. ```test_concat_strings``` if the given ```concat_string``` function concatenates the strings succesfully. We check if there is no string is given on both ends if its concetenating. We check if the one of the string is not given to concetenate, it returns the already given string name after concatenation.
+2. ```test_concat_strings``` if the given ```concat_string``` function concatenates the strings succesfully. We check whether there are no string is given on both parameters if its concetenating. We check if the one of the string is not given to concatenate, it returns the already given string name after concatenation.
+
+## Testing the algorithm
+1. Empty file (```0 bytes```)
+    - <b>Result</b>: The program return an empty file.
 
 
 ## Terminology

@@ -128,25 +128,6 @@ bool pool_is_empty(Pool *pool_pointer)
 {
     return pool_pointer->number_of_elements_buffered == 0;
 }
-int pool_open(Pool *pool_pointer)
-{
-    int lock_status = pthread_mutex_lock(&pool_pointer->lock);
-    if (lock_status != 0)
-    {
-        error_print("Failed to lock with error code: %d!\n", lock_status);
-        return lock_status;
-    }
-
-    pool_pointer->close = false;
-
-    int unlock_status = pthread_mutex_unlock(&pool_pointer->lock);
-    if (unlock_status != 0)
-    {
-        error_print("Failed to unlock with error code: %d!\n", unlock_status);
-        return lock_status;
-    }
-    return 0;
-}
 int pool_close(Pool *pool_pointer)
 {
     int lock_status = pthread_mutex_lock(&pool_pointer->lock);

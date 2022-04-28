@@ -360,10 +360,10 @@ int fill_pool_and_queue_with_data(char *parent_dir_path, Pool *dir_pool, Queue *
                 int q_en_stat = queue_enqueue(file_queue, qd);
                 if (q_en_stat != 0)
                 {
-
+                    error_print("%s\n", "Could not enqueue data in file queue");
                     free(qd->input_file);
                     free(qd->output_file);
-                    free(file_path_in_directory);
+                    free(qd);
                     return -1;
                 }
             }
@@ -389,7 +389,9 @@ int fill_pool_and_queue_with_data(char *parent_dir_path, Pool *dir_pool, Queue *
                 int p_en_stat = pool_enqueue(dir_pool, pd);
                 if (p_en_stat != 0)
                 {
+                    error_print("%s\n", "Could not enqueue data in directory pool!");
                     free(pd->directory_path);
+                    free(pd);
                     return -1;
                 }
             }
@@ -594,23 +596,17 @@ int threaded_wrap_program(int producer_threads, int consumer_threads, int max_wi
 }
 int main(int argv, char **argc)
 {
-    if (argv == 1)
-    {
-        error_print("%s\n", "Recursive arguement or Max Width arguement not provided!");
-        return EXIT_FAILURE;
-    }
-    int max_width;
-
     // thread params
     int producer_threads;
     int consumer_threads;
 
     // user interface arguements
+    int max_width;
     int isrecursive; // checks if -r is present. 1 if yes else 0
     int widthindex;  // calculates where the max_width is located based on the previous user arguements
 
     int args_filler_status = fill_param_by_user_arguememt(argv, argc, &max_width, &producer_threads, &consumer_threads, &isrecursive, &widthindex);
-    if (args_filler_status == -1)
+    if (args_filler_status != 0)
     {
         error_print("%s\n", "Error with parsing arguements.");
         return EXIT_FAILURE;

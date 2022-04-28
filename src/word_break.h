@@ -40,6 +40,9 @@ int fill_pool_and_queue_with_data(char *parent_dir_path, Pool *dir_pool, Queue *
 void* produce_files_to_wrap(void *arg);
 void* consume_files_to_wrap(void *arg);
 
+// extra credit
+int handle_multiple_input_files(int widthindex, int max_width, int argv, char **arg, Pool *dir_pool);
+
 #define DEF_MODE S_IRUSR | S_IWUSR
 #define BUFSIZE 5
 #define STDIN 0

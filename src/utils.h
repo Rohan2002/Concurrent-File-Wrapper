@@ -8,8 +8,6 @@
 #ifndef UTILS_H
 #define UTILS_H
 #include <sys/stat.h>
-#include "queue.h"
-#include "pool.h"
 
 // utils infastructure
 void print_buffer(char *word_buffer, int length);
@@ -18,6 +16,5 @@ int check_file_or_directory(struct stat *file_in_dir_pointer);
 char *concat_string(char *prev_str, char *new_str, int optional_prev_length, int optional_new_length);
 char *append_file_path_to_existing_path(char *existing_path, char *new_file);
 int fill_param_by_user_arguememt(int argv, char **arg, int *max_width, int *producer_threads, int *consumer_threads, int *isrecursive, int *widthindex);
-int handle_multiple_input_files(int widthindex, int max_width, int argv, char **arg, Pool *dir_pool);
 
 #endif

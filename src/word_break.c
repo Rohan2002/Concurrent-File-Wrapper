@@ -11,15 +11,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include "word_break.h"
 #include <string.h>
 #include <stdbool.h>
 #include <dirent.h>
 #include <string.h>
 #include <ctype.h>
 #include <pthread.h>
+#include <libgen.h>
+#include "word_break.h"
 #include "utils.h"
 #include "logger.h"
+
 
 #define QUEUESIZE 100
 #define POOLSIZE 1
@@ -404,6 +406,80 @@ int fill_pool_and_queue_with_data(char *parent_dir_path, Pool *dir_pool, Queue *
     }
     return 0;
 }
+
+
+int handle_multiple_input_files(int widthindex, int max_width, int argv, char **arg, Pool *dir_pool)
+{
+    int rtn = 0;
+    bool isfile = false;
+    int count_files = 0;
+    for (int i = widthindex + 1; i < argv; i++)
+    {
+        char *dir_of_interest = concat_string(arg[i], "\0", -1, -1);
+        struct stat file_in_dir;
+        int status_of_file_metadata = stat(dir_of_interest, &file_in_dir); // directory_pointer->d_name is the filename.
+        if (status_of_file_metadata != 0)
+        {
+            error_print("Can't get stat of file %s\n", dir_of_interest);
+            free(dir_of_interest);
+            return status_of_file_metadata;
+        }
+        if (check_file_or_directory(&file_in_dir) == 1)
+        {
+            isfile = true;
+            // regular file
+            char *output_file_name = concat_string("wrap.", basename(dir_of_interest), -1, -1);
+            char *output_file_path = append_file_path_to_existing_path(dirname(dir_of_interest), output_file_name);
+            if (output_file_name != NULL && output_file_path != NULL)
+            {
+                rtn = wrap_text(arg[i], max_width, output_file_path);
+            }
+            else
+            {
+                rtn = -1;
+            }
+
+            if (rtn != 0)
+            {
+                free(output_file_name);
+                free(output_file_path);
+                free(dir_of_interest);
+                return rtn;
+            }
+            free(output_file_name);
+            free(output_file_path);
+            free(dir_of_interest);
+        }
+        else if (check_file_or_directory(&file_in_dir) == 2)
+        {
+            pool_data_type *pool_init_data = malloc(sizeof(pool_data_type));
+            if (pool_init_data == NULL)
+            {
+                free(dir_of_interest);
+                error_print("%s\n", "Malloc Failure!");
+                return -1;
+            }
+            pool_init_data->directory_path = dir_of_interest;
+            rtn = pool_enqueue(dir_pool, pool_init_data);
+            if (rtn != 0)
+            {
+                free(pool_init_data->directory_path);
+                free(pool_init_data);
+                return rtn;
+            }
+        }
+        count_files++;
+    }
+    // that means the only input file is a regular file, so print to stdout as per extra credit assignment
+    if(isfile && count_files == 1){
+        int rtn_val = wrap_text(arg[widthindex + 1], max_width, NULL);
+        return rtn_val;
+    }
+
+    return 0;
+}
+
+
 int threaded_wrap_program(int producer_threads, int consumer_threads, int max_width, int isrecursive, int widthindex, int argv, char **argc)
 {
     // data structures setup

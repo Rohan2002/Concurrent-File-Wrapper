@@ -67,13 +67,8 @@ void vanilla_test(int pool_init_size)
 
     for (int a = 0; a < pool_init_size; a++)
     {
-        int length = snprintf(NULL, 0, "%d", a);
-        char *str = malloc(length + 1);
-        snprintf(str, length + 1, "%d", a);
-
         pool_data_type *ppd = malloc(sizeof(pool_data_type));
-
-        ppd->directory_path = str;
+        ppd->directory_path = "test-string";
 
         pool_enqueue(pool, ppd);
         debug_print("Enqueued...%s\n", ppd->directory_path);

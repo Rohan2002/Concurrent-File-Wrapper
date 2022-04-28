@@ -22,6 +22,7 @@
 #include "logger.h"
 
 #define QUEUESIZE 100
+#define POOLSIZE 1
 
 void *produce_files_to_wrap(void *arg)
 {
@@ -38,7 +39,7 @@ void *produce_files_to_wrap(void *arg)
     // unpack thread args for producer
     Pool *dir_pool = producer_args->dir_pool;
     Queue *file_q = producer_args->file_queue;
-    int isrecursive=producer_args->isrecursive;
+    int isrecursive = producer_args->isrecursive;
 
     while (!dir_pool->close)
     {
@@ -51,7 +52,7 @@ void *produce_files_to_wrap(void *arg)
         {
             increment_active_producers(dir_pool); // a directory thread is working...
             debug_print("The number of directory threads that are working %d\n", dir_pool->number_of_active_producers);
-            int fill_status = fill_pool_and_queue_with_data(pool_init_data->directory_path, dir_pool, file_q,isrecursive);
+            int fill_status = fill_pool_and_queue_with_data(pool_init_data->directory_path, dir_pool, file_q, isrecursive);
             if (fill_status == -1)
             {
                 error_print("%s\n", "Couldn't fill the data");
@@ -308,7 +309,7 @@ int fill_pool_and_queue_with_data(char *parent_dir_path, Pool *optional_dir_pool
                 debug_print("Input-file found with path %s\n", file_path_in_directory);
                 debug_print("Output-file found with path %s\n", output_file_name);
 
-                if (optional_file_queue != NULL)
+                if (optional_file_queue != NULL )
                 {
                     queue_data_type *qd = malloc(sizeof(queue_data_type));
                     if (qd == NULL)
@@ -360,16 +361,21 @@ int threaded_wrap_program(int producer_threads, int consumer_threads, int max_wi
         error_print("%s\n", "Failed to init file queue.");
         return EXIT_FAILURE;
     }
-    Pool *dir_pool = pool_init(QUEUESIZE);
+    Pool *dir_pool = pool_init(POOLSIZE);
     if (dir_pool == NULL)
     {
         error_print("%s\n", "Failed to init directory pool.");
         return EXIT_FAILURE;
     }
-    fill_queue_and_pool_by_user_arguememt(widthindex,argv,argc, file_queue,dir_pool );
+    // fill_initial_data_in_queue_and_pool_from_user_arguememt(widthindex, argv, argc, file_queue, dir_pool);
     // pool_data_type *pool_init_data = malloc(sizeof(pool_data_type));
-    // pool_init_data->directory_path = dir_of_interest;
+    // pool_init_data->directory_path = concat_string(argc[3], "\0", -1, -1);
     // pool_enqueue(dir_pool, pool_init_data);
+    // debug_print("The directory of interest is %s\n", argc[3]);
+
+    // we are using more than one folder or file name (extra credit section)
+    // so we declare a new function to use more than one file or folder that is specified in the user arguments
+    fill_queue_and_pool_by_user_arguememt(widthindex,argv,argc, file_queue,dir_pool );
 
     // threads setup
     pthread_t *producer_tids = malloc(producer_threads * sizeof(pthread_t));
@@ -420,8 +426,10 @@ int threaded_wrap_program(int producer_threads, int consumer_threads, int max_wi
     free(consumer_args);
     free(producer_tids);
     free(consumer_tids);
+
     queue_destroy(file_queue);
     pool_destroy(dir_pool);
+
     return EXIT_SUCCESS;
 }
 int main(int argv, char **argc)
@@ -452,29 +460,25 @@ int main(int argv, char **argc)
     int one_file_only;
 
     // directory of interest
-    //char *dir_of_interest = concat_string(argc[3], "\0", -1, -1);
+    // char *dir_of_interest = concat_string(argc[3], "\0", -1, -1);
+
 
     int args_filler_status = fill_param_by_user_arguememt(argv, argc, &max_width, &producer_threads, &consumer_threads, &isrecursive, &widthindex, &one_file_only);
 
-    //int args_filler_status = fill_param_by_user_arguememt(argc, &max_width, &producer_threads, &consumer_threads);
+    // int args_filler_status = fill_param_by_user_arguememt(argc, &max_width, &producer_threads, &consumer_threads);
     if (args_filler_status == -1)
     {
         error_print("%s\n", "Error with parsing arguements.");
-        //free(dir_of_interest);
+        // free(dir_of_interest);
         return EXIT_FAILURE;
     }
-
+    int rtn_val ;
     if (one_file_only==1) {
-        //printf("1 file only\n");
         char *dir_of_interest = concat_string(argc[widthindex+1], "\0", -1, -1);
-        int r=wrap_text(dir_of_interest,max_width,NULL);
+        rtn_val=wrap_text(dir_of_interest,max_width,NULL);
         free(dir_of_interest);
-        return r;
-    } else {
+    } 
 
-        int rtn_val = threaded_wrap_program(producer_threads, consumer_threads, max_width, isrecursive,widthindex,argv, argc);
-        return rtn_val;
-    }
-
-    
+    rtn_val = threaded_wrap_program(producer_threads, consumer_threads, max_width, isrecursive, widthindex, argv, argc);
+    return rtn_val;
 }

@@ -161,12 +161,12 @@ int wrap_text(char *optional_input_file, int max_width, char *optional_output_fi
 
     if (fd_read == -1)
     {
-        error_print("%s\n", "Error when opening file for reading");
+        error_print("Error when opening file %s for reading\n", optional_input_file);
         return EXIT_FAILURE;
     }
     if (fd_write == -1)
     {
-        error_print("%s\n", "Error when opening file for writing");
+        error_print("Error when opening file %s for writing\n", optional_output_file);
         return EXIT_FAILURE;
     }
 

@@ -130,25 +130,22 @@ void threading_test(int pool_init_size, int n_producers, int n_consumers, int da
 }
 int main()
 {
+    int data_size = 1000;
     int pool_initial_sizes[4] = {1, 10, 100, 1000};
     for(int i = 0; i < 4; i++){
         vanilla_test(pool_initial_sizes[i]);
+    
+    int number_of_producers_t1 = 1;
+    int number_of_consumers_t1 = 1;
+    threading_test(pool_initial_sizes[i], number_of_producers_t1, number_of_consumers_t1, data_size);
+
+    int number_of_producers_t2 = 3;
+    int number_of_consumers_t2 = 5;
+    threading_test(pool_initial_sizes[i], number_of_producers_t2, number_of_consumers_t2, data_size);
+
+    int number_of_producers_t3 = 5;
+    int number_of_consumers_t3 = 3;
+    threading_test(pool_initial_sizes[i], number_of_producers_t3, number_of_consumers_t3, data_size);
+    
     }
-    // int pool_init_size_t1 = 10;
-    // int data_size_t1 = 1000;
-    // int number_of_producers_t1 = 1;
-    // int number_of_consumers_t1 = 1;
-    // threading_test(pool_init_size_t1, number_of_producers_t1, number_of_consumers_t1, data_size_t1);
-
-    // int pool_init_size_t2 = 10;
-    // int data_size_t2 = 1000;
-    // int number_of_producers_t2 = 3;
-    // int number_of_consumers_t2 = 5;
-    // threading_test(pool_init_size_t2, number_of_producers_t2, number_of_consumers_t2, data_size_t2);
-
-    // int pool_init_size_t3 = 10;
-    // int data_size_t3 = 1000;
-    // int number_of_producers_t3 = 5;
-    // int number_of_consumers_t3 = 3;
-    // threading_test(pool_init_size_t3, number_of_producers_t3, number_of_consumers_t3, data_size_t3);
 }

@@ -186,10 +186,9 @@ int handle_multiple_input_files(int widthindex, int max_width, int argv, char **
             // regular file
             char *output_file_name = concat_string("wrap.", basename(dir_of_interest), -1, -1);
             char *output_file_path = append_file_path_to_existing_path(dirname(dir_of_interest), output_file_name);
-
             if (output_file_name != NULL && output_file_path != NULL)
             {
-                rtn = wrap_text(dir_of_interest, max_width, output_file_path);
+                rtn = wrap_text(arg[i], max_width, output_file_path);
             }
             else
             {

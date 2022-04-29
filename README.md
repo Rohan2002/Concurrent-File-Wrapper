@@ -38,8 +38,6 @@ struct Pool_Model
 
 #### Mutex
 We used ```one``` mutex lock provided as a field in the ```Stack``` struct to read/write any field in the ```Stack``` struct in a exclusive way. The mutex lock provides exclusive access for the threads to read and write the stack internals (e.g. data, pool_size) one at a time in order to avoid multiple threads reading and writing the stack internals at once. So when a thread ```t1``` acquires the lock for reading or writing the stack internals, and if another thread ```t2``` attempts to read or write the stack internals at the same time then ```t2``` will sleep until ```t1``` releases the mutex lock.
-<br/>
-<br/>
 #### Condition Variable
 We also used ```one``` condition variable called ```ready_to_consume``` provided as a field in the ```Stack``` struct for inter thread communication purposes. ```ready_to_consume``` is set to wait in our ```pool_dequeue``` method when the the stack is empty. Once the ```wait``` is called in dequeue, the thread responsible for calling dequeue is set to sleep, the mutex lock is released temporarily and finally, the control is passed to enqueue. Enqueue then locks the mutex again, and enqueues data into the stack and ```signals``` the condition variable ```ready_to_consume``` so that dequeue won't be blocked anymore, and then dequeue can start dequeuing data once again because there is some data in the stack.
 
@@ -115,6 +113,13 @@ struct Queue_Model
 6. The ```number_of_elements_buffered``` field stores the number of elements present inside the queue at any given time. The ```number_of_elements_buffered``` is incremented when an element in enqueued to the queue and decremented when an element is dequeued.
 7. The ```close``` field is a boolean flag to indicate whether the queue will accept anymore data. If the flag is set to ```True``` then all of the remaining file threads/consumer threads that are responsbile for dequeuing the file paths from the file queue and wrapping them to their respective output file path are woken up using the ```broadcast``` signal method. Thus, all the remaining file threads are signaled to finish dequeuing and wrapping the remaining file paths from the file queue. ```Note:``` This field prevents the file threads from finishing early because the directory threads will only set this flag to true when all of the directories and sub-directories have been read and all the files from those directories and sub-directories have been enqueued into the file queue.
 
+### Synchronization
+#### Mutex
+We used ```one``` mutex lock provided as a field in the ```Queue``` struct to read/write any field in the ```Queue``` struct in a exclusive way. The mutex lock provides exclusive access for the threads to read and write the stack internals (e.g. data, queue_size) one at a time in order to avoid multiple threads reading and writing the stack internals at once. So when a thread ```t1``` acquires the lock for reading or writing the stack internals, and if another thread ```t2``` attempts to read or write the stack internals at the same time then ```t2``` will sleep until ```t1``` releases the mutex lock.
+
+#### Condition Variable
+We also used ```two``` condition variable called ```ready_to_consume``` and  ```ready_to_produce``` provided as a field in the ```Queue``` struct for inter thread communication purposes. ```ready_to_consume``` is set to wait in our ```queue_dequeue``` method when the the stack is empty. Once the ```wait``` is called in dequeue, the thread responsible for calling dequeue is set to sleep, the mutex lock is released temporarily and finally, the control is passed to enqueue. Enqueue then locks the mutex again, and enqueues data into the stack and ```signals``` the condition variable ```ready_to_consume``` so that dequeue won't be blocked anymore, and then dequeue can start dequeuing data once again because there is some data in the stack. Similary ```ready_to_produce``` is set to wait in our ```queue_enqueue``` method when the stack if full. Once the ```wait``` is called in enqueue, the thread responsible for calling enqueue is set to sleep, the mutex lock is released temporarily and finally, the control is passed to dequeue where at least one element is removed from the queue. Once the element is removed, ```dequeue``` ```signals``` the condition variable ```ready_to_produce``` so that enqueue won't be blocked anymore, and then enqueue can start enqueuing data once again because there is some space in the queue.
+
 ### Unit-Tests for Queue
 Our unit test for Queue can be found in ```unit_test/queue_test.c```.
 We tested the Queue by two main testing approaches. 
@@ -126,7 +131,6 @@ We tested the Queue by two main testing approaches.
 
 ## Utils
 The purpose of this component is to share utility functions to ease the development workflow. Our utilility functions can be found in ```src/utils.c```. 
-
 
 ## Util functions
 
@@ -287,7 +291,8 @@ fill_param_by_user_arguememt(): Max width was either not provided or it cannot b
 4. A binary for ```word_break``` is created in the bin folder. Now if a user executes ```./word_break -r dir_test/```, the program would run with 1 producer and 1 consumer thread. If the user executes ```./word_break -rN dir_test/```, the program would run with 1 producer thread and N consumer threads. Finally if the user executes ```./word_break -rM,N dir_test/```, then there will M producer threads and N consumer threads.
 5. You can also not include the ```-r``` option but then the program will not recursively traverse the input directory. 
 6. If you want to run the extra credit part, it is the same instructions as number 4 except you can include multiple directories or files.
-
+7. ```make fresh file=test_dir/``` to clear all wrap files out of a directory
+8. ```make clean``` to clean build.
 ## Steps to Run Unit Test
 1. First make to sure to turn on or off the ```DEBUG``` parameter located in ```src/logger.h```. ```DEBUG``` 0 will not print any logs and 1 will print all the logs to stdout.
 2. Then change the initial ```POOLSIZE``` or ```QUEUESIZE``` macro in ```src/word_break.h``` to setup the initial poolsize or queuesize.

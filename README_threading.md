@@ -124,10 +124,6 @@ We tested the Queue by two main testing approaches.
     1. For the threading test, we tried different combinations for the number of producer, and the number of consumer threads that will target the producer worker function, and consumer worker function respectivily. For instance let's say a pair of producer, and consumer threads is represented as ```(p,c)```. Then we tested the threading test with the pairs (1,1), (3,5), (5,3), (4,4).
     2. For the vanilla, and threading test we tested it with n (10, 100, 1000, 10000) as the bounded queue is of size n. This number can be changed in the main method of ```unit_test/pool_test.c```
 
-## Producer threads
-
-## Consumer threads
-
 ## Utils
 The purpose of this program it is a shared tool functions interface that is used in ```word_break.c``` and manipulate it accordingly.
 
@@ -153,6 +149,32 @@ At the end. function checks the error case if the first argument is provided usi
 Our unit test for Utils can be found in ```unit_test/utils_test.c```.
 1. ```test_append_file_path_to_existing_path``` we test whether or not directory or given files name```e_file_name_2``` includes ```/``` at the end or not ```e_file_name_1```, once we test these cases we can see that ```e_file_name_1``` appends with ```new_file_1``` and ```e_file_name_2```  appends with ```new_file_2``` succesfully.
 2. ```test_concat_strings``` if the given ```concat_string``` function concatenates the strings succesfully. We check whether there are no string is given on both parameters if its concetenating. We check if the one of the string is not given to concatenate, it returns the already given string name after concatenation.
+
+## Word Break
+This is the program where all of the previous components like the bounded queue, unbounded stack, util functions get combined into a multithreaded word wrapping program. We tried to use the best modularization practices, however, if you have any suggestions please feel free to comment it. 
+
+We used a producer-consumer approach to tackle the multithreaded word-wrap program. Our producer worker function ```void *produce_files_to_wrap(void *arg);``` is targetted by the producer/directory thread and our consumer worker function ```void* consume_files_to_wrap(void *arg);``` is targetted by the consumer/wrapping threads. Our user interface allows us to control how many producer or how many consumer threads we desire, however you can read more about that in our user interface section. 
+
+### produce_files_to_wrap
+```produce_files_to_wrap``` takes in a ```struct file_producer``` as the producer thread arguement. In that struct we have a ```file_queue``` field that is responsible for enqueuing all the files from the directories and sub-directories. Then we have a field ```dir_pool``` which is our unbounded directory stack that is responsible for recursively enqueuing/dequeuing directories and sub directories. We also have a field ```isrecursive``` to enable recursive directory traversal or not (for the extra credit). Finally we have a ```error_code``` field that is an integer pointer and stores any error that occured in the producer worker function.
+
+The directory pool initially is ```not``` passed empty to the ```produce_files_to_wrap``` function because we need a initial parent directory or some parent directories (extra credit) that the producer worker function can start traversing. In the loop ```produce_files_to_wrap``` function first ```dequeues``` a ```parent_dir_path``` from the ```dir_pool``` by calling the ```pool_dequeue``` function. 
+Then a helper function ```int fill_pool_and_queue_with_data(char *parent_dir_path, Pool *dir_pool, Queue *file_q, int isrecursive);``` is called and it is responsible for taking the recently dequeued ```parent_dir_path``` and filling up the ```dir_pool``` and ```file_q``` with sub-directories and regular files from the ```parent_dir_path```. Internally, ```fill_pool_and_queue_with_data``` calls ```pool_enqueue``` function to enqueue sub-directories in the ```dir_pool``` and ```queue_enqueue``` function to enqueue regular file path in the ```file_q```. One more thing to mention, ```fill_pool_and_queue_with_data``` function also takes a ```isrecursive``` option which basically if ```not``` enabled then it indicates ```fill_pool_and_queue_with_data``` to not insert any sub-directory in the ```dir_pool```. This ```isrecursive``` option was specifically made for the extra credit section because the user interface can disable recursive directory traversal. 
+
+### Ending condition for produce_files_to_wrap
+The ending condition for our producer/directory threads are 1) the directory queue must be empty and 2) the number of directory threads that are actively reading a directory must be 0. To check if directory queue is not empty, we called our function ```pool_is_empty``` function from ```pool.c```, which basically checks if the number of elements in the pool is 0. Moreover, to check the number of directory threads, we use the field ```number_of_active_producers``` in the Pool struct to keep track of the number of directory threads that are currently working with a directory. So if a directory path is successfully dequeued from the ```dir_pool``` then the directory thread has some directory to work with and therefore the ```number_of_active_producers``` count is incremented by calling the ```increment_active_producers```. However, once ```fill_pool_and_queue_with_data``` finishes reading the directory, and fills up the stack and queues appropriately then the ```number_of_active_producers``` is decremented to indicate that the directory thread working on that particular directory has finished its work. So before we dequeue (the condition to start a directory thread working), we just check if the directory queue is empty and the ```number_of_active_producers``` is 0 then we just exit the loop and close the directory pool. We close the directory pool to just indicate that there is no more ```new``` directories so whichever directory thread was in the process of reading a directory should just finish their directory traversal and exit when they are done.
+
+### consume_files_to_wrap
+```consume_files_to_wrap``` takes in a ```struct file_consumer``` as the consumer thread arguement. In that struct we have a ```file_queue``` field that is the bounded file queue populated with the regular file paths created by the producer threads. Then we have a ```max_width``` field that is an argument to the ```wrap_text``` function inside the ```consume_files_to_wrap```. Finally we have a ```error_code``` field that is an integer pointer and stores any error that occured in the consumer worker function.
+
+The main purpose of this cosumer worker function is to ```dequeue``` the data from the provided ```file_queue``` by calling ```queue_dequeue``` function, and to wrap the regular file path by calling the ```wrap_text``` algorithm written in the previous project. The item dequeued from the ```file_queue``` is of type ```queue_data_type``` and it consists of the ```input-file-path```, and ```output-file-path```. This input and output file paths are passed to the ```wrap_text``` function and a new wrapped file is written to ```output-file-path```. Since the producer loans the consumer an allocated heap-space item of type ```queue_data_type```, so it is also the responsiblity of this consumer function to free this object.
+
+### Ending condition for consume_files_to_wrap
+The ending condition for our consumer/wrapping threads are 1) The file queue must be empty 2) the file queue must also be closed. To check if directory queue is not empty, we called our function ```queue_is_empty``` function from ```queue.c```, which basically checks if the number of elements in the queue is 0. Moreover, since the file queue is closed only when the directory threads have finished traversing through all directories and sub directories, the consumers won't finish "early" and exit due to this condition because we want all the regular files from every given sub-directory and directory to be wrapped.
+
+<br/>
+<br/>
+
 
 ## Testing the algorithm
 1. Empty file (```0 bytes```)

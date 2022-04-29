@@ -49,7 +49,11 @@ void *produce_files_to_wrap(void *arg)
         pool_data_type *pool_init_data = pool_dequeue(dir_pool);
         if (pool_init_data != NULL)
         {
-            increment_active_producers(dir_pool); // a directory thread is working...
+            int increment_status = increment_active_producers(dir_pool); // a directory thread is working...
+            if(increment_status !=0){
+                *error_code = increment_status;
+                error_print("%s\n", "Couldn't increment producer!");
+            }
             debug_print("The number of directory threads that are working %d\n", dir_pool->number_of_active_producers);
             int fill_status = fill_pool_and_queue_with_data(pool_init_data->directory_path, dir_pool, file_q, isrecursive);
             if (fill_status == -1)
@@ -62,7 +66,11 @@ void *produce_files_to_wrap(void *arg)
                 free(pool_init_data->directory_path);
             }
             free(pool_init_data);
-            decrement_active_producers(dir_pool); // a directory thread is done working...
+            int decrement_status = decrement_active_producers(dir_pool); // a directory thread is done working...
+            if(decrement_status !=0){
+                *error_code = decrement_status;
+                error_print("%s\n", "Couldn't decrement producer!");
+            }
         }
     }
     debug_print("%s\n", "Closing directory POOL");

@@ -53,6 +53,7 @@ void *consumer(void *vargs)
         if (dq != NULL)
         {
             debug_print("Thread Dequeued with tid %ld\n", pthread_self());
+            free(dq->directory_path);
             free(dq);
         }
     }
@@ -80,6 +81,7 @@ void vanilla_test(int pool_init_size)
         if (ppd != NULL)
         {
             debug_print("Dequed...%s\n", ppd->directory_path);
+            free(ppd->directory_path);
             free(ppd);
         }
     }

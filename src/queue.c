@@ -68,7 +68,7 @@ int queue_enqueue(Queue *queue_pointer, queue_data_type *data)
     {
         // there will be no more data incoming as queue has queue_enqueued all available data at this point. So whatever data is remaining, just tell consumer to queue_dequeue.
         debug_print("%s", "From queue_enqueue: The queue is full.\n");
-        pthread_cond_wait(&(queue_pointer->ready_to_produce), &queue_pointer->lock); // selins mom will say plate is full.. eat the food.
+        pthread_cond_wait(&(queue_pointer->ready_to_produce), &queue_pointer->lock); // block enqueue until dequeue handles it.
     }
     queue_pointer->data[queue_pointer->end] = data;
     debug_print("From queue_enqueue: Enqued element at index %lu\n", queue_pointer->end);

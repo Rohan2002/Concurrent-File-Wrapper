@@ -40,8 +40,12 @@ void *produce_files_to_wrap(void *arg)
     int isrecursive = producer_args->isrecursive;
     int *error_code = producer_args->error_code;
     *error_code = 0;
+    // if a directory threads sets this condition after breaking from the producer thread ending condition.
+    // then the other directory threads will finish enqu
     while (!dir_pool->close)
     {
+        // producer thread ending condition
+        // No directory thread is actively reading the directories and the pool is empty.
         if (pool_is_empty(dir_pool) && dir_pool->number_of_active_producers == 0)
         {
             break;
@@ -49,9 +53,11 @@ void *produce_files_to_wrap(void *arg)
         pool_data_type *pool_init_data = pool_dequeue(dir_pool);
         if (pool_init_data != NULL)
         {
+            // increment # of directory threads enquing directories or sub-directories
             int increment_status = increment_active_producers(dir_pool); // a directory thread is working...
-            if(increment_status !=0){
-                *error_code = increment_status;
+            if (increment_status != 0)
+            {
+                *error_code = increment_status; // record the error code.
                 error_print("%s\n", "Couldn't increment producer!");
             }
             debug_print("The number of directory threads that are working %d\n", dir_pool->number_of_active_producers);
@@ -66,8 +72,10 @@ void *produce_files_to_wrap(void *arg)
                 free(pool_init_data->directory_path);
             }
             free(pool_init_data);
+            // decrement # of directory threads enquing directories or sub-directories
             int decrement_status = decrement_active_producers(dir_pool); // a directory thread is done working...
-            if(decrement_status !=0){
+            if (decrement_status != 0)
+            {
                 *error_code = decrement_status;
                 error_print("%s\n", "Couldn't decrement producer!");
             }
@@ -121,10 +129,12 @@ void *consume_files_to_wrap(void *arg)
     *error_code = 0;
     while (!queue_is_empty(file_q) || !file_q->close)
     {
+        // get regular file for wrapping
         queue_data_type *q_data_pointer = queue_dequeue(file_q);
 
         if (q_data_pointer != NULL)
         {
+            // wrap file to ourput file
             debug_print("Dequeing file, tid: %p input file path: %s output file path: %s\n", pthread_self(), q_data_pointer->input_file, q_data_pointer->output_file);
             int wrap_text_status = wrap_text(q_data_pointer->input_file, max_width, q_data_pointer->output_file);
             if (wrap_text_status != 0)
@@ -411,7 +421,6 @@ int fill_pool_and_queue_with_data(char *parent_dir_path, Pool *dir_pool, Queue *
     return 0;
 }
 
-
 int handle_multiple_input_files(int widthindex, int max_width, int argv, char **arg, Pool *dir_pool)
 {
     int rtn = 0;
@@ -432,11 +441,11 @@ int handle_multiple_input_files(int widthindex, int max_width, int argv, char **
         {
             isfile = true;
             // regular file
-            char *output_file_name = concat_string("wrap.", basename(dir_of_interest), -1, -1);
-            char *output_file_path = append_file_path_to_existing_path(dirname(dir_of_interest), output_file_name);
+            char *output_file_name = concat_string("wrap.", basename(dir_of_interest), -1, -1);                     // new filename wrap.xyz
+            char *output_file_path = append_file_path_to_existing_path(dirname(dir_of_interest), output_file_name); // input_dir/wrap.xyz
             if (output_file_name != NULL && output_file_path != NULL)
             {
-                rtn = wrap_text(arg[i], max_width, output_file_path);
+                rtn = wrap_text(arg[i], max_width, output_file_path); // wrap input regular files from user arguement immediately
             }
             else
             {
@@ -464,7 +473,7 @@ int handle_multiple_input_files(int widthindex, int max_width, int argv, char **
                 return -1;
             }
             pool_init_data->directory_path = dir_of_interest;
-            rtn = pool_enqueue(dir_pool, pool_init_data);
+            rtn = pool_enqueue(dir_pool, pool_init_data); // enqueue initial directories from user input
             if (rtn != 0)
             {
                 free(pool_init_data->directory_path);
@@ -475,14 +484,14 @@ int handle_multiple_input_files(int widthindex, int max_width, int argv, char **
         count_files++;
     }
     // that means the only input file is a regular file, so print to stdout as per extra credit assignment
-    if(isfile && count_files == 1){
+    if (isfile && count_files == 1)
+    {
         int rtn_val = wrap_text(arg[widthindex + 1], max_width, NULL);
         return rtn_val;
     }
 
     return 0;
 }
-
 
 int threaded_wrap_program(int producer_threads, int consumer_threads, int max_width, int isrecursive, int widthindex, int argv, char **argc)
 {

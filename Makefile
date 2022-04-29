@@ -1,6 +1,6 @@
 CC         = gcc
 SANITIZERS = -fsanitize=address,undefined
-CFLAGS     = -g -std=c99 -Wall -Wvla -pthread  $(SANITIZERS)
+CFLAGS     = -g -std=c99 -Wall -Wvla -pthread -Werror $(SANITIZERS)
 
 all: bin/wcheck bin/word_break
 

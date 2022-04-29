@@ -125,7 +125,7 @@ void threading_test(int pool_init_size, int n_producers, int n_consumers, int da
 }
 int main()
 {
-    int data_size = 10000;
+    int data_size = 1000;
     int pool_initial_sizes[4] = {1, 10, 100, 1000};
     for (int i = 0; i < 4; i++)
     {
@@ -142,5 +142,10 @@ int main()
         int number_of_producers_t3 = 5;
         int number_of_consumers_t3 = 3;
         threading_test(pool_initial_sizes[i], number_of_producers_t3, number_of_consumers_t3, data_size);
+
+        int number_of_producers_t4 = 4;
+        int number_of_consumers_t4 = 4;
+        threading_test(pool_initial_sizes[i], number_of_producers_t4, number_of_consumers_t4, data_size);
+
     }
 }

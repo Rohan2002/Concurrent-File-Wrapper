@@ -306,4 +306,4 @@ fill_param_by_user_arguememt(): Max width was either not provided or it cannot b
 3. a ```break``` is defined as two newlines between a consecutive sentence
 
 ## Authors
-Rohan Deshpande (ryd4) and Selin Denise Altiparmak (sda81)
+Rohan Deshpande and Selin Denise Altiparmak

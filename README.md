@@ -3,6 +3,14 @@
 ## Purpose
 The purpose of this program is to demonstrate the producer-consumer model using Posix threads. The producer threads <b>concurrently</b> enqueue directory and sub-directory paths in the unbounded directory stack and also enqueue regular file paths in the bounded file queue. The consumer threads also <b>concurrently</b> dequeue the regular file paths from the file queue, wrapping the content from the regular file and finally writing the wrapped content to a new regular file in the same directory as the regular input file. The new file can be identified by ```wrap.input_file_name.txt```.
 
+## Steps To Run Word Break.
+1. First make to sure to turn on or off the ```DEBUG``` parameter located in ```src/logger.h```. ```DEBUG``` 0 will not print any logs and 1 will print all the logs to stdout.
+2. Then change the initial ```POOLSIZE``` or ```QUEUESIZE``` macro in ```src/word_break.h``` to setup the initial poolsize or queuesize. A good initial size is 100 for ```POOLSIZE``` and ```QUEUESIZE``` but it really depends on how many files on average you have in the directories. There is a memory-runtime tradeoff, which is pretty clear because larger size indicates larger memory overhead but faster runtime because the buffer has more space in it. 
+3. Then run ```make``` from the project root directory to generate the object files and binaries. Note the object files were made seperately in order to unit test them independently of each other.
+4. A binary for ```word_break``` is created in the bin folder. Now if a user executes ```./word_break -r dir_one/ dir_two/ dir_three/ file1 ...```, the program would run with 1 producer and 1 consumer thread. If the user executes ```./word_break -rN ir_one/ dir_two/ dir_three/ file1 ...```, the program would run with 1 producer thread and N consumer threads. Finally if the user executes ```./word_break -rM,N ir_one/ dir_two/ dir_three/ file1 ...```, then there will M producer threads and N consumer threads.
+5. You can also not include the ```-r``` option but then the program will not recursively traverse the input directory and will only wrap the files in the first level of the given directory. 
+6. ```make fresh file=test_dir/``` to clear all wrap files out of a directory
+7. ```make clean``` to clean build.
 ## Unbounded Directory Stack or Pool
 
 ### Data Structure Purpose
@@ -172,14 +180,14 @@ We used a producer-consumer approach to tackle the multithreaded word-wrap progr
 The directory pool initially is ```not``` passed empty to the ```produce_files_to_wrap``` function because we need a initial parent directory or some parent directories (extra credit) that the producer worker function can start traversing (look at next section regarding ```handle_multiple_input_files```). In the loop ```produce_files_to_wrap``` function first ```dequeues``` a ```parent_dir_path``` from the ```dir_pool``` by calling the ```pool_dequeue``` function. 
 Then a helper function ```int fill_pool_and_queue_with_data(char *parent_dir_path, Pool *dir_pool, Queue *file_q, int isrecursive);``` is called and it is responsible for taking the recently dequeued ```parent_dir_path``` and filling up the ```dir_pool``` and ```file_q``` with sub-directories and regular files from the ```parent_dir_path```. Internally, ```fill_pool_and_queue_with_data``` calls ```pool_enqueue``` function to enqueue sub-directories in the ```dir_pool``` and ```queue_enqueue``` function to enqueue regular file path in the ```file_q```. One more thing to mention, ```fill_pool_and_queue_with_data``` function also takes a ```isrecursive``` option which basically if ```not``` enabled then it indicates ```fill_pool_and_queue_with_data``` to not insert any sub-directory in the ```dir_pool```. This ```isrecursive``` option was specifically made for the extra credit section because the user interface can disable recursive directory traversal. 
 
-### int handle_multiple_input_files(int widthindex, int max_width, int argv, char **arg, Pool *dir_pool);
+```int handle_multiple_input_files(int widthindex, int max_width, int argv, char **arg, Pool *dir_pool);```
 
 
 This function is specifically made to parse the files or directories the user provides. Since we are doing the extra credit assignment, we also add support to handle multiple files and directories. This function will loop through all the remaining arguments after the ```max_width``` arguement. If the argument is a regular file, it will use the ```wrap_text()``` function. If it is a directory, it will be enqueued in the directory_pool (```*dir_pool```) by the ```pool_enqueue``` function. When the directory is enqueued into the ```*dir_pool``` it gives some data for the producer worker function to start working with as described in the previous ```produce_files_to_wrap``` section.
 If there is only one regular file provided, it wraps and writes to ```stdout```. 
 If at least one of the file has a invalid path then the function returns ```EXIT_FAILURE``` immediately.
 
-### int fill_pool_and_queue_with_data(char *parent_dir_path, Pool *dir_pool, Queue *file_q,int isrecursive);
+```int fill_pool_and_queue_with_data(char *parent_dir_path, Pool *dir_pool, Queue *file_q,int isrecursive);```
 
 #### How fill_pool_and_queue_with_data fills up data in the queue and pool?
 To fill the data in the file queue, ```fill_pool_and_queue_with_data``` allocates a object of type ```queue_data_type``` on the heap, and this object stores the regular ```input_file``` and ```output_file```. Since the output file needs to be computed from the ```input_file```, we create easy to use functions called ```concat_string``` and ```append_file_to_existing_path``` in our ```util.c``` file to ease the creation of the output file. In short, the ```concat_string``` concats ```wrap.``` extension to the existing ```input``` file name and ```append_file_to_existing_path``` concats the existing directory to the new output filename. This input filename and output filename together is enqueued as a ```queue_data_type``` object into the file queue for the consumer threads to later dequeue and wrap the input file to the output file. Moreover to fill the data in the directory stack, ```fill_pool_and_queue_with_data``` allocates a object of type ```pool_data_type``` on the heap, and this object stores the ```directory_path```. The sub-directories in the directory are appended using the ```append_file_to_existing_path``` method, and stored in a ```pool_data_type``` object. This object is finally enqueued in the directory pool using the ```pool_enqueue``` method,.
@@ -284,15 +292,6 @@ fill_param_by_user_arguememt(): Max width was either not provided or it cannot b
 16. ```./bin/word_break  20 tests tests2 tests3```
     - <b>Result</b>: It wraps the 20 characters per line in created all the ```wrap.*``` version of the regular files including its subdirectory regular files in the ```tests``` ```tests2``` ```tests3``` directories without using multithreads. It does not create ```wrap.*``` version of the files in the sub directories for ```tests``` ```tests2``` ```tests3``` directories.
 
-## Steps To Run Word Break.
-1. First make to sure to turn on or off the ```DEBUG``` parameter located in ```src/logger.h```. ```DEBUG``` 0 will not print any logs and 1 will print all the logs to stdout.
-2. Then change the initial ```POOLSIZE``` or ```QUEUESIZE``` macro in ```src/word_break.h``` to setup the initial poolsize or queuesize.
-3. Then run ```make``` from the project root directory to generate the object files and binaries. Note the object files were made seperately in order to unit test them independently of each other.
-4. A binary for ```word_break``` is created in the bin folder. Now if a user executes ```./word_break -r dir_test/```, the program would run with 1 producer and 1 consumer thread. If the user executes ```./word_break -rN dir_test/```, the program would run with 1 producer thread and N consumer threads. Finally if the user executes ```./word_break -rM,N dir_test/```, then there will M producer threads and N consumer threads.
-5. You can also not include the ```-r``` option but then the program will not recursively traverse the input directory. 
-6. If you want to run the extra credit part, it is the same instructions as number 4 except you can include multiple directories or files.
-7. ```make fresh file=test_dir/``` to clear all wrap files out of a directory
-8. ```make clean``` to clean build.
 ## Steps to Run Unit Test
 1. First make to sure to turn on or off the ```DEBUG``` parameter located in ```src/logger.h```. ```DEBUG``` 0 will not print any logs and 1 will print all the logs to stdout.
 2. Then change the initial ```POOLSIZE``` or ```QUEUESIZE``` macro in ```src/word_break.h``` to setup the initial poolsize or queuesize.
